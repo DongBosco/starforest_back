@@ -1,11 +1,7 @@
 package com.project.starforest.domain;
 
 import jakarta.persistence.*;
-import lombok.AllArgsConstructor;
-import lombok.Builder;
-import lombok.Getter;
-import lombok.NoArgsConstructor;
-import lombok.ToString;
+import lombok.*;
 import lombok.extern.log4j.Log4j2;
 
 import java.sql.Timestamp;
@@ -14,17 +10,17 @@ import java.sql.Timestamp;
 @Getter
 @Builder
 @AllArgsConstructor
+@NoArgsConstructor
 @Log4j2
 @ToString
 public class ProductImage {
 	@Id
-	@GeneratedValue(strategy = GenerationType.IDENTITY)
 	private int id;
 
 	@Column(name = "imageIndex")
 	private Integer imageIndex;
 
-	@ManyToOne(fetch = FetchType.LAZY)
+	@ManyToOne(fetch = FetchType.LAZY, cascade = CascadeType.ALL)
 	@JoinColumn(name = "pno", referencedColumnName = "id")
 	private Product product;
 
@@ -34,8 +30,6 @@ public class ProductImage {
 	@Column(name = "createdAt")
 	private Timestamp createdAt;
 
-	public ProductImage() {
-	}
 
 	public void changeId(int id) {
 		this.id = id;

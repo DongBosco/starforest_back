@@ -14,15 +14,14 @@ import java.sql.Timestamp;
 class CampSiteLike {
 
     @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
     private int id;
 
-    @ManyToOne(fetch = FetchType.LAZY)
+    @ManyToOne(fetch = FetchType.LAZY, cascade = CascadeType.ALL)
     @JoinColumn(name = "CampSiteId", referencedColumnName = "id")
     private CampSiteLike campSiteLike;
 
-    @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "UserId", referencedColumnName = "id")
+    @ManyToOne(fetch = FetchType.LAZY, cascade = CascadeType.ALL)
+    @JoinColumn(name = "UserId", referencedColumnName = "email")
     private Member user;
 
     private Timestamp createdAt;

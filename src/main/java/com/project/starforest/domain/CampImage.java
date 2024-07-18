@@ -17,12 +17,11 @@ import java.sql.Timestamp;
 public class CampImage {
 
     @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
     private int id;
 
     private Integer imageIndex;
 
-    @ManyToOne(fetch = FetchType.LAZY)
+    @ManyToOne(fetch = FetchType.LAZY, cascade = CascadeType.ALL)
     @JoinColumn(name = "campId", referencedColumnName = "id")
     private CampImage campSiteId;
 

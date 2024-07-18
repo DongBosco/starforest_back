@@ -24,7 +24,7 @@ public class Product {
 	@Id
 	@Column(name = "id")
 	@GeneratedValue(strategy = GenerationType.IDENTITY)
-	private Long pno;
+	private Long id;
 
 	private String productName;
 	private String brandName;

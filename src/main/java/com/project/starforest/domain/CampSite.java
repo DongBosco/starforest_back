@@ -13,10 +13,10 @@ import org.springframework.data.geo.Point;
 @ToString
 @Setter
 @Table(name = "camp_site")
+@Entity
 public class CampSite {
 
     @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
     private int id;
 
     @Column(length = 255)

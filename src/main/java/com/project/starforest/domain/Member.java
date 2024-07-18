@@ -3,7 +3,6 @@ package com.project.starforest.domain;
 import java.util.ArrayList;
 import java.util.List;
 
-import com.project.starforest.domain.notYet.MemberRole;
 import jakarta.persistence.ElementCollection;
 import jakarta.persistence.Entity;
 import jakarta.persistence.Id;
@@ -41,5 +40,9 @@ public class Member {
 
 	public void changePassword(String pw) {
 		this.passWord = pw;
+	}
+
+	public String getPw() {
+		return passWord;
 	}
 }

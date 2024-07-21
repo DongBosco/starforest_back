@@ -34,8 +34,6 @@ public class CustomUserDetailsService implements UserDetailsService {
                 member.getPw(),
                 member.getMemberRoleList());
 
-
-
         return memberDTO;
     }
 

@@ -18,28 +18,21 @@ import java.sql.Timestamp;
 public class ProductReview {
 
     @Id
-    private int id;
-
-    @Column(name = "productId", nullable = false)
-    private int productId;
-
-    @Column(name = "userId", nullable = false)
-    private int userId;
-
-    @Lob
-    @Column(nullable = false)
-    private String content;
-
-    @Column(name = "createdAt", nullable = true)
-    private Timestamp createdAt;
+    private Long id;
 
     @ManyToOne(fetch = FetchType.LAZY, cascade = CascadeType.ALL)
-    @JoinColumn(name = "productId", referencedColumnName = "id", insertable = false, updatable = false)
+    @JoinColumn(name = "product_id", referencedColumnName = "id", insertable = false, updatable = false)
     private Product product;
 
     @ManyToOne(fetch = FetchType.LAZY, cascade = CascadeType.ALL)
-    @JoinColumn(name = "userId", referencedColumnName = "email", insertable = false, updatable = false)
+    @JoinColumn(name = "user_id", referencedColumnName = "email", insertable = false, updatable = false)
     private Member member;
+
+    @Column(nullable = false)
+    private String content;
+
+    @Column(name = "created_at", nullable = true)
+    private Timestamp created_at;
 
     public void changeContent(String content) {
         if (content != null && !content.trim().isEmpty() && content.length() >= 10) {
@@ -49,7 +42,7 @@ public class ProductReview {
         }
     }
 
-    public void changeCreatedAt(Timestamp createdAt) {
-        this.createdAt = createdAt;
+    public void changeCreated_at(Timestamp created_at) {
+        this.created_at = created_at;
     }
 }

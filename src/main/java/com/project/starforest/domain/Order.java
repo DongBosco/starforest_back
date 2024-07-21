@@ -11,52 +11,57 @@ import java.sql.Timestamp;
 @Builder
 @ToString
 @Entity
-@Table(name = "order")
+@Table(name = "order_table")
 public class Order {
 
     @Id
-    private int id;
+    private Long id;
 
-    @Column(name = "carNm", nullable = true)
-    private Integer carNm;
+    @Column(name = "car_nm", nullable = true)
+    private Long car_nm;
 
-    @Column(name = "orderNumber", nullable = false, unique = true)
-    private String orderNumber;
+    @Column(name = "order_number", nullable = false, unique = true, length = 20)
+    private String order_number;
 
-    @Column(name = "orderType", nullable = true)
-    private Integer orderType;
+    @Column(name = "order_type", nullable = true)
+    private Integer order_type;
 
-    @Column(name = "userId", nullable = true)
-    private Integer userId;
+    @Column(name = "user_id", nullable = true)
+    private String user_id;
 
-    @Column(name = "createdAt", nullable = true)
-    private Timestamp createdAt;
+    @Column(name = "created_at", nullable = true)
+    private Timestamp created_at;
 
     @ManyToOne(fetch = FetchType.LAZY, cascade = CascadeType.ALL)
-    @JoinColumn(name = "userId", referencedColumnName = "email", insertable = false, updatable = false)
+    @JoinColumn(name = "user_id", referencedColumnName = "email", insertable = false, updatable = false)
     private Member member;
 
     @ManyToOne(fetch = FetchType.LAZY, cascade = CascadeType.ALL)
-    @JoinColumn(name = "carNm", referencedColumnName = "id", insertable = false, updatable = false)
+    @JoinColumn(name = "car_nm", referencedColumnName = "id", insertable = false, updatable = false)
     private ShoppingCart shoppingCart;
 
-    public void changeCarNm(Integer carNm) {
-        this.carNm = carNm;
+    @OneToOne(fetch = FetchType.LAZY, cascade = CascadeType.ALL)
+    @JoinColumn(name = "info_nm", referencedColumnName = "id", insertable = false, updatable = false)
+    private OrderInfo order_info;
+
+
+    public void changeCar_nm(Long car_nm) {
+        this.car_nm = car_nm;
     }
 
-    public void changeOrderNumber(String orderNumber) {
-        this.orderNumber = orderNumber;
+    public void changeOrder_number(String order_number) {
+        this.order_number = order_number;
     }
 
-    public void changeOrderType(Integer orderType) {
-        this.orderType = orderType;
+    public void changeOrder_type(Integer order_type) {
+        this.order_type = order_type;
     }
 
-    public void changeUserId(Integer userId) {
-        this.userId = userId;
+    public void changeUser_id(String user_id) {
+        this.user_id = user_id;
     }
 
-    public void changeCreatedAt(Timestamp createdAt) {
-        this.createdAt = createdAt;
+    public void changeCreated_at(Timestamp created_at) {
+        this.created_at = created_at;
     }
 }

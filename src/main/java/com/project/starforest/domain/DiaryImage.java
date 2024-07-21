@@ -15,18 +15,18 @@ import java.sql.Timestamp;
 public class DiaryImage {
 
     @Id
-    private int id;
+    private Long id;
 
     @ManyToOne(fetch = FetchType.LAZY, cascade = CascadeType.ALL)
-    @JoinColumn(name = "diaryId", referencedColumnName = "id")
+    @JoinColumn(name = "diary_id", referencedColumnName = "id")
     private Diary diary;
 
     @Column(columnDefinition = "TEXT")
-    private String imageURL;
+    private String image_url;
 
-    private Timestamp createdAt;
+    private Timestamp created_at;
 
-    public void changeId(int id) {
+    public void changeId(Long id) {
         this.id = id;
     }
 
@@ -34,11 +34,11 @@ public class DiaryImage {
         this.diary = diary;
     }
 
-    public void changeImageURL(String imageURL) {
-        this.imageURL = imageURL;
+    public void changeImage_url(String image_url) {
+        this.image_url = image_url;
     }
 
-    public void changeCreatedAt(Timestamp createdAt) {
-        this.createdAt = createdAt;
+    public void changeCreated_at(Timestamp created_at) {
+        this.created_at = created_at;
     }
 }

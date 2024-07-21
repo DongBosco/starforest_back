@@ -16,8 +16,8 @@ import lombok.extern.log4j.Log4j2;
 public class OrderInfo {
 
     @Id
-    @Column(name = "orderNm", nullable = false)
-    private String orderNm;
+    @Column(length = 20)
+    private Long id;
 
     @Column(name = "name", length = 50, nullable = true)
     private String name;
@@ -25,8 +25,8 @@ public class OrderInfo {
     @Column(name = "tel", length = 20, nullable = true)
     private String tel;
 
-    @Column(name = "totalPrice", nullable = true)
-    private Integer totalPrice;
+    @Column(name = "total_price", nullable = true)
+    private Integer total_price;
 
     @Column(name = "address1", length = 255, nullable = true)
     private String address1;
@@ -34,12 +34,9 @@ public class OrderInfo {
     @Column(name = "address2", length = 255, nullable = true)
     private String address2;
 
-    // Foreign key relationship with the Order table
     @OneToOne(fetch = FetchType.LAZY, cascade = CascadeType.ALL)
-    @JoinColumn(name = "orderNm", referencedColumnName = "orderNumber", insertable = false, updatable = false)
     private Order order;
 
-    // Change methods instead of traditional setters
     public void changeName(String name) {
         this.name = name;
     }
@@ -48,12 +45,12 @@ public class OrderInfo {
         this.tel = tel;
     }
 
-    public void changeTotalPrice(Integer totalPrice) {
-        if(totalPrice < 0){
-            this.totalPrice = 0;
+    public void changeTotal_price(Integer total_price) {
+        if(total_price < 0){
+            this.total_price = 0;
             log.info("가격이 잘못되었습니다.");
         }
-        this.totalPrice = totalPrice;
+        this.total_price = total_price;
     }
 
     public void changeAddress1(String address1) {

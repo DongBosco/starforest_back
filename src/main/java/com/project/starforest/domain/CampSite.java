@@ -17,13 +17,13 @@ import org.springframework.data.geo.Point;
 public class CampSite {
 
     @Id
-    private int id;
+    private Long id;
 
     @Column(length = 255)
     private String name;
 
     @Column(columnDefinition = "TEXT")
-    private String lineIntro;
+    private String line_intro;
 
     @Column(columnDefinition = "TEXT")
     private String intro;
@@ -31,19 +31,19 @@ public class CampSite {
     private Integer allar;
 
     @Column(columnDefinition = "TEXT")
-    private String featureNm;
+    private String feature_nm;
 
     @Column(nullable = false, columnDefinition = "TINYINT(1)")
-    private boolean isGlamp;
+    private boolean is_glamp;
 
     @Column(nullable = false, columnDefinition = "TINYINT(1)")
-    private boolean isCarvan;
+    private boolean is_carvan;
 
     @Column(nullable = false, columnDefinition = "TINYINT(1)")
-    private boolean isAuto;
+    private boolean is_auto;
 
     @Column(length = 30)
-    private String sigunguNm;
+    private String sigungu_nm;
 
     @Column(columnDefinition = "TEXT")
     private String add1;
@@ -51,8 +51,8 @@ public class CampSite {
     @Column(length = 100)
     private String add2;
 
-    private Double mapX;
-    private Double mapY;
+    private Double mapx;
+    private Double mapy;
 
     @Column(length = 20)
     private String tel;
@@ -63,31 +63,31 @@ public class CampSite {
     private Integer price;
 
     @Column(nullable = true, columnDefinition = "TINYINT(1)")
-    private Boolean animalCmgCl;
+    private Boolean animal_cmg_cl;
 
     @Column(columnDefinition = "TEXT")
-    private String glampInnerFclty;
+    private String glamp_inner_fclty;
 
     @Column(columnDefinition = "TEXT")
-    private String caravInnerFclty;
+    private String carav_inner_fclty;
 
     @Column(columnDefinition = "TEXT")
-    private String posblFcltyCl;
+    private String posbl_fclty_cl;
 
     @Column(columnDefinition = "TEXT")
-    private String themaEnvrnCl;
+    private String thema_envrn_cl;
 
     @Column(length = 20)
-    private String brazielCl;
+    private String braziel_cl;
 
     @Column(columnDefinition = "TEXT")
-    private String sbrsCl;
+    private String sbrs_cl;
 
     @Column(length = 255)
-    private String eqpmnLendCl;
+    private String eqpmn_lend_cl;
 
     @Column(columnDefinition = "TEXT")
-    private String firstImageUrl;
+    private String first_image_url;
 
     @Column(name = "location")
     private Point location;

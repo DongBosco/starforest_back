@@ -16,47 +16,45 @@ import java.sql.Date;
 public class Reservation {
 
     @Id
-    private int id;
+    private Long id;
 
-    @Column(name = "reservationNumber", nullable = true, length = 20)
-    private String reservationNumber;
-
-    @Column(name = "campsiteId", nullable = true)
-    private Integer campsiteId;
-
-    @Column(name = "userId", nullable = true)
-    private Integer userId;
-
-    @Column(name = "startDate", nullable = true)
-    private Date startDate;
-
-    @Column(name = "endDate", nullable = true)
-    private Date endDate;
-
-    @Column(name = "createdAt", nullable = true)
-    private Date createdAt;
+    @Column(name = "reservation_number", nullable = true, length = 20)
+    private String reservation_number;
 
     @ManyToOne(fetch = FetchType.LAZY, cascade = CascadeType.ALL)
-    @JoinColumn(name = "campsiteId", referencedColumnName = "id", insertable = false, updatable = false)
-    private CampSite campSite;
+    @JoinColumn(name = "campsite_id", referencedColumnName = "id", insertable = false, updatable = false)
+    private CampSite campsite_id;
 
     @ManyToOne(fetch = FetchType.LAZY, cascade = CascadeType.ALL)
-    @JoinColumn(name = "userId", referencedColumnName = "email", insertable = false, updatable = false)
-    private Member member;
+    @JoinColumn(name = "user_id", referencedColumnName = "email", insertable = false, updatable = false)
+    private Member user;
 
-    public void changeReservationNumber(String reservationNumber) {
-        this.reservationNumber = reservationNumber;
+    @OneToOne(fetch = FetchType.LAZY, cascade = CascadeType.ALL)
+    @JoinColumn(name = "info_id", referencedColumnName = "id", insertable = false, updatable = false)
+    private ReservInfo  reservInfo;
+
+    @Column(name = "start_date", nullable = true)
+    private Date start_date;
+
+    @Column(name = "end_date", nullable = true)
+    private Date end_date;
+
+    @Column(name = "created_at", nullable = true)
+    private Date created_at;
+
+    public void changeReservation_number(String reservation_number) {
+        this.reservation_number = reservation_number;
     }
 
-    public void changeStartDate(Date startDate) {
-        this.startDate = startDate;
+    public void changeStart_date(Date start_date) {
+        this.start_date = start_date;
     }
 
-    public void changeEndDate(Date endDate) {
-        this.endDate = endDate;
+    public void changeEnd_date(Date end_date) {
+        this.end_date = end_date;
     }
 
-    public void changeCreatedAt(Date createdAt) {
-        this.createdAt = createdAt;
+    public void changeCreated_at(Date created_at) {
+        this.created_at = created_at;
     }
 }

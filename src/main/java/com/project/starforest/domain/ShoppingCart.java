@@ -14,35 +14,31 @@ import java.sql.Timestamp;
 @Entity
 @Table(
 		name="shopping_cart"
-		,		indexes = {@Index(name="idex_cart_email", columnList="member_owner")}
 		)
 public class ShoppingCart {
 
 	@Id
-	private int id;
+	private Long id;
 
-	@Column(name = "userId", nullable = true)
-	private Integer userId;
+	@ManyToOne(fetch = FetchType.LAZY, cascade = CascadeType.ALL)
+	@JoinColumn(name = "user_id", referencedColumnName = "email", insertable = false, updatable = false)
+	private Member member;
 
-	@Column(name = "totalPrice", nullable = true)
-	private Integer totalPrice;
+	@Column(name = "total_price", nullable = true)
+	private Integer total_price;
 
-	@Column(name = "createdAt", nullable = true)
-	private Timestamp createdAt;
+	@Column(name = "created_at", nullable = true)
+	private Timestamp created_at;
 
-	@Column(name = "updatedAt", nullable = true)
-	private Timestamp updatedAt;
+	@Column(name = "updated_at", nullable = true)
+	private Timestamp updated_at;
 
 	@Column(name = "status", length = 20)
 	private String status;
 
-	@ManyToOne(fetch = FetchType.LAZY, cascade = CascadeType.ALL)
-	@JoinColumn(name = "userId", referencedColumnName = "email", insertable = false, updatable = false)
-	private Member member;
-
-	public void changeTotalPrice(Integer totalPrice) {
-		if (totalPrice != null && totalPrice >= 0) {
-			this.totalPrice = totalPrice;
+	public void changeTotal_price(Integer total_price) {
+		if (total_price != null && total_price >= 0) {
+			this.total_price = total_price;
 		} else {
 			throw new IllegalArgumentException("총합 금액을 확인해주세요");
 		}
@@ -56,7 +52,7 @@ public class ShoppingCart {
 		}
 	}
 
-	public void changeUpdatedAt(Timestamp updatedAt) {
-		this.updatedAt = updatedAt;
+	public void changeUpdated_at(Timestamp updated_at) {
+		this.updated_at = updated_at;
 	}
 }

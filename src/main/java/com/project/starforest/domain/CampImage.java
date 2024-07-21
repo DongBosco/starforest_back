@@ -17,18 +17,17 @@ import java.sql.Timestamp;
 public class CampImage {
 
     @Id
-    private int id;
+    private Long id;
 
-    private Integer imageIndex;
+    private Integer image_index;
 
     @ManyToOne(fetch = FetchType.LAZY, cascade = CascadeType.ALL)
-    @JoinColumn(name = "campId", referencedColumnName = "id")
-    private CampImage campSiteId;
+    @JoinColumn(name = "camp_id", referencedColumnName = "id")
+    private CampImage camp_site_id;
 
     @Column(columnDefinition = "TEXT")
-    private String imageURL;
+    private String image_url;
 
-    private Timestamp createdAt;
+    private Timestamp created_at;
 
-    // Additional methods can be added here if necessary, such as update operations or complex business logic.
 }

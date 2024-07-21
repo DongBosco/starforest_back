@@ -15,10 +15,10 @@ import lombok.*;
 public class ReservInfo {
 
     @Id
-    private int id;
+    private Long id;
 
-    @Column(name = "ReservId", nullable = false)
-    private Integer reservId;
+    @OneToOne(fetch = FetchType.LAZY, cascade = CascadeType.ALL)
+    private Reservation reservation;
 
     @Column(name = "name", length = 50)
     private String name;
@@ -29,12 +29,8 @@ public class ReservInfo {
     @Column(name = "request", columnDefinition = "TEXT")
     private String request;
 
-    @Column(name = "carNumber", length = 20)
-    private String carNumber;
-
-    @ManyToOne(fetch = FetchType.LAZY, cascade = CascadeType.ALL)
-    @JoinColumn(name = "ReservId", referencedColumnName = "id", insertable = false, updatable = false)
-    private Reservation reservation;
+    @Column(name = "car_number", length = 20)
+    private String car_number;
 
     public void changeName(String name) {
         if (name != null && !name.trim().isEmpty()) {
@@ -43,7 +39,6 @@ public class ReservInfo {
             throw new IllegalArgumentException( "이름을 입력해주세요.");
         }
     }
-
     public void changeTel(String tel) {
         if (tel != null && !tel.trim().isEmpty()) {
             this.tel = tel;
@@ -56,7 +51,7 @@ public class ReservInfo {
         this.request = request;
     }
 
-    public void changeCarNumber(String carNumber) {
-        this.carNumber = carNumber;
+    public void changeCarNumber(String car_number) {
+        this.car_number = car_number;
     }
 }

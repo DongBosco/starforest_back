@@ -13,11 +13,15 @@ import java.sql.Timestamp;
 public class Diary {
 
     @Id
-    private int id;
+    private Long id;
 
     @ManyToOne(fetch = FetchType.LAZY, cascade = CascadeType.ALL)
-    @JoinColumn(name = "reservationId", referencedColumnName = "id")
+    @JoinColumn(name = "reservation_id", referencedColumnName = "id")
     private Reservation reservation;
+
+    @ManyToOne(fetch = FetchType.LAZY, cascade = CascadeType.ALL)
+    @JoinColumn(name = "user_id", referencedColumnName = "email")
+    private Member user;
 
     @Column(columnDefinition = "TEXT")
     private String content;
@@ -25,9 +29,9 @@ public class Diary {
     @Column(length = 255)
     private String category;
 
-    private Timestamp createdAt;
+    private Timestamp created_at;
 
-    public void changeId(int id) {
+    public void changeId(Long id) {
         this.id = id;
     }
 
@@ -43,7 +47,7 @@ public class Diary {
         this.category = category;
     }
 
-    public void changeCreatedAt(Timestamp createdAt) {
-        this.createdAt = createdAt;
+    public void changeCreated_at(Timestamp created_at) {
+        this.created_at = created_at;
     }
 }

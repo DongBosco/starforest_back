@@ -20,30 +20,24 @@ import java.sql.Timestamp;
 		)
 public class ShoppingCartItem {
 	@Id
-	private int id;
+	private Long id;
 
-	@Column(name = "productId", nullable = false)
-	private Integer productId;
+	@ManyToOne(fetch = FetchType.LAZY, cascade = CascadeType.ALL)
+	@JoinColumn(name = "product_id", referencedColumnName = "id", insertable = false, updatable = false)
+	private Product product;
 
-	@Column(name = "cartId", nullable = false)
-	private Integer cartId;
+	@ManyToOne(fetch = FetchType.LAZY, cascade = CascadeType.ALL)
+	@JoinColumn(name = "cart_id", referencedColumnName = "id", insertable = false, updatable = false)
+	private ShoppingCart shoppingCart;
 
 	@Column(name = "quantity", nullable = false)
 	private Integer quantity;
 
-	@Column(name = "createdAt", nullable = true)
-	private Timestamp createdAt;
+	@Column(name = "created_at", nullable = true)
+	private Timestamp created_at;
 
-	@Column(name = "updatedAt", nullable = true)
-	private Timestamp updatedAt;
-
-	@ManyToOne(fetch = FetchType.LAZY, cascade = CascadeType.ALL)
-	@JoinColumn(name = "productId", referencedColumnName = "id", insertable = false, updatable = false)
-	private Product product;
-
-	@ManyToOne(fetch = FetchType.LAZY, cascade = CascadeType.ALL)
-	@JoinColumn(name = "cartId", referencedColumnName = "id", insertable = false, updatable = false)
-	private ShoppingCart shoppingCart;
+	@Column(name = "updated_at", nullable = true)
+	private Timestamp updated_at;
 
 	public void changeQuantity(Integer quantity) {
 		if (quantity != null && quantity > 0) {
@@ -53,7 +47,7 @@ public class ShoppingCartItem {
 		}
 	}
 
-	public void changeUpdatedAt(Timestamp updatedAt) {
-		this.updatedAt = updatedAt;
+	public void changeUpdated_at(Timestamp updated_at) {
+		this.updated_at = updated_at;
 	}
 }

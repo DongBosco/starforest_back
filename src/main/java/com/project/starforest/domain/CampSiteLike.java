@@ -14,24 +14,24 @@ import java.sql.Timestamp;
 class CampSiteLike {
 
     @Id
-    private int id;
+    private Long id;
 
     @ManyToOne(fetch = FetchType.LAZY, cascade = CascadeType.ALL)
-    @JoinColumn(name = "CampSiteId", referencedColumnName = "id")
-    private CampSiteLike campSiteLike;
+    @JoinColumn(name = "camp_site_id", referencedColumnName = "id")
+    private CampSiteLike camp_site_like;
 
     @ManyToOne(fetch = FetchType.LAZY, cascade = CascadeType.ALL)
-    @JoinColumn(name = "UserId", referencedColumnName = "email")
+    @JoinColumn(name = "user_id", referencedColumnName = "email")
     private Member user;
 
-    private Timestamp createdAt;
+    private Timestamp created_at;
 
     @PrePersist
     protected void onCreate() {
-        this.createdAt = new Timestamp(System.currentTimeMillis());
+        this.created_at = new Timestamp(System.currentTimeMillis());
     }
 
     public void updateTimestamp() {
-        this.createdAt = new Timestamp(System.currentTimeMillis());
+        this.created_at = new Timestamp(System.currentTimeMillis());
     }
 }

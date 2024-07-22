@@ -17,17 +17,11 @@ public class Order {
     @Id
     private Long id;
 
-    @Column(name = "car_nm", nullable = true)
-    private Long car_nm;
-
     @Column(name = "order_number", nullable = false, unique = true, length = 20)
     private String order_number;
 
     @Column(name = "order_type", nullable = true)
     private Integer order_type;
-
-    @Column(name = "user_id", nullable = true)
-    private String user_id;
 
     @Column(name = "created_at", nullable = true)
     private Timestamp created_at;
@@ -44,21 +38,12 @@ public class Order {
     @JoinColumn(name = "info_nm", referencedColumnName = "id", insertable = false, updatable = false)
     private OrderInfo order_info;
 
-
-    public void changeCar_nm(Long car_nm) {
-        this.car_nm = car_nm;
-    }
-
     public void changeOrder_number(String order_number) {
         this.order_number = order_number;
     }
 
     public void changeOrder_type(Integer order_type) {
         this.order_type = order_type;
-    }
-
-    public void changeUser_id(String user_id) {
-        this.user_id = user_id;
     }
 
     public void changeCreated_at(Timestamp created_at) {

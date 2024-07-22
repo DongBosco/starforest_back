@@ -18,7 +18,7 @@ class CampSiteLike {
 
     @ManyToOne(fetch = FetchType.LAZY, cascade = CascadeType.ALL)
     @JoinColumn(name = "camp_site_id", referencedColumnName = "id")
-    private CampSiteLike camp_site_like;
+    private CampSite camp_site_id;
 
     @ManyToOne(fetch = FetchType.LAZY, cascade = CascadeType.ALL)
     @JoinColumn(name = "user_id", referencedColumnName = "email")

@@ -17,9 +17,6 @@ public class ReservInfo {
     @Id
     private Long id;
 
-    @OneToOne(fetch = FetchType.LAZY, cascade = CascadeType.ALL)
-    private Reservation reservation;
-
     @Column(name = "name", length = 50)
     private String name;
 
@@ -55,3 +52,7 @@ public class ReservInfo {
         this.car_number = car_number;
     }
 }
+
+//    @OneToOne(fetch = FetchType.LAZY, cascade = CascadeType.ALL)
+//    @Column(name = "reserv_id")
+//    private Reservation reservation;

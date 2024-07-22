@@ -15,7 +15,6 @@ import java.sql.Timestamp;
 @ToString
 @Table(name = "camp_image")
 public class CampImage {
-
     @Id
     private Long id;
 
@@ -23,7 +22,7 @@ public class CampImage {
 
     @ManyToOne(fetch = FetchType.LAZY, cascade = CascadeType.ALL)
     @JoinColumn(name = "camp_id", referencedColumnName = "id")
-    private CampImage camp_site_id;
+    private CampSite camp_site_id;
 
     @Column(columnDefinition = "TEXT")
     private String image_url;

@@ -4,6 +4,7 @@ import jakarta.persistence.Entity;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.*;
 import lombok.*;
+import org.hibernate.annotations.Type;
 import org.springframework.data.geo.Point;
 
 @Getter
@@ -89,6 +90,6 @@ public class CampSite {
     @Column(columnDefinition = "TEXT")
     private String first_image_url;
 
-    @Column(name = "location")
+    @Column(columnDefinition = "Point")
     private Point location;
 }

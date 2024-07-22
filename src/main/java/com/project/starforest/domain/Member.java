@@ -3,7 +3,7 @@ package com.project.starforest.domain;
 import java.util.ArrayList;
 import java.util.List;
 
-import com.project.starforest.domain.notYet.MemberRole;
+import jakarta.persistence.Column;
 import jakarta.persistence.ElementCollection;
 import jakarta.persistence.Entity;
 import jakarta.persistence.Id;
@@ -22,24 +22,37 @@ import lombok.ToString;
 public class Member {
 
 	@Id
+	@Column(unique = true, nullable = false)
 	private String email;
-	
-	private String passWord;
+
+	@Column(unique = true, nullable = false)
+	private Long id;
+
+	private String pass_word;
+
 	private int role; // 정해봅시다.
 	
 	@ElementCollection
 	@Builder.Default
-	private List<MemberRole> memberRoleList = new ArrayList<>();
+	private List<MemberRole> member_role_list = new ArrayList<>();
 	
 	public void addRole(MemberRole memberRole) {
-		memberRoleList.add(memberRole);
+		member_role_list.add(memberRole);
 	}
 	
 	public void clearRoles() {
-		memberRoleList.clear();
+		member_role_list.clear();
 	}
 
-	public void changePassword(String pw) {
-		this.passWord = pw;
+	public void changePassword(String pass_word) {
+		this.pass_word = pass_word;
+	}
+
+	public String getPw() {
+		return this.pass_word;
+	}
+
+	public List<MemberRole> getMemberRoleList() {
+		return this.member_role_list;
 	}
 }

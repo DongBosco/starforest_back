@@ -15,21 +15,18 @@ import java.sql.Timestamp;
 @ToString
 @Table(name = "camp_image")
 public class CampImage {
-
     @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private int id;
+    private Long id;
 
-    private Integer imageIndex;
+    private Integer image_index;
 
-    @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "campId", referencedColumnName = "id")
-    private CampImage campSiteId;
+    @ManyToOne(fetch = FetchType.LAZY, cascade = CascadeType.ALL)
+    @JoinColumn(name = "camp_id", referencedColumnName = "id")
+    private CampSite camp_site_id;
 
     @Column(columnDefinition = "TEXT")
-    private String imageURL;
+    private String image_url;
 
-    private Timestamp createdAt;
+    private Timestamp created_at;
 
-    // Additional methods can be added here if necessary, such as update operations or complex business logic.
 }

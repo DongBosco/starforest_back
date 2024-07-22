@@ -1,4 +1,7 @@
 package com.project.starforest.security;
+import com.project.starforest.domain.Member;
+import com.project.starforest.dto.MemberDTO;
+import com.project.starforest.repository.MemberRepository;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.log4j.Log4j2;
 import org.springframework.security.core.userdetails.UserDetails;
@@ -29,12 +32,7 @@ public class CustomUserDetailsService implements UserDetailsService {
         MemberDTO memberDTO = new MemberDTO(
                 member.getEmail(),
                 member.getPw(),
-                member.getNickname(),
-                member.isSocial(),
-                member.getMemberRoleList().stream().map(
-                        memberRole -> memberRole.name()).collect(Collectors.toList()));
-
-        log.info(memberDTO);
+                member.getMemberRoleList());
 
         return memberDTO;
     }

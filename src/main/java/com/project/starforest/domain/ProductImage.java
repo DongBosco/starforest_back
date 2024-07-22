@@ -1,11 +1,7 @@
 package com.project.starforest.domain;
 
 import jakarta.persistence.*;
-import lombok.AllArgsConstructor;
-import lombok.Builder;
-import lombok.Getter;
-import lombok.NoArgsConstructor;
-import lombok.ToString;
+import lombok.*;
 import lombok.extern.log4j.Log4j2;
 
 import java.sql.Timestamp;
@@ -14,39 +10,38 @@ import java.sql.Timestamp;
 @Getter
 @Builder
 @AllArgsConstructor
+@NoArgsConstructor
 @Log4j2
 @ToString
 public class ProductImage {
 	@Id
-	@GeneratedValue(strategy = GenerationType.IDENTITY)
-	private int id;
+	private Long id;
 
-	@Column(name = "imageIndex")
-	private Integer imageIndex;
+	@Column(name = "image_index")
+	private Integer image_index;
 
-	@ManyToOne(fetch = FetchType.LAZY)
-	@JoinColumn(name = "pno", referencedColumnName = "id")
+	@ManyToOne(fetch = FetchType.LAZY, cascade = CascadeType.ALL)
+	@JoinColumn(name = "product_nm", referencedColumnName = "id")
 	private Product product;
 
 	@Column(columnDefinition = "TEXT")
-	private String imageURL;
+	private String image_url;
 
-	@Column(name = "createdAt")
-	private Timestamp createdAt;
+	@Column(name = "created_at")
+	private Timestamp created_at;
 
-	public ProductImage() {
-	}
 
-	public void changeId(int id) {
+
+	public void changeId(Long id) {
 		this.id = id;
 	}
 
-	public void changeImageIndex(int imageIndex) {
-		if (imageIndex <0){
-			this.imageIndex = -1;
+	public void changeImage_index(int image_index) {
+		if (image_index <0){
+			this.image_index = -1;
 		}
-		this.imageIndex = imageIndex;
-		if (this.imageIndex < 0){
+		this.image_index = image_index;
+		if (this.image_index < 0){
 			log.info("image index를 확인하세요! ");
 		}
 	}
@@ -55,11 +50,11 @@ public class ProductImage {
 		this.product = product;
 	}
 
-	public void changeImageURL(String imageURL) {
-		this.imageURL = imageURL;
+	public void changeImage_url(String image_url) {
+		this.image_url = image_url;
 	}
 
-	public void changeCreatedAt(Timestamp createdAt) {
-		this.createdAt = createdAt;
+	public void changeCreated_at(Timestamp created_at) {
+		this.created_at = created_at;
 	}
 }

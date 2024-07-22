@@ -1,6 +1,6 @@
 # Created by https://www.toptal.com/developers/gitignore/api/intellij,eclipse
 # Edit at https://www.toptal.com/developers/gitignore?templates=intellij,eclipse
-application.properties
+.properties
 ### Eclipse ###
 .metadata
 bin/

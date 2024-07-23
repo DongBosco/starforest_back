@@ -19,6 +19,10 @@ public class UserInfo {
         @Id
         private Long id;
 
+        @OneToOne(fetch = FetchType.LAZY, cascade = CascadeType.ALL)
+        @JoinColumn(name = "user_email", referencedColumnName = "email", insertable = false, updatable = false)
+        private Member user_email;
+
         @Column(name = "name", length = 20, nullable = false)
         private String name;
 

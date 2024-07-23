@@ -6,23 +6,32 @@ import java.util.List;
 import java.util.Map;
 import java.util.stream.Collectors;
 
-import com.project.starforest.domain.MemberRole;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.userdetails.User;
 
+import static com.project.starforest.domain.MemberRole.MEMBER;
 
 
 public class MemberDTO extends User {
-	private String email,pw;
-	private List<MemberRole> roleNames= new ArrayList<>();
+	private String email,pass_word, nick_name,profile_url,introduce;
+	private Long id;
+	private Integer login_type, grade;
+	private List<String> roleNames= new ArrayList<>();
 
 
-	public MemberDTO(String email, String pw, List<MemberRole> roleNames) {
-		super(email,pw,roleNames.stream()
-				.map(str -> new SimpleGrantedAuthority("ROLE_"+str)).collect(Collectors.toList()));
+	public MemberDTO(String email, String pass_word,String introduce, String nick_name,String profile_url,
+					 Long id,Integer login_type, Integer grade, List<String> roleNames) {
+		super(email,pass_word,roleNames.stream()
+				.map(str -> new SimpleGrantedAuthority("ROLE_"+MEMBER)).collect(Collectors.toList()));
 
 		this.email = email;
-		this.pw = pw;
+		this.pass_word = pass_word;
+		this.introduce = introduce;
+		this.nick_name = nick_name;
+		this.profile_url = profile_url;
+		this.id = id;
+		this.login_type = login_type;
+		this.grade = grade;
 		this.roleNames = roleNames;
 	}
 
@@ -30,20 +39,15 @@ public class MemberDTO extends User {
 		Map<String,Object> dataMap = new HashMap<>();
 
 		dataMap.put("email",email);
-		dataMap.put("pw",pw);
+		dataMap.put("pass_word",pass_word);
+		dataMap.put("introduce", introduce);
+		dataMap.put("nick_name",nick_name);
+		dataMap.put("profile_url",profile_url);
+		dataMap.put("id",id);
+		dataMap.put("login_type",login_type);
+		dataMap.put("grade",grade);
 		dataMap.put("roleNames",roleNames);
 
 		return dataMap;
 	}
-
-
-
-
-
-
-
-
-
-
-
 }

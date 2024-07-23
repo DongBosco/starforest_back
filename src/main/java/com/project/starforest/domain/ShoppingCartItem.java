@@ -10,7 +10,6 @@ import java.sql.Timestamp;
 @NoArgsConstructor
 @Builder
 @Getter
-@ToString(exclude={"cart","product"})
 @Table(
 		name="shopping_cart_item"
 		,indexes= {

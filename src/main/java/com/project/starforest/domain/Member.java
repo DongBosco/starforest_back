@@ -18,7 +18,6 @@ import lombok.ToString;
 @AllArgsConstructor
 @NoArgsConstructor
 @Getter
-@ToString(exclude="memberRoleList")
 public class Member {
 
 	@Id
@@ -30,18 +29,16 @@ public class Member {
 
 	private String pass_word;
 
-	private int role; // 정해봅시다.
-	
 	@ElementCollection
 	@Builder.Default
-	private List<MemberRole> member_role_list = new ArrayList<>();
-	
+	private List<MemberRole> memberRoleList = new ArrayList<>();
+
 	public void addRole(MemberRole memberRole) {
-		member_role_list.add(memberRole);
+		memberRoleList.add(memberRole);
 	}
-	
+
 	public void clearRoles() {
-		member_role_list.clear();
+		memberRoleList.clear();
 	}
 
 	public void changePassword(String pass_word) {
@@ -50,9 +47,5 @@ public class Member {
 
 	public String getPw() {
 		return this.pass_word;
-	}
-
-	public List<MemberRole> getMemberRoleList() {
-		return this.member_role_list;
 	}
 }

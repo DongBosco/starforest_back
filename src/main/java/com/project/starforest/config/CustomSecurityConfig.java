@@ -6,7 +6,6 @@ import lombok.extern.log4j.Log4j2;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
-import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
 import org.springframework.security.config.http.SessionCreationPolicy;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
@@ -19,20 +18,12 @@ import java.util.Arrays;
 
 @Configuration
 @Log4j2
-@EnableWebSecurity
 public class CustomSecurityConfig {
 
     @Bean
     public SecurityFilterChain filterChain(HttpSecurity http) throws Exception{
         log.info("---------------- #1 SecurityFilterChain -------------------");
 
-        http
-	    	.cors(cors -> cors.configurationSource(corsConfigurationSource()))
-	    .authorizeHttpRequests()
-	        .requestMatchers("/**").permitAll()  // 모든 요청 허용
-	    .and()
-	    .headers().frameOptions().disable();
-        
         http.cors(httpSecurityCorsConfigurer -> {
             httpSecurityCorsConfigurer.configurationSource(corsConfigurationSource());
         });
@@ -43,20 +34,20 @@ public class CustomSecurityConfig {
 
         http.csrf(config -> config.disable());
 
-//        http.formLogin(
-//                config -> {
-//                    config.loginPage("/api/member/login"); //username:user1@aaa.com / password:1111
-//                    config.successHandler(new APILoginSuccessHandler());
-//                    config.failureHandler(new APILoginFailHandler());
-//                });
-//
+        http.formLogin(
+                config -> {
+                    config.loginPage("/api/member/login"); //username:user1@aaa.com / password:1111
+                    config.successHandler(new APILoginSuccessHandler());
+                    config.failureHandler(new APILoginFailHandler());
+                });
+
         return http.build();
     }
 
     @Bean
     public CorsConfigurationSource corsConfigurationSource(){
         CorsConfiguration configuration = new CorsConfiguration();
-	    configuration.setAllowedOrigins(Arrays.asList("http://localhost:3000"));
+        configuration.setAllowedOrigins(Arrays.asList("http://localhost:3000"));
         configuration.setAllowedMethods(Arrays.asList("HEAD","GET","POST","PUT","DELETE","OPTIONS"));
         configuration.setAllowedHeaders(Arrays.asList("Authorization","Cache-Control","Content-Type"));
         configuration.setAllowCredentials(true);
@@ -67,6 +58,8 @@ public class CustomSecurityConfig {
         return source;
 
     }
+
+
 
     @Bean
     public PasswordEncoder passwordEncoder() {

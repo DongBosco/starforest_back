@@ -1,6 +1,7 @@
 # Created by https://www.toptal.com/developers/gitignore/api/intellij,eclipse
 # Edit at https://www.toptal.com/developers/gitignore?templates=intellij,eclipse
 .properties
+application.properties
 # Created by https://www.toptal.com/developers/gitignore/api/intellij
 # Edit at https://www.toptal.com/developers/gitignore?templates=intellij
 

@@ -79,7 +79,7 @@ public class CampSite {
     private String thema_envrn_cl;
 
     @Column(length = 20)
-    private String brazielr_cl;
+    private String brazier_cl;
 
     @Column(columnDefinition = "TEXT")
     private String sbrs_cl;
@@ -92,6 +92,5 @@ public class CampSite {
 
     @Column(columnDefinition = "POINT")
     private Point location;
-    
-    private String Column24;
+
 }

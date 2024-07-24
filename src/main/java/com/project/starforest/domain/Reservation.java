@@ -4,6 +4,8 @@ package com.project.starforest.domain;
 import jakarta.persistence.*;
 import lombok.*;
 import java.sql.Date;
+import java.time.LocalDateTime;
+
 
 @Getter
 @Setter
@@ -34,27 +36,35 @@ public class Reservation {
     private ReservInfo  reservInfo;
 
     @Column(name = "start_date", nullable = true)
-    private Date start_date;
+    private LocalDateTime start_date;
 
     @Column(name = "end_date", nullable = true)
-    private Date end_date;
+    private LocalDateTime end_date;
 
     @Column(name = "created_at", nullable = true)
-    private Date created_at;
+    private LocalDateTime created_at;
 
     public void changeReservation_number(String reservation_number) {
         this.reservation_number = reservation_number;
     }
 
-    public void changeStart_date(Date start_date) {
+    public void changeStart_date(LocalDateTime start_date) {
         this.start_date = start_date;
     }
 
-    public void changeEnd_date(Date end_date) {
+    public void changeEnd_date(LocalDateTime end_date) {
         this.end_date = end_date;
     }
 
-    public void changeCreated_at(Date created_at) {
+    public void changeCreated_at(LocalDateTime created_at) {
         this.created_at = created_at;
     }
+    
+    public Reservation(LocalDateTime startDate, LocalDateTime endDate,LocalDateTime createdAt) {
+		this.start_date = startDate;
+		this.end_date = endDate;
+		this.created_at = createdAt;
+	}
+
+	
 }

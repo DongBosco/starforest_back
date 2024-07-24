@@ -3,6 +3,7 @@ package com.project.starforest.domain;
 import jakarta.persistence.*;
 import lombok.*;
 import java.sql.Date;
+import java.time.LocalDateTime;
 
 @Getter
 @Setter
@@ -15,6 +16,7 @@ import java.sql.Date;
 public class ReservationDates {
 
     @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
     @ManyToOne(fetch = FetchType.LAZY, cascade = CascadeType.ALL)
@@ -22,31 +24,34 @@ public class ReservationDates {
     private CampSite campSite;
 
     @Column(name = "start_date", nullable = false)
-    private Date start_date;
+    private LocalDateTime start_date;
 
     @Column(name = "end_date", nullable = false)
-    private Date end_date;
+    private LocalDateTime end_date;
 
     @Column(name = "created_at", nullable = true)
-    private Date created_at;
+    private LocalDateTime created_at;
+    
+    @Transient
+	private String message;  // �삁�빟 �떎�뙣 �떆 硫붿떆吏�瑜� ���옣�븷 �븘�뱶
 
-    public void changeStart_date(Date start_date) {
+    public void changeStart_date(LocalDateTime start_date) {
         if (start_date != null) {
             this.start_date = start_date;
         } else {
-            throw new IllegalArgumentException("입실 날짜를 입력해주세요.");
+            throw new IllegalArgumentException("�엯�떎 �궇吏쒕�� �엯�젰�빐二쇱꽭�슂.llllkp사사사");
         }
     }
 
-    public void changeEnd_date(Date end_date) {
+    public void changeEnd_date(LocalDateTime end_date) {
         if (end_date != null) {
             this.end_date = end_date;
         } else {
-            throw new IllegalArgumentException("퇴실 날짜를 입력해주세요.");
+            throw new IllegalArgumentException("�눜�떎 �궇吏쒕�� �엯�젰�빐二쇱꽭�슂.");
         }
     }
 
-    public void changeCreated_at(Date created_at) {
+    public void changeCreated_at(LocalDateTime created_at) {
         this.created_at = created_at;
     }
 }

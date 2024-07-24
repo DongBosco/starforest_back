@@ -45,6 +45,15 @@ dependencies {
     implementation 'io.jsonwebtoken:jjwt-api:0.11.5'
     runtimeOnly 'io.jsonwebtoken:jjwt-impl:0.11.5'
     runtimeOnly 'io.jsonwebtoken:jjwt-jackson:0.11.5'
+        
+	implementation 'org.locationtech.jts:jts-core:1.18.0'
+    //POINT
+	implementation 'org.hibernate.orm:hibernate-core:6.5.2.Final'
+	implementation 'org.hibernate:hibernate-spatial:6.5.2.Final'
+	implementation 'jakarta.servlet:jakarta.servlet-api'
+  	implementation 'jakarta.servlet.jsp.jstl:jakarta.servlet.jsp.jstl-api'
+  	implementation 'org.glassfish.web:jakarta.servlet.jsp.jstl'
+  	implementation 'org.apache.tomcat.embed:tomcat-embed-jasper'
 }
 
 tasks.named('test') {

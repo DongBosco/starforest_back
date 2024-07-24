@@ -5,7 +5,7 @@ import jakarta.persistence.GenerationType;
 import jakarta.persistence.*;
 import lombok.*;
 import org.hibernate.annotations.Type;
-import org.springframework.data.geo.Point;
+import org.locationtech.jts.geom.Point;
 
 @Getter
 @Builder
@@ -79,7 +79,7 @@ public class CampSite {
     private String thema_envrn_cl;
 
     @Column(length = 20)
-    private String braziel_cl;
+    private String brazielr_cl;
 
     @Column(columnDefinition = "TEXT")
     private String sbrs_cl;
@@ -90,6 +90,8 @@ public class CampSite {
     @Column(columnDefinition = "TEXT")
     private String first_image_url;
 
-    @Column(columnDefinition = "Point")
+    @Column(columnDefinition = "POINT")
     private Point location;
+    
+    private String Column24;
 }

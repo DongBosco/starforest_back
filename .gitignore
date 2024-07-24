@@ -221,4 +221,4 @@ replay_pid*
 
 # End of https://www.toptal.com/developers/gitignore/api/java
 
-application.properties
+src/main/resources/application.properties

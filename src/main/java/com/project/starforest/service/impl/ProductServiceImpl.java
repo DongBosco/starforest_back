@@ -1,26 +1,28 @@
-//package com.project.starforest.service.impl;
-//
-//import java.util.List;
-//import java.util.Optional;
-//
-//import com.project.starforest.service.ProductService;
-//import org.springframework.data.domain.Page;
-//import org.springframework.data.domain.PageRequest;
-//import org.springframework.data.domain.Pageable;
-//import org.springframework.data.domain.Sort;
-//import org.springframework.stereotype.Service;
-//
-//import lombok.RequiredArgsConstructor;
-//import lombok.extern.log4j.Log4j2;
-//
-//@Service
-//@Log4j2
-//@RequiredArgsConstructor
-//public class ProductServiceImpl implements ProductService {
-//
-//	private final ProductRepository productRepository;
-//
-//
+package com.project.starforest.service.impl;
+
+import java.util.List;
+import java.util.Optional;
+
+import com.project.starforest.repository.ProductRepository;
+import com.project.starforest.service.ProductService;
+
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Sort;
+import org.springframework.stereotype.Service;
+
+import lombok.RequiredArgsConstructor;
+import lombok.extern.log4j.Log4j2;
+
+@Service
+@Log4j2
+public class ProductServiceImpl implements ProductService {
+
+	@Autowired
+	private ProductRepository productRepository;
+
 //	@Override
 //	public PageResponseDTO<ProductDTO> getList(PageRequestDTO pageRequestDTO) {
 //		Pageable pageable = PageRequest.of(pageRequestDTO.getPage()-1,
@@ -172,15 +174,13 @@
 //	@Override
 //	public void remove(Long pno) {
 //		// TODO Auto-generated method stub
-//
-//	}
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//}
+
+	}
+
+
+
+
+
+
+
+

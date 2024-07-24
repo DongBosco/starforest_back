@@ -1,71 +1,8 @@
 # Created by https://www.toptal.com/developers/gitignore/api/intellij,eclipse
 # Edit at https://www.toptal.com/developers/gitignore?templates=intellij,eclipse
 .properties
-### Eclipse ###
-.metadata
-bin/
-tmp/
-*.tmp
-*.bak
-*.swp
-*~.nib
-local.properties
-.settings/
-.loadpath
-.recommenders
-
-# External tool builders
-.externalToolBuilders/
-
-# Locally stored "Eclipse launch configurations"
-*.launch
-
-# PyDev specific (Python IDE for Eclipse)
-*.pydevproject
-
-# CDT-specific (C/C++ Development Tooling)
-.cproject
-
-# CDT- autotools
-.autotools
-
-# Java annotation processor (APT)
-.factorypath
-
-# PDT-specific (PHP Development Tools)
-.buildpath
-
-# sbteclipse plugin
-.target
-
-# Tern plugin
-.tern-project
-
-# TeXlipse plugin
-.texlipse
-
-# STS (Spring Tool Suite)
-.springBeans
-
-# Code Recommenders
-.recommenders/
-
-# Annotation Processing
-.apt_generated/
-.apt_generated_test/
-
-# Scala IDE specific (Scala & Java development for Eclipse)
-.cache-main
-.scala_dependencies
-.worksheet
-
-# Uncomment this line if you wish to ignore the project description file.
-# Typically, this file would be tracked if it contains build/dependency configurations:
-#.project
-
-### Eclipse Patch ###
-# Spring Boot Tooling
-.sts4-cache/
+# Created by https://www.toptal.com/developers/gitignore/api/intellij
+# Edit at https://www.toptal.com/developers/gitignore?templates=intellij
 
 ### Intellij ###
 # Covers JetBrains IDEs: IntelliJ, RubyMine, PhpStorm, AppCode, PyCharm, CLion, Android Studio, WebStorm and Rider
@@ -180,4 +117,17 @@ fabric.properties
 # https://plugins.jetbrains.com/plugin/8053-azure-toolkit-for-intellij
 .idea/**/azureSettings.xml
 
-# End of https://www.toptal.com/developers/gitignore/api/intellij,eclipse
+# End of https://www.toptal.com/developers/gitignore/api/intellij
+/.gradle/buildOutputCleanup/buildOutputCleanup.lock
+/.gradle/buildOutputCleanup/cache.properties
+/.gradle/8.8/checksums/checksums.lock
+/.gradle/8.8/executionHistory/executionHistory.lock
+/.gradle/8.8/fileHashes/fileHashes.bin
+/.gradle/8.8/fileHashes/fileHashes.lock
+/.gradle/8.8/dependencies-accessors/gc.properties
+/.gradle/8.8/gc.properties
+/.gradle/vcs-1/gc.properties
+/.gradle/8.8/fileChanges/last-build.bin
+/build/tmp/bootWar/MANIFEST.MF
+/build/tmp/war/MANIFEST.MF
+/build/tmp/compileJava/previous-compilation-data.bin

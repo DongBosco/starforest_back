@@ -124,16 +124,7 @@ public class CampController {
 	        return ResponseEntity.ok(response);
 	    }
 		
-		@GetMapping("/maptest/{id}")
-		public ResponseEntity<CampSite> testGet(@PathVariable("id") Long id) {
-			log.info("--------------------------------------");
-			log.info(org.hibernate.Version.getVersionString());
-
-			log.info("id : "+id);
-			CampSite result = pointRepository.findById(id).orElse(null);
-			return ResponseEntity.ok(result);
-		}
-	
+		
 	//--------------移댁뭅�삤 寃곗젣----------------//
 //	public class PayController {
 //		
@@ -181,27 +172,30 @@ public class CampController {
 		private ReservationRepository reservationRepository;
 
 		//�뜲�씠�꽣 由ъ뒪�듃 蹂닿린
-		@GetMapping("/reservations")
-		   public ResponseEntity<List<ReservationDates>> getAllReservations() {
-		       List<ReservationDates> result = reservationRepository.findAll();
-		       return ResponseEntity.ok(result);
+		@GetMapping("/reservations/db/{id}")
+		   public ResponseEntity<List<ReservationDates>> getAllReservations(
+				   @PathVariable("id") Long id
+				   ) {
+			List<ReservationDates> results = reservationRepository.findByCampId(id);
+			List<ReservationDto> result = results.stream().map(entity->ReservationDto.builder().build());
+					
+			log.info("()()()()()()()()"+results);
+		       return ResponseEntity.ok(results);
 			}
 		    
 		//�뜲�씠�꽣 ���옣
-		@PostMapping("/reservation/1")
+		@PostMapping("/reservation/{id}")
 		public ResponseEntity<ReservationDates> createReservation(
-		 		@RequestBody ReservationDto dto
+		 		@RequestBody ReservationDto dto,
+		 		@PathVariable("id") Long id
 		   		) {
 		   	
-//		   	log.info("�슂泥� 媛� : "+dto);
+		   	log.info("예약일"+dto);
 		    
 		   	LocalDateTime startDate = dto.getStartDate();
 		   	LocalDateTime endDate = dto.getEndDate();
 	        
-	        //�삁�빟 遺덇��뒫�븳 �궇吏쒖씪�븣 �넃�넃�넃�넃�넃
-	        // �삁�빟 媛��뒫 �뿬遺� �솗�씤(�삁�빟 遺덇��떆 Reservation�삎�쑝濡� 硫붿꽭吏� �룷�븿�빐�꽌 諛섑솚 �븘�슂)
 	        if (isReservation(startDate, endDate)) {
-//	        	log.error("�삁�빟遺덇�");
 	        	ReservationDates faleReservation = new ReservationDates();
 	        	faleReservation.setStart_date(startDate);
 	        	faleReservation.setEnd_date(endDate);
@@ -209,28 +203,24 @@ public class CampController {
 	        	return ResponseEntity.ok().body(faleReservation);
 	        }
 
-	        
-	        
-//	        ReservationDates result = ReservationDates.builder()
-//	        		.start_date(startDate)
-//	        		.end_date(endDate)
-//	        		.created_at(LocalDateTime.now())
-//	        		.campSite(null)
-//	        		.build();
-//	        
-		   	//�삁�빟 媛��뒫�븳 �궇吏쒖씪�븣 �넃�넃�넃�넃
-	        dto.setCreatedAt(LocalDateTime.now());
-
-		   	ReservationDates entity=dto.toEntity();
-		    	
-		   	//���옣
+	        CampSite campResult = mapTestRepository.findById(id).orElseThrow();
+	        log.info("캠핑장"+campResult);
+	        if(campResult != null) {
+	        	ReservationDates entity = ReservationDates.builder()
+	        			.start_date(startDate)
+	        			.end_date(endDate)
+	        			.created_at(LocalDateTime.now())
+	        			.campSite(campResult)
+	        			.build();
+	        	
 		    ReservationDates saveDate = reservationRepository.save(entity);
-		        
-//		    log.info("�삁�빟�궇吏� : "+entity);
-		    return ResponseEntity.ok(saveDate);
+	        	
+	        	
+	        	return ResponseEntity.ok(saveDate);
+	        }	        
+	        return null;
 		}
 		
-		//�삁�빟 媛��뒫�씪 �솗�씤
 		private boolean isReservation(LocalDateTime start, LocalDateTime end) {
 	        List<ReservationDates> overlappingReservations = reservationRepository.findOverlappingReservations(start, end);
 	        return !overlappingReservations.isEmpty();

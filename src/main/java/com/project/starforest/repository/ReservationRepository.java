@@ -17,4 +17,7 @@ public interface ReservationRepository extends JpaRepository<ReservationDates, L
 	        @Param("startDate") LocalDateTime startDate,
 	        @Param("endDate") LocalDateTime endDate
 	    );
+
+	@Query("SELECT r FROM ReservationDates r WHERE r.campSite.id = :id")
+	List<ReservationDates> findByCampId(@Param("id") Long id);
 }

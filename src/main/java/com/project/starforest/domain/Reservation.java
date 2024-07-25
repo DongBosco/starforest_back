@@ -60,10 +60,11 @@ public class Reservation {
         this.created_at = created_at;
     }
     
-    public Reservation(LocalDateTime startDate, LocalDateTime endDate,LocalDateTime createdAt) {
+    public Reservation(LocalDateTime startDate, LocalDateTime endDate,LocalDateTime createdAt, CampSite campsite_id) {
 		this.start_date = startDate;
 		this.end_date = endDate;
 		this.created_at = createdAt;
+		this.campsite_id = campsite_id;
 	}
 
 	

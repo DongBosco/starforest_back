@@ -84,7 +84,7 @@ public class CampController {
 					.first_image_url(entity.getFirst_image_url())
 					.add1(entity.getAdd1())
 					.add2(entity.getAdd2())
-					.brazierCl(entity.getBrazielr_cl())
+					.brazierCl(entity.getBrazier_cl())
 					.campImages(campImageEntity)
 					.build();
 			log.info(result.toString());
@@ -280,6 +280,15 @@ public class CampController {
 					.mapy(entity.getMapy())
 					.sigungu_nm(entity.getSigungu_nm())
 					.build(); 
+			
+			return ResponseEntity.ok(result);
+		}
+		
+		@GetMapping("/view/map/{id}")
+		public ResponseEntity<CampSite> getCampViewMap(
+				@PathVariable("id") Long id
+				) {
+			CampSite result = mapTestRepository.findById(id).orElseThrow();
 			
 			return ResponseEntity.ok(result);
 		}

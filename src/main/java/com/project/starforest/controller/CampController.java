@@ -10,6 +10,7 @@ import java.util.List;
 import java.util.stream.Collectors;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -19,6 +20,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
+import com.project.starforest.domain.CampImage;
 import com.project.starforest.domain.CampSite;
 import com.project.starforest.domain.ReservationDates;
 import com.project.starforest.dto.CampReservationInfoDTO;
@@ -26,6 +28,7 @@ import com.project.starforest.dto.CampSearchDTO;
 import com.project.starforest.dto.MapResponseDTO;
 import com.project.starforest.dto.ReservationDto;
 import com.project.starforest.dto.ViewMapResponseDTO;
+import com.project.starforest.repository.CampImageRepository;
 import com.project.starforest.repository.MapTestRepository;
 import com.project.starforest.repository.PointRepository;
 import com.project.starforest.repository.ReservationRepository;
@@ -44,13 +47,17 @@ public class CampController {
 		@Autowired
 		private MapTestRepository mapTestRepository;
 		
-		@PostMapping("/view/map/{id}")
+		@Autowired
+		private CampImageRepository campImageRepository;
+		
+		@PostMapping("/view/{id}")
 		public ResponseEntity<ViewMapResponseDTO> viewMap(
 				@PathVariable("id") Long id
 				) {
-			log.info("+++++++++++++++++++ map +++++++++++++++++++++++++++");
+			
 			CampSite entity = mapTestRepository.findById(id).orElseThrow();
-			log.info(entity.toString());
+			List<CampImage> campImageEntity = campImageRepository.findByCampId(id);
+			
 			ViewMapResponseDTO result = ViewMapResponseDTO.builder()
 					.id(entity.getId())
 					.name(entity.getName())
@@ -77,7 +84,8 @@ public class CampController {
 					.first_image_url(entity.getFirst_image_url())
 					.add1(entity.getAdd1())
 					.add2(entity.getAdd2())
-					.brazierCl(entity.getBrazier_cl())
+					.brazierCl(entity.getBrazielr_cl())
+					.campImages(campImageEntity)
 					.build();
 			log.info(result.toString());
 			return ResponseEntity.ok(result);
@@ -124,16 +132,7 @@ public class CampController {
 	        return ResponseEntity.ok(response);
 	    }
 		
-		@GetMapping("/maptest/{id}")
-		public ResponseEntity<CampSite> testGet(@PathVariable("id") Long id) {
-			log.info("--------------------------------------");
-			log.info(org.hibernate.Version.getVersionString());
-
-			log.info("id : "+id);
-			CampSite result = pointRepository.findById(id).orElse(null);
-			return ResponseEntity.ok(result);
-		}
-	
+		
 	//--------------移댁뭅�삤 寃곗젣----------------//
 //	public class PayController {
 //		
@@ -181,58 +180,65 @@ public class CampController {
 		private ReservationRepository reservationRepository;
 
 		//�뜲�씠�꽣 由ъ뒪�듃 蹂닿린
-		@GetMapping("/reservations")
-		   public ResponseEntity<List<ReservationDates>> getAllReservations() {
-		       List<ReservationDates> result = reservationRepository.findAll();
+		@GetMapping("/reservations/{id}")
+		   public ResponseEntity<List<ReservationDto>> getAllReservations(
+				   @PathVariable("id") Long id
+				   ) {
+			List<ReservationDates> results = reservationRepository.findByCampId(id);
+			List<ReservationDto> result = results.stream().map(entity->ReservationDto.builder()
+					.id(id)
+					.startDate(entity.getStart_date())
+					.endDate(entity.getEnd_date())
+					.createdAt(entity.getCreated_at())
+					.build())
+					.collect(Collectors.toList());
+					
 		       return ResponseEntity.ok(result);
 			}
 		    
 		//�뜲�씠�꽣 ���옣
-		@PostMapping("/reservation/1")
+		@PostMapping("/reservation/{id}")
 		public ResponseEntity<ReservationDates> createReservation(
-		 		@RequestBody ReservationDto dto
+		 		@RequestBody ReservationDto dto,
+		 		@PathVariable("id") Long id
 		   		) {
 		   	
-//		   	log.info("�슂泥� 媛� : "+dto);
 		    
 		   	LocalDateTime startDate = dto.getStartDate();
 		   	LocalDateTime endDate = dto.getEndDate();
 	        
-	        //�삁�빟 遺덇��뒫�븳 �궇吏쒖씪�븣 �넃�넃�넃�넃�넃
-	        // �삁�빟 媛��뒫 �뿬遺� �솗�씤(�삁�빟 遺덇��떆 Reservation�삎�쑝濡� 硫붿꽭吏� �룷�븿�빐�꽌 諛섑솚 �븘�슂)
-	        if (isReservation(startDate, endDate)) {
-//	        	log.error("�삁�빟遺덇�");
+	        if (isReservation(startDate, endDate,id)) {
 	        	ReservationDates faleReservation = new ReservationDates();
 	        	faleReservation.setStart_date(startDate);
 	        	faleReservation.setEnd_date(endDate);
-	        	faleReservation.setMessage("no reservation.");
+	        	faleReservation.setMessage("앗..누군가 벌써 예약했네요ㅠㅠ");
+	        	log.info("예약중복예약중복예약중복예약중복예약중복예약중복예약중복");
 	        	return ResponseEntity.ok().body(faleReservation);
 	        }
 
-	        
-	        
-//	        ReservationDates result = ReservationDates.builder()
-//	        		.start_date(startDate)
-//	        		.end_date(endDate)
-//	        		.created_at(LocalDateTime.now())
-//	        		.campSite(null)
-//	        		.build();
-//	        
-		   	//�삁�빟 媛��뒫�븳 �궇吏쒖씪�븣 �넃�넃�넃�넃
-	        dto.setCreatedAt(LocalDateTime.now());
-
-		   	ReservationDates entity=dto.toEntity();
-		    	
-		   	//���옣
+	        CampSite campResult = mapTestRepository.findById(id).orElseThrow();
+	        log.info("캠핑장"+campResult);
+	        if(campResult != null) {	
+	        	ReservationDates entity = ReservationDates.builder()
+	        			.start_date(startDate)
+	        			.end_date(endDate)
+	        			.created_at(LocalDateTime.now())
+	        			.message("예약성공!!")
+	        			.campSite(campResult)
+	        			.build();
+	        	
+	        	log.info("예약성공예약성공예약성공예약성공예약성공"+entity);
 		    ReservationDates saveDate = reservationRepository.save(entity);
-		        
-//		    log.info("�삁�빟�궇吏� : "+entity);
-		    return ResponseEntity.ok(saveDate);
+	        	
+	        	log.info("예약성공예약성공예약성공예약성공예약성공"+saveDate);
+	        	return ResponseEntity.ok(saveDate);
+	        }
+	        log.info("캠핑장없음캠핑장없음캠핑장없음캠핑장없음캠핑장없음");
+	        return ResponseEntity.status(HttpStatus.NOT_FOUND).build(); // 캠핑장을 찾지 못한 경우를 대비한 응답
 		}
 		
-		//�삁�빟 媛��뒫�씪 �솗�씤
-		private boolean isReservation(LocalDateTime start, LocalDateTime end) {
-	        List<ReservationDates> overlappingReservations = reservationRepository.findOverlappingReservations(start, end);
+		private boolean isReservation(LocalDateTime start, LocalDateTime end, Long id) {
+	        List<ReservationDates> overlappingReservations = reservationRepository.findOverlappingReservations(start, end,id);
 	        return !overlappingReservations.isEmpty();
 	    }
 	

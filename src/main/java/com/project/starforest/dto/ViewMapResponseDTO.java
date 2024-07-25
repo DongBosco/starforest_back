@@ -1,6 +1,10 @@
 package com.project.starforest.dto;
 
+import java.util.List;
+
 import org.locationtech.jts.geom.Point;
+
+import com.project.starforest.domain.CampImage;
 
 import jakarta.persistence.Column;
 import jakarta.persistence.GeneratedValue;
@@ -40,4 +44,5 @@ public class ViewMapResponseDTO {
     private String add1;
     private String add2;
     private String brazierCl;
+    private List<CampImage> campImages;
 }

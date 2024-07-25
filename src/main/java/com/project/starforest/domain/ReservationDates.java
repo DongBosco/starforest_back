@@ -19,8 +19,9 @@ public class ReservationDates {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
+//    @JoinColumn(name = "campsite_id", referencedColumnName = "id", insertable = false, updatable = false)
     @ManyToOne(fetch = FetchType.LAZY, cascade = CascadeType.ALL)
-    @JoinColumn(name = "campsite_id", referencedColumnName = "id", insertable = false, updatable = false)
+    @JoinColumn(name = "campsite_id", referencedColumnName = "id")
     private CampSite campSite;
 
     @Column(name = "start_date", nullable = false)

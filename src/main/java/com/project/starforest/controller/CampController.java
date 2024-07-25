@@ -20,6 +20,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
+import com.project.starforest.domain.CampImage;
 import com.project.starforest.domain.CampSite;
 import com.project.starforest.domain.ReservationDates;
 import com.project.starforest.dto.CampReservationInfoDTO;
@@ -27,6 +28,7 @@ import com.project.starforest.dto.CampSearchDTO;
 import com.project.starforest.dto.MapResponseDTO;
 import com.project.starforest.dto.ReservationDto;
 import com.project.starforest.dto.ViewMapResponseDTO;
+import com.project.starforest.repository.CampImageRepository;
 import com.project.starforest.repository.MapTestRepository;
 import com.project.starforest.repository.PointRepository;
 import com.project.starforest.repository.ReservationRepository;
@@ -45,13 +47,17 @@ public class CampController {
 		@Autowired
 		private MapTestRepository mapTestRepository;
 		
-		@PostMapping("/view/map/{id}")
+		@Autowired
+		private CampImageRepository campImageRepository;
+		
+		@PostMapping("/view/{id}")
 		public ResponseEntity<ViewMapResponseDTO> viewMap(
 				@PathVariable("id") Long id
 				) {
-			log.info("+++++++++++++++++++ map +++++++++++++++++++++++++++");
+			
 			CampSite entity = mapTestRepository.findById(id).orElseThrow();
-			log.info(entity.toString());
+			List<CampImage> campImageEntity = campImageRepository.findByCampId(id);
+			
 			ViewMapResponseDTO result = ViewMapResponseDTO.builder()
 					.id(entity.getId())
 					.name(entity.getName())
@@ -79,6 +85,7 @@ public class CampController {
 					.add1(entity.getAdd1())
 					.add2(entity.getAdd2())
 					.brazierCl(entity.getBrazielr_cl())
+					.campImages(campImageEntity)
 					.build();
 			log.info(result.toString());
 			return ResponseEntity.ok(result);

@@ -10,6 +10,7 @@ import java.util.List;
 import java.util.stream.Collectors;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -172,15 +173,20 @@ public class CampController {
 		private ReservationRepository reservationRepository;
 
 		//�뜲�씠�꽣 由ъ뒪�듃 蹂닿린
-		@GetMapping("/reservations/db/{id}")
-		   public ResponseEntity<List<ReservationDates>> getAllReservations(
+		@GetMapping("/reservations/{id}")
+		   public ResponseEntity<List<ReservationDto>> getAllReservations(
 				   @PathVariable("id") Long id
 				   ) {
 			List<ReservationDates> results = reservationRepository.findByCampId(id);
-			List<ReservationDto> result = results.stream().map(entity->ReservationDto.builder().build());
+			List<ReservationDto> result = results.stream().map(entity->ReservationDto.builder()
+					.id(id)
+					.startDate(entity.getStart_date())
+					.endDate(entity.getEnd_date())
+					.createdAt(entity.getCreated_at())
+					.build())
+					.collect(Collectors.toList());
 					
-			log.info("()()()()()()()()"+results);
-		       return ResponseEntity.ok(results);
+		       return ResponseEntity.ok(result);
 			}
 		    
 		//�뜲�씠�꽣 ���옣
@@ -190,39 +196,42 @@ public class CampController {
 		 		@PathVariable("id") Long id
 		   		) {
 		   	
-		   	log.info("예약일"+dto);
 		    
 		   	LocalDateTime startDate = dto.getStartDate();
 		   	LocalDateTime endDate = dto.getEndDate();
 	        
-	        if (isReservation(startDate, endDate)) {
+	        if (isReservation(startDate, endDate,id)) {
 	        	ReservationDates faleReservation = new ReservationDates();
 	        	faleReservation.setStart_date(startDate);
 	        	faleReservation.setEnd_date(endDate);
-	        	faleReservation.setMessage("no reservation.");
+	        	faleReservation.setMessage("앗..누군가 벌써 예약했네요ㅠㅠ");
+	        	log.info("예약중복예약중복예약중복예약중복예약중복예약중복예약중복");
 	        	return ResponseEntity.ok().body(faleReservation);
 	        }
 
 	        CampSite campResult = mapTestRepository.findById(id).orElseThrow();
 	        log.info("캠핑장"+campResult);
-	        if(campResult != null) {
+	        if(campResult != null) {	
 	        	ReservationDates entity = ReservationDates.builder()
 	        			.start_date(startDate)
 	        			.end_date(endDate)
 	        			.created_at(LocalDateTime.now())
+	        			.message("예약성공!!")
 	        			.campSite(campResult)
 	        			.build();
 	        	
+	        	log.info("예약성공예약성공예약성공예약성공예약성공"+entity);
 		    ReservationDates saveDate = reservationRepository.save(entity);
 	        	
-	        	
+	        	log.info("예약성공예약성공예약성공예약성공예약성공"+saveDate);
 	        	return ResponseEntity.ok(saveDate);
-	        }	        
-	        return null;
+	        }
+	        log.info("캠핑장없음캠핑장없음캠핑장없음캠핑장없음캠핑장없음");
+	        return ResponseEntity.status(HttpStatus.NOT_FOUND).build(); // 캠핑장을 찾지 못한 경우를 대비한 응답
 		}
 		
-		private boolean isReservation(LocalDateTime start, LocalDateTime end) {
-	        List<ReservationDates> overlappingReservations = reservationRepository.findOverlappingReservations(start, end);
+		private boolean isReservation(LocalDateTime start, LocalDateTime end, Long id) {
+	        List<ReservationDates> overlappingReservations = reservationRepository.findOverlappingReservations(start, end,id);
 	        return !overlappingReservations.isEmpty();
 	    }
 	

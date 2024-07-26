@@ -32,6 +32,7 @@ import com.project.starforest.repository.CampImageRepository;
 import com.project.starforest.repository.MapTestRepository;
 import com.project.starforest.repository.PointRepository;
 import com.project.starforest.repository.ReservationRepository;
+import com.project.starforest.service.impl.CampReservPayService;
 import com.project.starforest.service.impl.CampSearchService;
 import com.project.starforest.service.impl.CoordinatesService;
 
@@ -196,53 +197,21 @@ public class CampController {
 		       return ResponseEntity.ok(result);
 			}
 		    
-		//�뜲�씠�꽣 ���옣
+		//예약 관련
+		@Autowired
+		private CampReservPayService campReservPayService;
+		
 		@PostMapping("/reservation/{id}")
 		public ResponseEntity<ReservationDates> createReservation(
 		 		@RequestBody ReservationDto dto,
 		 		@PathVariable("id") Long id
 		   		) {
-		   	
-		    
-		   	LocalDateTime startDate = dto.getStartDate();
-		   	LocalDateTime endDate = dto.getEndDate();
-	        
-	        if (isReservation(startDate, endDate,id)) {
-	        	ReservationDates faleReservation = new ReservationDates();
-	        	faleReservation.setStart_date(startDate);
-	        	faleReservation.setEnd_date(endDate);
-	        	faleReservation.setMessage("앗..누군가 벌써 예약했네요ㅠㅠ");
-	        	log.info("예약중복예약중복예약중복예약중복예약중복예약중복예약중복");
-	        	return ResponseEntity.ok().body(faleReservation);
-	        }
-
-	        CampSite campResult = mapTestRepository.findById(id).orElseThrow();
-	        log.info("캠핑장"+campResult);
-	        if(campResult != null) {	
-	        	ReservationDates entity = ReservationDates.builder()
-	        			.start_date(startDate)
-	        			.end_date(endDate)
-	        			.created_at(LocalDateTime.now())
-	        			.message("예약성공!!")
-	        			.campSite(campResult)
-	        			.build();
-	        	
-	        	log.info("예약성공예약성공예약성공예약성공예약성공"+entity);
-		    ReservationDates saveDate = reservationRepository.save(entity);
-	        	
-	        	log.info("예약성공예약성공예약성공예약성공예약성공"+saveDate);
-	        	return ResponseEntity.ok(saveDate);
-	        }
-	        log.info("캠핑장없음캠핑장없음캠핑장없음캠핑장없음캠핑장없음");
-	        return ResponseEntity.status(HttpStatus.NOT_FOUND).build(); // 캠핑장을 찾지 못한 경우를 대비한 응답
+			
+		   	return campReservPayService.getIsCampReservation(dto,id);
 		}
 		
-		private boolean isReservation(LocalDateTime start, LocalDateTime end, Long id) {
-	        List<ReservationDates> overlappingReservations = reservationRepository.findOverlappingReservations(start, end,id);
-	        return !overlappingReservations.isEmpty();
-	    }
 	
-	//-------------------罹좏븨�옣 寃��깋---------------------//
+	//-------------------캠핑장 검색---------------------//
 
 		@Autowired
 		private CampSearchService campSearchService;

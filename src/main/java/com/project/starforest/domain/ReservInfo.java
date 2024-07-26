@@ -33,14 +33,14 @@ public class ReservInfo {
         if (name != null && !name.trim().isEmpty()) {
             this.name = name;
         } else {
-            throw new IllegalArgumentException( "이름을 입력해주세요.");
+            throw new IllegalArgumentException( "�씠由꾩쓣 �엯�젰�빐二쇱꽭�슂.");
         }
     }
     public void changeTel(String tel) {
         if (tel != null && !tel.trim().isEmpty()) {
             this.tel = tel;
         } else {
-            throw new IllegalArgumentException("전화번호를 입력해 주세요.");
+            throw new IllegalArgumentException("�쟾�솕踰덊샇瑜� �엯�젰�빐 二쇱꽭�슂.");
         }
     }
 

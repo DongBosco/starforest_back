@@ -21,7 +21,7 @@ public class ProductImage {
 	private Integer image_index;
 
 	@ManyToOne(fetch = FetchType.LAZY, cascade = CascadeType.ALL)
-	@JoinColumn(name = "product_nm", referencedColumnName = "id")
+	@JoinColumn(referencedColumnName = "id",insertable = false, updatable = false)
 	private Product product;
 
 	@Column(columnDefinition = "TEXT")
@@ -42,7 +42,7 @@ public class ProductImage {
 		}
 		this.image_index = image_index;
 		if (this.image_index < 0){
-			log.info("image indexë¥¼ í™•ì¸í•˜ì„¸ìš”! ");
+			log.info("image index¸¦ È®ÀÎÇÏ¼¼¿ä! ");
 		}
 	}
 

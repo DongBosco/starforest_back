@@ -1,4 +1,4 @@
-package com.project.starforest.dto;
+package com.project.starforest.dto.member;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -6,12 +6,16 @@ import java.util.List;
 import java.util.Map;
 import java.util.stream.Collectors;
 
+import lombok.*;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.userdetails.User;
 
 import static com.project.starforest.domain.MemberRole.MEMBER;
 
 
+@Getter
+@Setter
+@Builder
 public class MemberDTO extends User {
 	private String email,pass_word, nick_name,profile_url,introduce;
 	private Long id;

@@ -2,22 +2,19 @@ package com.project.starforest.domain;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.stream.Collectors;
 
 import jakarta.persistence.Column;
 import jakarta.persistence.ElementCollection;
 import jakarta.persistence.Entity;
 import jakarta.persistence.Id;
-import lombok.AllArgsConstructor;
-import lombok.Builder;
-import lombok.Getter;
-import lombok.NoArgsConstructor;
-import lombok.ToString;
+import lombok.*;
 
 @Entity
-@Builder
 @AllArgsConstructor
 @NoArgsConstructor
 @Getter
+@Builder
 public class Member {
 
 	@Id
@@ -30,9 +27,14 @@ public class Member {
 	private String pass_word;
 
 	@ElementCollection
-	@Builder.Default
+	@Singular("role")
 	private List<MemberRole> memberRoleList = new ArrayList<>();
 
+	public List<String> getRoleNames() {
+		return memberRoleList.stream()
+				.map(Enum::name)
+				.collect(Collectors.toList());
+	}
 	public void addRole(MemberRole memberRole) {
 		memberRoleList.add(memberRole);
 	}

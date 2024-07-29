@@ -1,7 +1,7 @@
 package com.project.starforest.security;
 import com.project.starforest.domain.Member;
 import com.project.starforest.domain.UserInfo;
-import com.project.starforest.dto.MemberDTO;
+import com.project.starforest.dto.member.MemberDTO;
 import com.project.starforest.repository.MemberRepository;
 import com.project.starforest.repository.UserInfoRepository;
 import lombok.RequiredArgsConstructor;
@@ -10,7 +10,6 @@ import org.springframework.data.convert.ReadingConverter;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
-import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
 import java.util.stream.Collectors;

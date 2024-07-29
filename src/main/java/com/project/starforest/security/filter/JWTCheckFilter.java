@@ -5,10 +5,9 @@ import java.io.PrintWriter;
 import java.util.Collections;
 import java.util.List;
 import java.util.Map;
-import java.util.stream.Collectors;
 
 import com.google.gson.Gson;
-import com.project.starforest.dto.MemberDTO;
+import com.project.starforest.dto.member.MemberDTO;
 import com.project.starforest.util.JWTUtil;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;

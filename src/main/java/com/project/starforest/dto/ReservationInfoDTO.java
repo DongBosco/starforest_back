@@ -4,6 +4,7 @@ import lombok.Data;
 
 @Data
 public class ReservationInfoDTO {
+	private Long id;
 	private String reservNum;
 	private String name;
 	private int price;

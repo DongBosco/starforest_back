@@ -6,6 +6,7 @@ import lombok.RequiredArgsConstructor;
 import lombok.extern.log4j.Log4j2;
 
 import java.time.LocalDateTime;
+import java.time.format.DateTimeFormatter;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -22,12 +23,14 @@ import org.springframework.web.bind.annotation.RestController;
 
 import com.project.starforest.domain.CampImage;
 import com.project.starforest.domain.CampSite;
+import com.project.starforest.domain.ReservInfo;
 import com.project.starforest.domain.Reservation;
 import com.project.starforest.domain.ReservationDates;
 import com.project.starforest.dto.CampReservationInfoDTO;
 import com.project.starforest.dto.CampSearchDTO;
 import com.project.starforest.dto.KakaoPayReadyResponse;
 import com.project.starforest.dto.MapResponseDTO;
+import com.project.starforest.dto.PaymentApprovalResponse;
 import com.project.starforest.dto.ReservationDto;
 import com.project.starforest.dto.ReservationInfoDTO;
 import com.project.starforest.dto.ReservationInfoPayDTO;
@@ -35,7 +38,9 @@ import com.project.starforest.dto.ViewMapResponseDTO;
 import com.project.starforest.repository.CampImageRepository;
 import com.project.starforest.repository.MapTestRepository;
 import com.project.starforest.repository.PointRepository;
+import com.project.starforest.repository.ReservInfoRepository;
 import com.project.starforest.repository.ReservationRepository;
+import com.project.starforest.repository.ReservationedRepository;
 import com.project.starforest.service.impl.CampReservPayService;
 import com.project.starforest.service.impl.CampSearchService;
 import com.project.starforest.service.impl.CoordinatesService;
@@ -144,9 +149,18 @@ public class CampController {
 		public ResponseEntity<ReservationInfoPayDTO> payReservationinfo(
 				@PathVariable("id") Long id
 				) {
+			LocalDateTime now = LocalDateTime.now();
+		    DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyyMMddHHmmss");
+	        String formattedDate = now.format(formatter);
+	        double random = Math.random()*100;
+	        int randomInt = (int)Math.floor(random);
+	        String combined = formattedDate + randomInt;
+	        log.info("123123123123"+combined);
+			
 			CampSite entity = mapTestRepository.findById(id).orElseThrow();
 			ReservationInfoPayDTO dto = ReservationInfoPayDTO.builder()
-					.reservNum(null)
+					.id(entity.getId())
+					.reservNum(combined)
 					.name(entity.getName())
 					.price(entity.getPrice())
 					.build();
@@ -162,48 +176,78 @@ public class CampController {
 		  private final KakaoPayService kakaoPayService;
 //		  private final PaymentRepository paymentRepository;
 //
-		    @PostMapping("/kakaoPay")
+		    @PostMapping("/kakaoPay/{reservId}")
 		    public KakaoPayReadyResponse kakaoPay(
-		    		@RequestBody ReservationInfoDTO dto
+		    		@RequestBody ReservationInfoDTO dto,
+		    		@PathVariable("reservId") Long reservId
 		    		) {
 		    	log.info("카카오 페이 요청");
 		    	log.info(dto.toString());
-		        return kakaoPayService.kakaoPayReady(dto);
+		        return kakaoPayService.kakaoPayReady(dto,reservId);
 		    }
-//		    
-//		    @GetMapping("/kakaoPaySuccess/{pg_token}")
-//		    public ResponseEntity<PaymentApprovalResponse> kakaoPaySuccess(@PathVariable("pg_token") String pgToken) {
-//		    	log.info("�듅�씤 �떆�룄");
-//		        // 1. 移댁뭅�삤�럹�씠 API濡� 寃곗젣 �듅�씤 �슂泥�
-//		        PaymentApprovalResponse approvalResponse = kakaoPayService.approvePayment(pgToken);
-//		        
-//		        // 2. �듅�씤 �쓳�떟�쓣 諛뷀깢�쑝濡� DB�뿉 寃곗젣 �젙蹂� ���옣
-//		        PaymentEntity payment = PaymentEntity.builder()
-//			            .orderId(approvalResponse.getPartner_order_id())
-//			            .paymentToken(approvalResponse.getAid())
-//			            .amount((long) approvalResponse.getAmount().getTotal())
-//			            .status("�듅�씤")
-//			            .paymentMethod(approvalResponse.getPayment_method_type())
-//			            .approvedAt(LocalDateTime.parse(approvalResponse.getApproved_at()))
-//			            .tid(approvalResponse.getTid())
-//			            .itemName(approvalResponse.getItem_name())
-//			            .build();
-//			        
-//			        paymentRepository.save(payment);
-//			        log.info("���옣");
-//			        log.info("payment"+payment);
-//			        
-//		        
-//		        // 3. �겢�씪�씠�뼵�듃�뿉 �븘�슂�븳 �젙蹂� 諛섑솚
-//		        return ResponseEntity.ok(approvalResponse);
-//		    }
+		    
+		    @Autowired
+		    private ReservationedRepository reservationedRepository; 
+		    
+		    @Autowired
+		    private ReservationRepository reservationRepository;
+		    
+		    @Autowired
+		    private ReservInfoRepository reservInfoRepository;
+	    
+		    @GetMapping("/kakaoPaySuccess/{pg_token}/{reservNum}/{reservId}/{name}/{carNum}/{request}/{tel}")
+		    public ResponseEntity<PaymentApprovalResponse> kakaoPaySuccess(
+		    		@PathVariable("pg_token") String pgToken,
+		    		@PathVariable("reservNum") String reservNum,
+		    		@PathVariable("reservId") Long reservId,
+		    		@PathVariable("name") String name,
+		    		@PathVariable("carNum") String carNum,
+		    		@PathVariable("request") String request,
+		    		@PathVariable("tel") String tel
+		    		) {
+		    	log.info("reservId"+reservId);
+		        // 1. 移댁뭅�삤�럹�씠 API濡� 寃곗젣 �듅�씤 �슂泥�
+		        PaymentApprovalResponse approvalResponse = kakaoPayService.approvePayment(pgToken,reservNum);
+		        
+			        log.info("결제 성공");
+			        
+			        
+			        //reservation에 is_payment ture로 변경하기+예약번호 저장하기
+			        Reservation entity = reservationedRepository.findById(reservId).orElseThrow();
+			        entity.changeReservation_number(reservNum);
+			        entity.changeIs_payment(true);
+			        
+			        reservationedRepository.save(entity);
+			        
+			        //결제 성공시 reservationData에 정보 저장하기
+			        ReservationDates dateEntity = ReservationDates.builder()
+			        		.campSite(entity.getCampsite_id())
+			        		.created_at(LocalDateTime.now())
+			        		.end_date(entity.getEnd_date())
+			        		.start_date(entity.getStart_date())
+			        		.build();
+			        
+			        reservationRepository.save(dateEntity);
+			        
+			        //reserv_info에 예약자 정보 저장하기
+			        ReservInfo InfoEntity = ReservInfo.builder()
+			        		.reservation(entity)
+			        		.car_number(carNum)
+			        		.name(name)
+			        		.request(request)
+			        		.tel(tel)
+			        		.build();
+			        
+			        reservInfoRepository.save(InfoEntity);
+		        
+		        // 3. �겢�씪�씠�뼵�듃�뿉 �븘�슂�븳 �젙蹂� 諛섑솚
+		        return ResponseEntity.ok(approvalResponse);
+		    }
 	
 	
 	//----------------�삁�빟-----------------//
 		
 
-		@Autowired
-		private ReservationRepository reservationRepository;
 
 		//�뜲�씠�꽣 由ъ뒪�듃 蹂닿린
 		@GetMapping("/reservations/{id}")
@@ -226,6 +270,7 @@ public class CampController {
 		@Autowired
 		private CampReservPayService campReservPayService;
 		
+		//예약하기 버튼 클릭시 실행하는곳
 		@PostMapping("/reservation/{id}")
 		public ResponseEntity<Reservation> createReservation(
 		 		@RequestBody ReservationDto dto,

@@ -49,13 +49,13 @@ public class CampReservPayService {
 	    CampSite campResult = mapTestRepository.findById(id).orElseThrow();
 	    
 	    //예약넘버
-	    LocalDateTime now = LocalDateTime.now();
-	    DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyyMMddHHmmss");
-        String formattedDate = now.format(formatter);
-        double random = Math.random()*100;
-        int randomInt = (int)Math.floor(random);
-        String combined = formattedDate + randomInt;
-        log.info(combined);
+//	    LocalDateTime now = LocalDateTime.now();
+//	    DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyyMMddHHmmss");
+//        String formattedDate = now.format(formatter);
+//        double random = Math.random()*100;
+//        int randomInt = (int)Math.floor(random);
+//        String combined = formattedDate + randomInt;
+//        log.info(combined);
 	    
         log.info("캠핑장"+campResult);
         if(campResult != null) {	
@@ -65,7 +65,7 @@ public class CampReservPayService {
         			.created_at(LocalDateTime.now())
         			.message("예약 가능합니다!!")
         			.campsite_id(campResult)
-        			.reservation_number(combined)
+//        			.reservation_number(combined)
         			.build();
         	
         	log.info("예약성공예약성공예약성공예약성공예약성공"+entity);

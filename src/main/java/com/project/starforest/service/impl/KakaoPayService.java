@@ -26,7 +26,7 @@ public class KakaoPayService {
     private static final String HOST = "https://kapi.kakao.com";
     private KakaoPayReadyResponse kakaoPayReadyResponse;
     
-    public KakaoPayReadyResponse kakaoPayReady(ReservationInfoDTO dto) {
+    public KakaoPayReadyResponse kakaoPayReady(ReservationInfoDTO dto,Long reservId) {
         RestTemplate restTemplate = new RestTemplate();
 
         HttpHeaders headers = new HttpHeaders();
@@ -35,14 +35,17 @@ public class KakaoPayService {
 
         MultiValueMap<String, Object> params = new LinkedMultiValueMap<>();
         params.add("cid", "TC0ONETIME");
-        params.add("partner_order_id", "101010");//주문번호dto.getReservNum()
-        params.add("partner_user_id", dto.getNames());//회원아이디
+        params.add("partner_order_id", dto.getReservNum());//주문번호dto.getReservNum()
+        params.add("partner_user_id", "gorany");//회원아이디dto.getNames()
         params.add("store_name", "🏞🏞별숲🏞🏞");// 매장 이름 	!!!고정
         params.add("item_name", dto.getName());//상품 이름
         params.add("quantity", "1");//수량					!!!고정
         params.add("total_amount", dto.getTotalPrice());//총 결제 금액
         params.add("tax_free_amount", "100");//비과세			!!!고정
-        params.add("approval_url", "http://localhost:3000/camp/pay/complete");
+        params.add("approval_url", 
+        		"http://localhost:3000/camp/pay/complete/"
+        				+dto.getReservNum()+"/"+reservId+"/"+dto.getNames()+"/"
+        				+dto.getCar_number()+"/"+dto.getRequest()+"/"+dto.getTel());
         params.add("cancel_url", "http://localhost:3000/camp/pay/cancel");
         params.add("fail_url", "http://localhost:3000/camp/pay/fail");
 
@@ -58,7 +61,7 @@ public class KakaoPayService {
     
     
     
-    public PaymentApprovalResponse approvePayment(String pgToken) {
+    public PaymentApprovalResponse approvePayment(String pgToken,String reservNum) {
     	log.info("kakaopayService -> approvePayment�떎�뻾");
     	
     	if (kakaoPayReadyResponse == null) {
@@ -77,7 +80,7 @@ public class KakaoPayService {
          MultiValueMap<String, String> params = new LinkedMultiValueMap<>();
          params.add("cid", "TC0ONETIME");
          params.add("tid", kakaoPayReadyResponse.getTid());
-         params.add("partner_order_id", "1001");
+         params.add("partner_order_id", reservNum);
          params.add("partner_user_id", "gorany");
          params.add("pg_token", pgToken);
 
@@ -88,5 +91,6 @@ public class KakaoPayService {
          
          return restTemplate.postForObject(HOST + "/v1/payment/approve", body, PaymentApprovalResponse.class);
      }
+
     }
 

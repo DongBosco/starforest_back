@@ -51,6 +51,10 @@ public class Reservation {
     
     @Transient
   	private String message;
+    
+    public void changeIs_payment(boolean result) {
+        this.is_payment = result;
+    }
     //동일 수정
     public void changeReservation_number(String reservation_number) {
         this.reservation_number = reservation_number;

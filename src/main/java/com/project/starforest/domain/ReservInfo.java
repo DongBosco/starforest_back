@@ -15,6 +15,7 @@ import lombok.*;
 public class ReservInfo {
 
     @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
     @Column(name = "name", length = 50)
@@ -29,6 +30,10 @@ public class ReservInfo {
     @Column(name = "car_number", length = 20)
     private String car_number;
 
+    @ManyToOne(fetch = FetchType.LAZY, cascade = CascadeType.ALL)
+    @JoinColumn(name = "reserv_id")
+    private Reservation reservation;
+    
     public void changeName(String name) {
         if (name != null && !name.trim().isEmpty()) {
             this.name = name;
@@ -52,7 +57,3 @@ public class ReservInfo {
         this.car_number = car_number;
     }
 }
-
-//    @OneToOne(fetch = FetchType.LAZY, cascade = CascadeType.ALL)
-//    @Column(name = "reserv_id")
-//    private Reservation reservation;

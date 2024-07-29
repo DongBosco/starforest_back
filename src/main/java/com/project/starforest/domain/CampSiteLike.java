@@ -11,9 +11,10 @@ import java.sql.Timestamp;
 @NoArgsConstructor
 @Getter
 @Table(name = "camp_site_like")
-class CampSiteLike {
+public class CampSiteLike {
 
     @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
     @ManyToOne(fetch = FetchType.LAZY, cascade = CascadeType.ALL)

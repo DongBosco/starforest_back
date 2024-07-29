@@ -26,8 +26,11 @@ import com.project.starforest.domain.Reservation;
 import com.project.starforest.domain.ReservationDates;
 import com.project.starforest.dto.CampReservationInfoDTO;
 import com.project.starforest.dto.CampSearchDTO;
+import com.project.starforest.dto.KakaoPayReadyResponse;
 import com.project.starforest.dto.MapResponseDTO;
 import com.project.starforest.dto.ReservationDto;
+import com.project.starforest.dto.ReservationInfoDTO;
+import com.project.starforest.dto.ReservationInfoPayDTO;
 import com.project.starforest.dto.ViewMapResponseDTO;
 import com.project.starforest.repository.CampImageRepository;
 import com.project.starforest.repository.MapTestRepository;
@@ -36,6 +39,7 @@ import com.project.starforest.repository.ReservationRepository;
 import com.project.starforest.service.impl.CampReservPayService;
 import com.project.starforest.service.impl.CampSearchService;
 import com.project.starforest.service.impl.CoordinatesService;
+import com.project.starforest.service.impl.KakaoPayService;
 
 
 @RestController
@@ -135,17 +139,37 @@ public class CampController {
 	    }
 		
 		
+//-------------------예약 정보------------------//
+		@GetMapping("/reservation/infos/{id}")
+		public ResponseEntity<ReservationInfoPayDTO> payReservationinfo(
+				@PathVariable("id") Long id
+				) {
+			CampSite entity = mapTestRepository.findById(id).orElseThrow();
+			ReservationInfoPayDTO dto = ReservationInfoPayDTO.builder()
+					.reservNum(null)
+					.name(entity.getName())
+					.price(entity.getPrice())
+					.build();
+			return ResponseEntity.ok(dto);
+		}
+//-------------------예약 정보------------------//
+		
+		
+		
 	//--------------移댁뭅�삤 寃곗젣----------------//
-//	public class PayController {
+
 //		
-//		  private final KakaoPayService kakaoPayService;
+		  private final KakaoPayService kakaoPayService;
 //		  private final PaymentRepository paymentRepository;
 //
-//		    @PostMapping("/kakaoPay")
-//		    public KakaoPayReadyResponse kakaoPay() {
-//		    	log.info("寃곗젣�떆�룄");
-//		        return kakaoPayService.kakaoPayReady();
-//		    }
+		    @PostMapping("/kakaoPay")
+		    public KakaoPayReadyResponse kakaoPay(
+		    		@RequestBody ReservationInfoDTO dto
+		    		) {
+		    	log.info("카카오 페이 요청");
+		    	log.info(dto.toString());
+		        return kakaoPayService.kakaoPayReady(dto);
+		    }
 //		    
 //		    @GetMapping("/kakaoPaySuccess/{pg_token}")
 //		    public ResponseEntity<PaymentApprovalResponse> kakaoPaySuccess(@PathVariable("pg_token") String pgToken) {
@@ -173,7 +197,7 @@ public class CampController {
 //		        // 3. �겢�씪�씠�뼵�듃�뿉 �븘�슂�븳 �젙蹂� 諛섑솚
 //		        return ResponseEntity.ok(approvalResponse);
 //		    }
-//	}
+	
 	
 	//----------------�삁�빟-----------------//
 		

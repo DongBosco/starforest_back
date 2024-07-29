@@ -48,7 +48,7 @@ public class CampReservPayService {
 		
 	    CampSite campResult = mapTestRepository.findById(id).orElseThrow();
 	    
-	    //예약정보 uuid등으로 추가해야함
+	    //예약넘버
 	    LocalDateTime now = LocalDateTime.now();
 	    DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyyMMddHHmmss");
         String formattedDate = now.format(formatter);
@@ -63,7 +63,7 @@ public class CampReservPayService {
         			.start_date(startDate)
         			.end_date(endDate)
         			.created_at(LocalDateTime.now())
-        			.message("예약성공!!")
+        			.message("예약 가능합니다!!")
         			.campsite_id(campResult)
         			.reservation_number(combined)
         			.build();

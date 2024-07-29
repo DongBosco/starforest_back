@@ -30,7 +30,7 @@ public class Product {
 	private String brand_name;
 	private int price;
 	private int type;  //0 =>텐트  1=>음식  2=>diy
-	private int sales_volume = 0;
+	private int sales_volume;
 	private boolean delFlag; //false->true
 
 	@ElementCollection

@@ -2,9 +2,9 @@
 <project version="4">
   <component name="ProjectModuleManager">
     <modules>
-      <module fileurl="file://$PROJECT_DIR$/.idea/modules/StarForest.iml" filepath="$PROJECT_DIR$/.idea/modules/StarForest.iml" />
-      <module fileurl="file://$PROJECT_DIR$/.idea/modules/StarForest.main.iml" filepath="$PROJECT_DIR$/.idea/modules/StarForest.main.iml" />
-      <module fileurl="file://$PROJECT_DIR$/.idea/modules/StarForest.test.iml" filepath="$PROJECT_DIR$/.idea/modules/StarForest.test.iml" />
+      <module fileurl="file://$PROJECT_DIR$/.idea/modules/starforest_backkkk.iml" filepath="$PROJECT_DIR$/.idea/modules/starforest_backkkk.iml" />
+      <module fileurl="file://$PROJECT_DIR$/.idea/modules/starforest_backkkk.main.iml" filepath="$PROJECT_DIR$/.idea/modules/starforest_backkkk.main.iml" />
+      <module fileurl="file://$PROJECT_DIR$/.idea/modules/starforest_backkkk.test.iml" filepath="$PROJECT_DIR$/.idea/modules/starforest_backkkk.test.iml" />
     </modules>
   </component>
 </project>

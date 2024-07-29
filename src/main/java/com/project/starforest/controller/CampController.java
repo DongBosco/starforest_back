@@ -22,6 +22,7 @@ import org.springframework.web.bind.annotation.RestController;
 
 import com.project.starforest.domain.CampImage;
 import com.project.starforest.domain.CampSite;
+import com.project.starforest.domain.Reservation;
 import com.project.starforest.domain.ReservationDates;
 import com.project.starforest.dto.CampReservationInfoDTO;
 import com.project.starforest.dto.CampSearchDTO;
@@ -197,12 +198,12 @@ public class CampController {
 		       return ResponseEntity.ok(result);
 			}
 		    
-		//예약 관련
+		//예약 날짜 확인후 reservation에 저장(is_payment는 false)
 		@Autowired
 		private CampReservPayService campReservPayService;
 		
 		@PostMapping("/reservation/{id}")
-		public ResponseEntity<ReservationDates> createReservation(
+		public ResponseEntity<Reservation> createReservation(
 		 		@RequestBody ReservationDto dto,
 		 		@PathVariable("id") Long id
 		   		) {

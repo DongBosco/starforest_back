@@ -3,6 +3,7 @@ package com.project.starforest.domain;
 import jakarta.persistence.*;
 import lombok.*;
 import java.sql.Timestamp;
+import java.time.LocalDateTime;
 
 @Getter
 @Builder
@@ -24,7 +25,7 @@ public class DiaryImage {
     @Column(columnDefinition = "TEXT")
     private String image_url;
 
-    private Timestamp created_at;
+    private LocalDateTime created_at;
 
     public void changeId(Long id) {
         this.id = id;
@@ -38,7 +39,7 @@ public class DiaryImage {
         this.image_url = image_url;
     }
 
-    public void changeCreated_at(Timestamp created_at) {
+    public void changeCreated_at(LocalDateTime created_at) {
         this.created_at = created_at;
     }
 }

@@ -3,6 +3,7 @@ package com.project.starforest.domain;
 import jakarta.persistence.*;
 import lombok.*;
 import java.sql.Timestamp;
+import java.time.LocalDateTime;
 
 @Builder
 @AllArgsConstructor
@@ -29,7 +30,7 @@ public class Diary {
     @Column(length = 255)
     private String category;
 
-    private Timestamp created_at;
+    private LocalDateTime created_at;
 
     public void changeId(Long id) {
         this.id = id;
@@ -47,7 +48,7 @@ public class Diary {
         this.category = category;
     }
 
-    public void changeCreated_at(Timestamp created_at) {
+    public void changeCreated_at(LocalDateTime created_at) {
         this.created_at = created_at;
     }
 }

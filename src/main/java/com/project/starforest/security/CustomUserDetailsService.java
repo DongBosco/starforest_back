@@ -1,7 +1,7 @@
 package com.project.starforest.security;
 import com.project.starforest.domain.Member;
 import com.project.starforest.domain.UserInfo;
-import com.project.starforest.dto.MemberDTO;
+import com.project.starforest.dto.member.MemberDTO;
 import com.project.starforest.repository.MemberRepository;
 import com.project.starforest.repository.UserInfoRepository;
 import lombok.RequiredArgsConstructor;
@@ -10,7 +10,6 @@ import org.springframework.data.convert.ReadingConverter;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
-import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
 import java.util.stream.Collectors;
@@ -29,8 +28,8 @@ public class CustomUserDetailsService implements UserDetailsService {
         log.info("------------------ #2 loadUserByUsername-------------------------- " + username);
 
         Member member = memberRepository.getWithRole(username);
-        UserInfo userInfo = userInfoRepository.getUserInfoById(member.getId());
-        if(member.getId() == null) {
+        UserInfo userInfo = userInfoRepository.getUserInfoByEmail(member.getEmail());
+        if(member.getEmail() == null) {
             System.out.println("not found");
             throw new UsernameNotFoundException("not found");
         }
@@ -46,7 +45,6 @@ public class CustomUserDetailsService implements UserDetailsService {
                 userInfo.getIntroduce(),
                 userInfo.getNick_name(),
                 userInfo.getProfile_url(),
-                member.getId(),
                 userInfo.getLogin_type(),
                 userInfo.getGrade(),
                 member.getMemberRoleList().stream().map(

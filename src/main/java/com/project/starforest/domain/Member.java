@@ -2,40 +2,45 @@ package com.project.starforest.domain;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.stream.Collectors;
 
-import jakarta.persistence.Column;
-import jakarta.persistence.ElementCollection;
-import jakarta.persistence.Entity;
-import jakarta.persistence.Id;
-import lombok.AllArgsConstructor;
-import lombok.Builder;
-import lombok.Getter;
-import lombok.NoArgsConstructor;
-import lombok.ToString;
+import jakarta.persistence.*;
+import lombok.*;
 
 @Entity
-@Builder
 @AllArgsConstructor
 @NoArgsConstructor
 @Getter
+@Builder
 public class Member {
 
 	@Id
 	@Column(unique = true, nullable = false)
 	private String email;
 
-	@Column(unique = true, nullable = false)
-	private Long id;
-
 	private String pass_word;
 
-	@ElementCollection
+	@ElementCollection(fetch = FetchType.EAGER)
 	@Builder.Default
 	private List<MemberRole> memberRoleList = new ArrayList<>();
 
 	public void addRole(MemberRole memberRole) {
-		memberRoleList.add(memberRole);
+		this.memberRoleList.add(memberRole);
 	}
+
+	public List<String> getRoleNames() {
+		return memberRoleList.stream()
+				.map(Enum::name)
+				.collect(Collectors.toList());
+	}
+
+//	@ElementCollection
+//	@Singular("role")
+//	private List<MemberRole> memberRoleList = new ArrayList<>();
+//
+//	public void addRole(MemberRole memberRole) {
+//		memberRoleList.add(memberRole);
+//	}
 
 	public void clearRoles() {
 		memberRoleList.clear();

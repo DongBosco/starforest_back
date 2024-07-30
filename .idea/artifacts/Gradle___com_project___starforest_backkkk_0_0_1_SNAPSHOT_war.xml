@@ -1,5 +1,5 @@
 <component name="ArtifactManager">
-  <artifact type="war" external-system-id="GRADLE" name="Gradle : com.project : StarForest-0.0.1-SNAPSHOT-plain.war">
+  <artifact type="war" external-system-id="GRADLE" name="Gradle : com.project : starforest_backkkk-0.0.1-SNAPSHOT.war">
     <output-path>$PROJECT_DIR$/build/libs</output-path>
     <properties id="gradle-properties">
       <options external-project-path="$PROJECT_DIR$">
@@ -7,8 +7,8 @@
         <cleanTaskPath>:cleanWar</cleanTaskPath>
       </options>
     </properties>
-    <root id="archive" name="StarForest-0.0.1-SNAPSHOT-plain.war">
-      <element id="artifact" artifact-name="Gradle : com.project : StarForest-0.0.1-SNAPSHOT-plain.war (exploded)" />
+    <root id="archive" name="starforest_backkkk-0.0.1-SNAPSHOT.war">
+      <element id="artifact" artifact-name="Gradle : com.project : starforest_backkkk-0.0.1-SNAPSHOT.war (exploded)" />
     </root>
   </artifact>
 </component>

@@ -28,8 +28,8 @@ public class Reservation {
     private CampSite campsite_id;
 
     @ManyToOne(fetch = FetchType.LAZY, cascade = CascadeType.ALL)
-    @JoinColumn(name = "user_id", referencedColumnName = "email", insertable = false, updatable = false)
-    private Member user;
+    @JoinColumn(name = "user_email", referencedColumnName = "email", insertable = false, updatable = false)
+    private Member member;
 
     @OneToOne(fetch = FetchType.LAZY, cascade = CascadeType.ALL)
     @JoinColumn(name = "info_id", referencedColumnName = "id", insertable = false, updatable = false)

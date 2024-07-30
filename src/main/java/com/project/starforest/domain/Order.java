@@ -27,7 +27,7 @@ public class Order {
     private Timestamp created_at;
 
     @ManyToOne(fetch = FetchType.LAZY, cascade = CascadeType.ALL)
-    @JoinColumn(name = "user_id", referencedColumnName = "email", insertable = false, updatable = false)
+    @JoinColumn(name = "user_email", referencedColumnName = "email", insertable = false, updatable = false)
     private Member member;
 
     @ManyToOne(fetch = FetchType.LAZY, cascade = CascadeType.ALL)

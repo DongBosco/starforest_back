@@ -5,10 +5,9 @@ import java.io.PrintWriter;
 import java.util.Collections;
 import java.util.List;
 import java.util.Map;
-import java.util.stream.Collectors;
 
 import com.google.gson.Gson;
-import com.project.starforest.dto.MemberDTO;
+import com.project.starforest.dto.member.MemberDTO;
 import com.project.starforest.util.JWTUtil;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
@@ -50,19 +49,17 @@ public class JWTCheckFilter extends OncePerRequestFilter{
             Map<String, Object> claims = JWTUtil.validateToken(accessToken);
 
             log.info("JWT claims: " + claims);
-
             String email = (String) claims.get("email");
             String pass_word = (String) claims.get("pass_word");
             String introduce = (String) claims.get("introduce");
             String nick_name = (String) claims.get("nick_name");
             String profile_url = (String) claims.get("profile_url");
-            Long id = (Long) claims.get("id");
             Integer login_type = (Integer) claims.get("login_type");
             Integer grade = (Integer) claims.get("grade");
 
             List<String> roleNames = (List<String>) claims.get("roleNames");
 
-            MemberDTO memberDTO = new MemberDTO(email,pass_word,introduce,nick_name,profile_url,id,login_type,grade, roleNames);
+            MemberDTO memberDTO = new MemberDTO(email,pass_word,introduce,nick_name,profile_url,login_type,grade, roleNames);
             log.info("-----------------------------------");
             log.info(memberDTO);
             log.info(memberDTO.getAuthorities());

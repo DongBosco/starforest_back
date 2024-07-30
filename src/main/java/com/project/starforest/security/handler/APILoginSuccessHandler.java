@@ -1,7 +1,7 @@
 package com.project.starforest.security.handler;
 
 import com.google.gson.Gson;
-import com.project.starforest.dto.MemberDTO;
+import com.project.starforest.dto.member.MemberDTO;
 import com.project.starforest.util.JWTUtil;
 import jakarta.servlet.ServletException;
 import jakarta.servlet.http.HttpServletRequest;

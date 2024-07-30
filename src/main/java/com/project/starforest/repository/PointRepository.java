@@ -10,7 +10,10 @@ import com.project.starforest.domain.CampSite;
 
 public interface PointRepository extends JpaRepository<CampSite, Long>{
 
-	  @Query(value = "SELECT * FROM camp_site WHERE ST_Distance_Sphere(location, POINT( :mapX, :mapY)) <= :radius * 1000", nativeQuery = true)
+	  @Query(value =
+			  "SELECT * " +
+			  "FROM camp_site " +
+			  "WHERE ST_Distance_Sphere(location, POINT( :mapX, :mapY)) <= :radius * 1000", nativeQuery = true)
 	    List<CampSite> findNearbyPoints(@Param("mapX") double mapX, @Param("mapY") double mapY, @Param("radius") double radius);
 	
 	  

@@ -1,5 +1,6 @@
 package com.project.starforest.repository;
 
+
 import java.util.List;
 
 import org.apache.ibatis.annotations.Param;
@@ -30,4 +31,3 @@ public interface DiaryRepository extends JpaRepository<Diary, Long> {
 	
 	
 }
-

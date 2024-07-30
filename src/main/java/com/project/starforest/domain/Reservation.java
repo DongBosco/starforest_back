@@ -18,22 +18,24 @@ import java.time.LocalDateTime;
 public class Reservation {
 
     @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
     @Column(name = "reservation_number", nullable = true, length = 20)
     private String reservation_number;
 
+//    @JoinColumn(name = "campsite_id", referencedColumnName = "id", insertable = false, updatable = false)
+    @JoinColumn(name = "campsite_id", referencedColumnName = "id")
     @ManyToOne(fetch = FetchType.LAZY, cascade = CascadeType.ALL)
-    @JoinColumn(name = "campsite_id", referencedColumnName = "id", insertable = false, updatable = false)
     private CampSite campsite_id;
 
     @ManyToOne(fetch = FetchType.LAZY, cascade = CascadeType.ALL)
     @JoinColumn(name = "user_email", referencedColumnName = "email", insertable = false, updatable = false)
     private Member member;
 
-    @OneToOne(fetch = FetchType.LAZY, cascade = CascadeType.ALL)
-    @JoinColumn(name = "info_id", referencedColumnName = "id", insertable = false, updatable = false)
-    private ReservInfo  reservInfo;
+//    @OneToOne(fetch = FetchType.LAZY, cascade = CascadeType.ALL)
+//    @JoinColumn(name = "info_id", referencedColumnName = "id", insertable = false, updatable = false)
+//    private ReservInfo  reservInfo;
 
     @Column(name = "start_date", nullable = true)
     private LocalDateTime start_date;
@@ -43,7 +45,17 @@ public class Reservation {
 
     @Column(name = "created_at", nullable = true)
     private LocalDateTime created_at;
-
+    //동일 수정
+    @Column(name = "is_payment")
+    private boolean is_payment;
+    
+    @Transient
+  	private String message;
+    
+    public void changeIs_payment(boolean result) {
+        this.is_payment = result;
+    }
+    //동일 수정
     public void changeReservation_number(String reservation_number) {
         this.reservation_number = reservation_number;
     }

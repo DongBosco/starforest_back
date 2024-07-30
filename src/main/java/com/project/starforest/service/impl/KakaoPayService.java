@@ -11,39 +11,45 @@ import org.springframework.web.client.RestTemplate;
 
 import com.project.starforest.dto.KakaoPayReadyResponse;
 import com.project.starforest.dto.PaymentApprovalResponse;
+import com.project.starforest.dto.ReservationInfoDTO;
 
+import lombok.NoArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 
 @Service
 @Slf4j
+@NoArgsConstructor
 public class KakaoPayService {
 	@Value("${kakao.admin.key}")
     private String adminKey;
 	
     private static final String HOST = "https://kapi.kakao.com";
     private KakaoPayReadyResponse kakaoPayReadyResponse;
-
-    public KakaoPayReadyResponse kakaoPayReady() {
+    
+    public KakaoPayReadyResponse kakaoPayReady(ReservationInfoDTO dto,Long reservId) {
         RestTemplate restTemplate = new RestTemplate();
 
         HttpHeaders headers = new HttpHeaders();
         headers.add("Authorization", "KakaoAK " + adminKey);
         headers.add("Content-Type", "application/x-www-form-urlencoded;charset=utf-8");
 
-        MultiValueMap<String, String> params = new LinkedMultiValueMap<>();
+        MultiValueMap<String, Object> params = new LinkedMultiValueMap<>();
         params.add("cid", "TC0ONETIME");
-        params.add("partner_order_id", "1001");//가맹점 주문 번호
-        params.add("partner_user_id", "gorany");//가맹점 회원 ID
-        params.add("store_name", "여기어때"); // 이 줄을 추가하세요
-        params.add("item_name", "가평 오롯하다글램핑 글램핑바다 6인");//상품명
-        params.add("quantity", "1");//주문 수량
-        params.add("total_amount", "427500");//총 금액
-        params.add("tax_free_amount", "100");//상품 비과세 금액
-        params.add("approval_url", "http://localhost:3000/camp/pay/complete");
+        params.add("partner_order_id", dto.getReservNum());//주문번호dto.getReservNum()
+        params.add("partner_user_id", "gorany");//회원아이디dto.getNames()
+        params.add("store_name", "🏞🏞별숲🏞🏞");// 매장 이름 	!!!고정
+        params.add("item_name", dto.getName());//상품 이름
+        params.add("quantity", "1");//수량					!!!고정
+        params.add("total_amount", dto.getTotalPrice());//총 결제 금액
+        params.add("tax_free_amount", "100");//비과세			!!!고정
+        params.add("approval_url", 
+        		"http://localhost:3000/camp/pay/complete/"
+        				+dto.getReservNum()+"/"+reservId+"/"+dto.getNames()+"/"
+        				+dto.getCar_number()+"/"+dto.getRequest()+"/"+dto.getTel());
         params.add("cancel_url", "http://localhost:3000/camp/pay/cancel");
         params.add("fail_url", "http://localhost:3000/camp/pay/fail");
 
-        HttpEntity<MultiValueMap<String, String>> requestEntity = new HttpEntity<>(params, headers);
+        HttpEntity<MultiValueMap<String, Object>> requestEntity = new HttpEntity<>(params, headers);
         
         kakaoPayReadyResponse = restTemplate.postForObject(
                 "https://kapi.kakao.com/v1/payment/ready",
@@ -55,16 +61,16 @@ public class KakaoPayService {
     
     
     
-    public PaymentApprovalResponse approvePayment(String pgToken) {
-    	log.info("kakaopayService -> approvePayment실행");
+    public PaymentApprovalResponse approvePayment(String pgToken,String reservNum) {
+    	log.info("kakaopayService -> approvePayment�떎�뻾");
     	
     	if (kakaoPayReadyResponse == null) {
             log.error("kakaoPayReadyResponse is null");
             throw new IllegalStateException("kakaoPayReadyResponse is null. Cannot approve payment.");
         }
-    	log.info("kakaoPayReadyResponse는 null이 아님");
+    	log.info("kakaoPayReadyResponse�뒗 null�씠 �븘�떂");
     	log.info("kakaoPayReadyResponse : "+kakaoPayReadyResponse);
-        // 카카오페이 결제 승인 API 호출
+        // 移댁뭅�삤�럹�씠 寃곗젣 �듅�씤 API �샇異�
     	 RestTemplate restTemplate = new RestTemplate();
 
          HttpHeaders headers = new HttpHeaders();
@@ -74,7 +80,7 @@ public class KakaoPayService {
          MultiValueMap<String, String> params = new LinkedMultiValueMap<>();
          params.add("cid", "TC0ONETIME");
          params.add("tid", kakaoPayReadyResponse.getTid());
-         params.add("partner_order_id", "1001");
+         params.add("partner_order_id", reservNum);
          params.add("partner_user_id", "gorany");
          params.add("pg_token", pgToken);
 
@@ -85,5 +91,6 @@ public class KakaoPayService {
          
          return restTemplate.postForObject(HOST + "/v1/payment/approve", body, PaymentApprovalResponse.class);
      }
+
     }
 

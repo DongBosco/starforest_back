@@ -7,6 +7,7 @@ import lombok.RequiredArgsConstructor;
 import lombok.extern.log4j.Log4j2;
 
 import java.time.LocalDateTime;
+import java.time.format.DateTimeFormatter;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -26,19 +27,29 @@ import org.springframework.web.bind.annotation.RestController;
 
 import com.project.starforest.domain.CampImage;
 import com.project.starforest.domain.CampSite;
+import com.project.starforest.domain.ReservInfo;
+import com.project.starforest.domain.Reservation;
 import com.project.starforest.domain.ReservationDates;
 import com.project.starforest.dto.CampListDTO;
 import com.project.starforest.dto.CampReservationInfoDTO;
 import com.project.starforest.dto.CampSearchDTO;
+import com.project.starforest.dto.KakaoPayReadyResponse;
 import com.project.starforest.dto.MapResponseDTO;
+import com.project.starforest.dto.PaymentApprovalResponse;
 import com.project.starforest.dto.ReservationDto;
+import com.project.starforest.dto.ReservationInfoDTO;
+import com.project.starforest.dto.ReservationInfoPayDTO;
 import com.project.starforest.dto.ViewMapResponseDTO;
 import com.project.starforest.repository.CampImageRepository;
 import com.project.starforest.repository.MapTestRepository;
 import com.project.starforest.repository.PointRepository;
+import com.project.starforest.repository.ReservInfoRepository;
 import com.project.starforest.repository.ReservationRepository;
+import com.project.starforest.repository.ReservationedRepository;
+import com.project.starforest.service.impl.CampReservPayService;
 import com.project.starforest.service.impl.CampSearchService;
 import com.project.starforest.service.impl.CoordinatesService;
+import com.project.starforest.service.impl.KakaoPayService;
 
 
 @RestController
@@ -82,10 +93,10 @@ public class CampController {
 		public ResponseEntity<ViewMapResponseDTO> viewMap(
 				@PathVariable("id") Long id
 				) {
-
+			
 			CampSite entity = mapTestRepository.findById(id).orElseThrow();
 			List<CampImage> campImageEntity = campImageRepository.findByCampId(id);
-
+			
 			ViewMapResponseDTO result = ViewMapResponseDTO.builder()
 					.id(entity.getId())
 					.name(entity.getName())
@@ -161,51 +172,110 @@ public class CampController {
 	    }
 		
 
+//-------------------예약 정보------------------//
+		@GetMapping("/reservation/infos/{id}")
+		public ResponseEntity<ReservationInfoPayDTO> payReservationinfo(
+				@PathVariable("id") Long id
+				) {
+			LocalDateTime now = LocalDateTime.now();
+		    DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyyMMddHHmmss");
+	        String formattedDate = now.format(formatter);
+	        double random = Math.random()*100;
+	        int randomInt = (int)Math.floor(random);
+	        String combined = formattedDate + randomInt;
+	        log.info("123123123123"+combined);
+
+			CampSite entity = mapTestRepository.findById(id).orElseThrow();
+			ReservationInfoPayDTO dto = ReservationInfoPayDTO.builder()
+					.id(entity.getId())
+					.reservNum(combined)
+					.name(entity.getName())
+					.price(entity.getPrice())
+					.build();
+			return ResponseEntity.ok(dto);
+		}
+//-------------------예약 정보------------------//
+
+
+
 	//--------------移댁뭅�삤 寃곗젣----------------//
-//	public class PayController {
+
 //		
-//		  private final KakaoPayService kakaoPayService;
+		  private final KakaoPayService kakaoPayService;
 //		  private final PaymentRepository paymentRepository;
 //
-//		    @PostMapping("/kakaoPay")
-//		    public KakaoPayReadyResponse kakaoPay() {
-//		    	log.info("寃곗젣�떆�룄");
-//		        return kakaoPayService.kakaoPayReady();
-//		    }
-//		    
-//		    @GetMapping("/kakaoPaySuccess/{pg_token}")
-//		    public ResponseEntity<PaymentApprovalResponse> kakaoPaySuccess(@PathVariable("pg_token") String pgToken) {
-//		    	log.info("�듅�씤 �떆�룄");
-//		        // 1. 移댁뭅�삤�럹�씠 API濡� 寃곗젣 �듅�씤 �슂泥�
-//		        PaymentApprovalResponse approvalResponse = kakaoPayService.approvePayment(pgToken);
-//		        
-//		        // 2. �듅�씤 �쓳�떟�쓣 諛뷀깢�쑝濡� DB�뿉 寃곗젣 �젙蹂� ���옣
-//		        PaymentEntity payment = PaymentEntity.builder()
-//			            .orderId(approvalResponse.getPartner_order_id())
-//			            .paymentToken(approvalResponse.getAid())
-//			            .amount((long) approvalResponse.getAmount().getTotal())
-//			            .status("�듅�씤")
-//			            .paymentMethod(approvalResponse.getPayment_method_type())
-//			            .approvedAt(LocalDateTime.parse(approvalResponse.getApproved_at()))
-//			            .tid(approvalResponse.getTid())
-//			            .itemName(approvalResponse.getItem_name())
-//			            .build();
-//			        
-//			        paymentRepository.save(payment);
-//			        log.info("���옣");
-//			        log.info("payment"+payment);
-//			        
-//		        
-//		        // 3. �겢�씪�씠�뼵�듃�뿉 �븘�슂�븳 �젙蹂� 諛섑솚
-//		        return ResponseEntity.ok(approvalResponse);
-//		    }
-//	}
-	
-	//----------------�삁�빟-----------------//
-		
+		    @PostMapping("/kakaoPay/{reservId}")
+		    public KakaoPayReadyResponse kakaoPay(
+		    		@RequestBody ReservationInfoDTO dto,
+		    		@PathVariable("reservId") Long reservId
+		    		) {
+		    	log.info("카카오 페이 요청");
+		    	log.info(dto.toString());
+		        return kakaoPayService.kakaoPayReady(dto,reservId);
+		    }
 
-		@Autowired
-		private ReservationRepository reservationRepository;
+		    @Autowired
+		    private ReservationedRepository reservationedRepository;
+
+		    @Autowired
+		    private ReservationRepository reservationRepository;
+
+		    @Autowired
+		    private ReservInfoRepository reservInfoRepository;
+
+		    @GetMapping("/kakaoPaySuccess/{pg_token}/{reservNum}/{reservId}/{name}/{carNum}/{request}/{tel}")
+		    public ResponseEntity<PaymentApprovalResponse> kakaoPaySuccess(
+		    		@PathVariable("pg_token") String pgToken,
+		    		@PathVariable("reservNum") String reservNum,
+		    		@PathVariable("reservId") Long reservId,
+		    		@PathVariable("name") String name,
+		    		@PathVariable("carNum") String carNum,
+		    		@PathVariable("request") String request,
+		    		@PathVariable("tel") String tel
+		    		) {
+		    	log.info("reservId"+reservId);
+		        // 1. 移댁뭅�삤�럹�씠 API濡� 寃곗젣 �듅�씤 �슂泥�
+		        PaymentApprovalResponse approvalResponse = kakaoPayService.approvePayment(pgToken,reservNum);
+
+			        log.info("결제 성공");
+
+
+			        //reservation에 is_payment ture로 변경하기+예약번호 저장하기
+			        Reservation entity = reservationedRepository.findById(reservId).orElseThrow();
+			        entity.changeReservation_number(reservNum);
+			        entity.changeIs_payment(true);
+
+			        reservationedRepository.save(entity);
+
+			        //결제 성공시 reservationData에 정보 저장하기
+			        ReservationDates dateEntity = ReservationDates.builder()
+			        		.campSite(entity.getCampsite_id())
+			        		.created_at(LocalDateTime.now())
+			        		.end_date(entity.getEnd_date())
+			        		.start_date(entity.getStart_date())
+			        		.build();
+
+			        reservationRepository.save(dateEntity);
+
+			        //reserv_info에 예약자 정보 저장하기
+			        ReservInfo InfoEntity = ReservInfo.builder()
+			        		.reservation(entity)
+			        		.car_number(carNum)
+			        		.name(name)
+			        		.request(request)
+			        		.tel(tel)
+			        		.build();
+
+			        reservInfoRepository.save(InfoEntity);
+
+		        // 3. �겢�씪�씠�뼵�듃�뿉 �븘�슂�븳 �젙蹂� 諛섑솚
+		        return ResponseEntity.ok(approvalResponse);
+		    }
+
+
+	//----------------�삁�빟-----------------//
+
+
 
 		//�뜲�씠�꽣 由ъ뒪�듃 蹂닿린
 		@GetMapping("/reservations/{id}")
@@ -224,53 +294,22 @@ public class CampController {
 		       return ResponseEntity.ok(result);
 			}
 		    
-		//�뜲�씠�꽣 ���옣
+		//예약 날짜 확인후 reservation에 저장(is_payment는 false)
+		@Autowired
+		private CampReservPayService campReservPayService;
+
+		//예약하기 버튼 클릭시 실행하는곳
 		@PostMapping("/reservation/{id}")
-		public ResponseEntity<ReservationDates> createReservation(
+		public ResponseEntity<Reservation> createReservation(
 		 		@RequestBody ReservationDto dto,
 		 		@PathVariable("id") Long id
 		   		) {
 
-		    
-		   	LocalDateTime startDate = dto.getStartDate();
-		   	LocalDateTime endDate = dto.getEndDate();
-	        
-	        if (isReservation(startDate, endDate,id)) {
-	        	ReservationDates faleReservation = new ReservationDates();
-	        	faleReservation.setStart_date(startDate);
-	        	faleReservation.setEnd_date(endDate);
-	        	faleReservation.setMessage("앗..누군가 벌써 예약했네요ㅠㅠ");
-	        	log.info("예약중복예약중복예약중복예약중복예약중복예약중복예약중복");
-	        	return ResponseEntity.ok().body(faleReservation);
-	        }
-
-	        CampSite campResult = mapTestRepository.findById(id).orElseThrow();
-	        log.info("캠핑장"+campResult);
-	        if(campResult != null) {
-	        	ReservationDates entity = ReservationDates.builder()
-	        			.start_date(startDate)
-	        			.end_date(endDate)
-	        			.created_at(LocalDateTime.now())
-	        			.message("예약성공!!")
-	        			.campSite(campResult)
-	        			.build();
-
-	        	log.info("예약성공예약성공예약성공예약성공예약성공"+entity);
-		    ReservationDates saveDate = reservationRepository.save(entity);
-
-	        	log.info("예약성공예약성공예약성공예약성공예약성공"+saveDate);
-	        	return ResponseEntity.ok(saveDate);
-	        }
-	        log.info("캠핑장없음캠핑장없음캠핑장없음캠핑장없음캠핑장없음");
-	        return ResponseEntity.status(HttpStatus.NOT_FOUND).build(); // 캠핑장을 찾지 못한 경우를 대비한 응답
+		   	return campReservPayService.getIsCampReservation(dto,id);
 		}
-		
-		private boolean isReservation(LocalDateTime start, LocalDateTime end, Long id) {
-	        List<ReservationDates> overlappingReservations = reservationRepository.findOverlappingReservations(start, end,id);
-	        return !overlappingReservations.isEmpty();
-	    }
+
 	
-	//-------------------罹좏븨�옣 寃��깋---------------------//
+	//-------------------캠핑장 검색---------------------//
 
 		@Autowired
 		private CampSearchService campSearchService;
@@ -309,6 +348,15 @@ public class CampController {
 					.sigungu_nm(entity.getSigungu_nm())
 					.build(); 
 			
+			return ResponseEntity.ok(result);
+		}
+
+		@GetMapping("/view/map/{id}")
+		public ResponseEntity<CampSite> getCampViewMap(
+				@PathVariable("id") Long id
+				) {
+			CampSite result = mapTestRepository.findById(id).orElseThrow();
+
 			return ResponseEntity.ok(result);
 		}
 }

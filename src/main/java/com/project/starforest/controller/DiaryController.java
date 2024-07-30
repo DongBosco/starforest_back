@@ -34,27 +34,29 @@ public class  DiaryController{
 	}
 	
 	// 별숲기록 생성
-	@PostMapping("/cr")
+	@PostMapping("/create")
 	public ResponseEntity<DiaryDTO> createDiary(
-			@RequestBody DiaryDTO dto
-//            @RequestPart("content") String content,
-//            @RequestPart("category") String category,
-//            @RequestPart("images") List<MultipartFile> images
+			@RequestPart("content") String content,
+			@RequestPart("allTags") String allTags,
+			@RequestPart("images") List<MultipartFile> images
             ) {
 		
-		log.info("!!!!!!!!!!!!!"+dto);
+		log.info("diary create request");
+		log.info("Content: " + content);
+		log.info("All Tags: " + allTags);
+		log.info("Number of images: " + images.size());
+//		log.info("!!!!!!!!!!!!!"+dto);
+		
         try {
             DiaryDTO diaryDTO = new DiaryDTO();
-//            diaryDTO.setContent(content);
-//            diaryDTO.setAllTags(category);
+            diaryDTO.setContent(content);
+            diaryDTO.setAllTags(allTags);
             
-//            DiaryDTO savedDiary = diaryService.createDiary(diaryDTO, images);
-            return null;
-//            return ResponseEntity.ok(savedDiary);
+            DiaryDTO savedDiary = diaryService.createDiary(diaryDTO, images);
+            return ResponseEntity.ok(savedDiary);
         } catch (Exception e) {
             log.error("Error creating diary", e);
-            return null;
-//            return ResponseEntity.badRequest().body("Error creating diary: " + e.getMessage());
+            return ResponseEntity.badRequest().body(null);
         }
     }
 	

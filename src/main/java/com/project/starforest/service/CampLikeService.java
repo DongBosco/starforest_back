@@ -45,7 +45,7 @@ public class CampLikeService {
             Member user = memberRepository.findById(userEmail).orElseThrow(() -> new RuntimeException("User not found"));
             CampSite campSite = campRepository.findById(campId).orElseThrow(() -> new RuntimeException("CampSite not found"));
             CampSiteLike campSiteLike = CampSiteLike.builder()
-                .user(user)
+                .member(user)
                 .camp_site_id(campSite)
                 .build();
             campLikeRepository.save(campSiteLike);

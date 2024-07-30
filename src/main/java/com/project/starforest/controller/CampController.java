@@ -49,36 +49,33 @@ public class CampController {
 	//-----정희 작업------ //
 	@Autowired
 	private MapTestRepository mapTestRepository;
+	@Autowired
+	private CampImageRepository campImageRepository;
 
 	@GetMapping("/list")
 	public ResponseEntity<List<CampListDTO>> getCamps(@RequestParam(name="page", defaultValue = "0") int page,
-	                                               @RequestParam(name="size", defaultValue = "20") int size) {
-		
-		@Autowired
-		private CampImageRepository campImageRepository;
+													  @RequestParam(name="size", defaultValue = "20") int size) {
 
-		@PostMapping("/view/{id}")
 		Pageable pageable = PageRequest.of(page, size);
 
-	    Page<CampSite> campSites = mapTestRepository.findAll(pageable);
-	    List<CampListDTO> campList = campSites.stream().map(dto->CampListDTO.builder()
-	    		.id(dto.getId())
-	    		.name(dto.getName())
-	    		.is_glamp(dto.is_glamp())
-	    		.is_auto(dto.is_auto())
-	    		.is_carvan(dto.is_carvan())
-	    		.add1(dto.getAdd1())
-	    		.price(dto.getPrice())
-	    		.first_image_url(dto.getFirst_image_url())
-	    		.thema_envrn_cl(dto.getThema_envrn_cl())
-	    		.build())
-	    		.collect(Collectors.toList());
+		Page<CampSite> campSites = mapTestRepository.findAll(pageable);
+		List<CampListDTO> campList = campSites.stream().map(dto->CampListDTO.builder()
+						.id(dto.getId())
+						.name(dto.getName())
+						.is_glamp(dto.is_glamp())
+						.is_auto(dto.is_auto())
+						.is_carvan(dto.is_carvan())
+						.add1(dto.getAdd1())
+						.price(dto.getPrice())
+						.first_image_url(dto.getFirst_image_url())
+						.thema_envrn_cl(dto.getThema_envrn_cl())
+						.build())
+				.collect(Collectors.toList());
 
 
-	    log.info("!!!!!!!!!!!!!!!!!!!!!"+campList.toString());
-	    return ResponseEntity.ok(campList);
+		log.info("!!!!!!!!!!!!!!!!!!!!!"+campList.toString());
+		return ResponseEntity.ok(campList);
 	}
-	//-----------吏��룄----------//
 
 
 		@PostMapping("/view/map/{id}")

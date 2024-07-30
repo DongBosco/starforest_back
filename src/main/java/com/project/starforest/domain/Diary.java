@@ -20,7 +20,7 @@ public class Diary {
     private Reservation reservation;
 
     @ManyToOne(fetch = FetchType.LAZY, cascade = CascadeType.ALL)
-    @JoinColumn(name = "user_id", referencedColumnName = "email")
+    @JoinColumn(name = "user_email", referencedColumnName = "email")
     private Member user;
 
     @Column(columnDefinition = "TEXT")

@@ -3,24 +3,27 @@ package com.project.starforest.service.impl;
 import com.project.starforest.domain.Member;
 import com.project.starforest.domain.MemberRole;
 import com.project.starforest.domain.UserInfo;
-import com.project.starforest.dto.member.RegisterDTO;
-import com.project.starforest.dto.member.ResponseMemberDTO;
+import com.project.starforest.dto.member.*;
 import com.project.starforest.repository.MemberRepository;
 import com.project.starforest.repository.UserInfoRepository;
 import com.project.starforest.service.MemberService;
+import jakarta.transaction.Transactional;
 import lombok.extern.log4j.Log4j2;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
+import java.util.Objects;
+
 
 @Service
 @Log4j2
 public class MemberServiceImpl implements MemberService {
-    private static final String ALREADY_REGISTERED_EMAIL = "¿ÃπÃ µÓ∑œµ» ¿Ã∏ﬁ¿œ¿‘¥œ¥Ÿ.";
-    private static final String REGISTRATION_ERROR = "µÓ∑œø¿∑˘";
-    private static final String FIND_BY_EMAIL_ERROR = "findByEmail ø¿∑˘ πﬂª˝";
-    private static final String UPDATE_USER_ERROR = "updateUser ø¿∑˘ πﬂª˝";
+    private static final String ALREADY_REGISTERED_EMAIL = "Ïù¥ÎØ∏ Îì±Î°ùÎêú Ïù¥Î©îÏùºÏûÖÎãàÎã§.";
+    private static final String REGISTRATION_ERROR = "Îì±Î°ù Ïò§Î•ò";
+    private static final String FIND_BY_EMAIL_ERROR = "findByEmail Ïò§Î•ò Î∞úÏÉù";
+    private static final String UPDATE_USER_ERROR = "updateUser Ïò§Î•ò Î∞úÏÉù";
+    private static final String CHECK_PASSWD_ERROR = "Ìå®Ïä§ÏõåÎìú ÌôïÏù∏Ï§ë Ïò§Î•ò Î∞úÏÉù";
 
     private final MemberRepository memberRepository;
     private final UserInfoRepository userInfoRepository;
@@ -33,11 +36,11 @@ public class MemberServiceImpl implements MemberService {
     }
 
     @Override
+    @Transactional
     public boolean register(RegisterDTO registerDTO) throws Exception {
         if (memberRepository.findByEmail(registerDTO.getEmail()) != null) {
             throw new Exception(ALREADY_REGISTERED_EMAIL);
         }
-
         try {
             Member member = createMember(registerDTO);
             UserInfo userInfo = createUserInfo(registerDTO, member);
@@ -49,12 +52,72 @@ public class MemberServiceImpl implements MemberService {
         }
     }
 
+    @Override
+    public ResultChekPassWordDTO checkPassword(CheckPassWordDTO checkPassWordDTO) throws Exception {
+        try {
+            Member temp = memberRepository.findByEmail(checkPassWordDTO.getEmail());
+            if (temp != null && passwordEncoder.matches(checkPassWordDTO.getPass_word(), temp.getPass_word())) {
+                return ResultChekPassWordDTO.builder()
+                        .email(checkPassWordDTO.getEmail())
+                        .result(true)
+                        .build();
+            } else {
+                return ResultChekPassWordDTO.builder()
+                        .email(checkPassWordDTO.getEmail())
+                        .result(false)
+                        .build();
+            }
+        }catch (Exception e){
+            log.error(CHECK_PASSWD_ERROR, e);
+            throw e;
+        }
+    }
+
+    @Override
+    public CheckNicknameDTO checkNickName(CheckNicknameDTO checkNicknameDTO) throws Exception {
+        if(userInfoRepository.existsByNickName(checkNicknameDTO.getNick_name())){
+            return CheckNicknameDTO.builder()
+                    .nick_name(checkNicknameDTO.getNick_name())
+                    .result(true).build();       //Ï°¥Ïû¨Ìï®
+        }
+        else {
+            return CheckNicknameDTO.builder()
+                    .nick_name(checkNicknameDTO.getNick_name())
+                    .result(false).build();
+        }
+    }
+
+    @Override
+    public ResponseMemberDTO findByEmail(String email) throws Exception {
+        try {
+            Member member = memberRepository.findByEmail(email);
+            UserInfo userInfo = userInfoRepository.getUserInfoByEmail(member.getEmail());
+            return buildResponseMemberDTO(member, userInfo);
+        } catch (Exception e) {
+            log.error(FIND_BY_EMAIL_ERROR, e);
+            throw e;
+        }
+    }
+
+    private ResponseMemberDTO buildResponseMemberDTO(Member member, UserInfo userInfo) {
+        return ResponseMemberDTO.builder()
+                .email(member.getEmail())
+                .name(userInfo.getName())
+                .nick_name(userInfo.getNick_name())
+                .profile_url(userInfo.getProfile_url())
+                .introduce(userInfo.getIntroduce())
+                .login_type(userInfo.getLogin_type())
+                .grade(userInfo.getGrade())
+                .roleNames(member.getRoleNames())
+                .build();
+    }
     private Member createMember(RegisterDTO registerDTO) {
-        return memberRepository.save(Member.builder()
+        Member member = Member.builder()
                 .email(registerDTO.getEmail())
                 .pass_word(passwordEncoder.encode(registerDTO.getPass_word()))
-                .role(MemberRole.USER)
-                .build());
+                .build();
+        member.addRole(MemberRole.USER);
+        return memberRepository.save(member);
     }
 
     private UserInfo createUserInfo(RegisterDTO registerDTO, Member member) {
@@ -70,32 +133,6 @@ public class MemberServiceImpl implements MemberService {
     }
 
     @Override
-    public ResponseMemberDTO findByEmail(String email) throws Exception {
-        try {
-            Member member = memberRepository.findByEmail(email);
-            UserInfo userInfo = userInfoRepository.getUserInfoById(member.getId());
-            return buildResponseMemberDTO(member, userInfo);
-        } catch (Exception e) {
-            log.error(FIND_BY_EMAIL_ERROR, e);
-            throw e;
-        }
-    }
-
-    private ResponseMemberDTO buildResponseMemberDTO(Member member, UserInfo userInfo) {
-        return ResponseMemberDTO.builder()
-                .email(member.getEmail())
-                .name(userInfo.getName())
-                .nick_name(userInfo.getNick_name())
-                .profile_url(userInfo.getProfile_url())
-                .introduce(userInfo.getIntroduce())
-                .id(member.getId())
-                .login_type(userInfo.getLogin_type())
-                .grade(userInfo.getGrade())
-                .roleNames(member.getRoleNames())
-                .build();
-    }
-
-    @Override
     public ResponseMemberDTO updateUser(RegisterDTO registerDTO) throws Exception {
         try {
             Member member = updateMember(registerDTO);
@@ -106,22 +143,20 @@ public class MemberServiceImpl implements MemberService {
             throw e;
         }
     }
-
     private Member updateMember(RegisterDTO registerDTO) throws Exception {
         Member existingMember = memberRepository.findByEmail(registerDTO.getEmail());
-        return memberRepository.save(Member.builder()
-                .id(existingMember.getId())
+        Member temp =  Member.builder()
                 .email(existingMember.getEmail())
                 .pass_word(passwordEncoder.encode(registerDTO.getPass_word()))
-                .role(MemberRole.USER)
-                .build());
+                .build();
+        temp.addRole(MemberRole.USER);
+        return memberRepository.save(temp);
     }
 
     private UserInfo updateUserInfo(RegisterDTO registerDTO, Member member) throws Exception {
-        UserInfo existingUserInfo = userInfoRepository.getUserInfoById(member.getId());
+        UserInfo existingUserInfo = userInfoRepository.getUserInfoByEmail(member.getEmail());
         return userInfoRepository.save(UserInfo.builder()
                 .user_email(member)
-                .id(existingUserInfo.getId())
                 .grade(registerDTO.getGrade())
                 .introduce(registerDTO.getIntroduce())
                 .login_type(existingUserInfo.getLogin_type())

@@ -15,16 +15,14 @@ import static com.project.starforest.domain.MemberRole.MEMBER;
 
 @Getter
 @Setter
-@Builder
 public class MemberDTO extends User {
 	private String email,pass_word, nick_name,profile_url,introduce;
-	private Long id;
 	private Integer login_type, grade;
 	private List<String> roleNames= new ArrayList<>();
 
 
 	public MemberDTO(String email, String pass_word,String introduce, String nick_name,String profile_url,
-					 Long id,Integer login_type, Integer grade, List<String> roleNames) {
+					 Integer login_type, Integer grade, List<String> roleNames) {
 		super(email,pass_word,roleNames.stream()
 				.map(str -> new SimpleGrantedAuthority("ROLE_"+MEMBER)).collect(Collectors.toList()));
 
@@ -33,7 +31,6 @@ public class MemberDTO extends User {
 		this.introduce = introduce;
 		this.nick_name = nick_name;
 		this.profile_url = profile_url;
-		this.id = id;
 		this.login_type = login_type;
 		this.grade = grade;
 		this.roleNames = roleNames;
@@ -47,7 +44,6 @@ public class MemberDTO extends User {
 		dataMap.put("introduce", introduce);
 		dataMap.put("nick_name",nick_name);
 		dataMap.put("profile_url",profile_url);
-		dataMap.put("id",id);
 		dataMap.put("login_type",login_type);
 		dataMap.put("grade",grade);
 		dataMap.put("roleNames",roleNames);

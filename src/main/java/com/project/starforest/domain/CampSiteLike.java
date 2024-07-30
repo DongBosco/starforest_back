@@ -21,8 +21,8 @@ class CampSiteLike {
     private CampSite camp_site_id;
 
     @ManyToOne(fetch = FetchType.LAZY, cascade = CascadeType.ALL)
-    @JoinColumn(name = "user_id", referencedColumnName = "email")
-    private Member user;
+    @JoinColumn(name = "user_email", referencedColumnName = "email")
+    private Member member;
 
     private Timestamp created_at;
 

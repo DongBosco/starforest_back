@@ -17,6 +17,7 @@ import lombok.extern.log4j.Log4j2;
 public class UserInfo {
 
         @Id
+        @GeneratedValue(strategy = GenerationType.IDENTITY)
         private Long id;
 
         @OneToOne(fetch = FetchType.LAZY, cascade = CascadeType.ALL)
@@ -32,7 +33,7 @@ public class UserInfo {
         @Column(name = "introduce", length = 200)
         private String introduce;
 
-        @Column(name = "nick_name", length = 20, nullable = false)
+        @Column(name = "nick_name", length = 20, nullable = false, unique = true)
         private String nick_name;
 
         @Column(name = "login_type")

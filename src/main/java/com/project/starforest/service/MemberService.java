@@ -1,8 +1,6 @@
 package com.project.starforest.service;
 
-import com.project.starforest.dto.member.MemberDTO;
-import com.project.starforest.dto.member.RegisterDTO;
-import com.project.starforest.dto.member.ResponseMemberDTO;
+import com.project.starforest.dto.member.*;
 import jakarta.transaction.Transactional;
 
 @Transactional
@@ -12,4 +10,8 @@ public interface MemberService {
     ResponseMemberDTO findByEmail(String email)throws Exception;
 
     ResponseMemberDTO updateUser(RegisterDTO registerDTO)throws Exception;
+
+    ResultChekPassWordDTO checkPassword(CheckPassWordDTO checkPassWordDTO) throws Exception;
+
+    CheckNicknameDTO checkNickName(CheckNicknameDTO checkNicknameDTO) throws Exception;
 }

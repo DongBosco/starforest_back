@@ -4,10 +4,7 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.stream.Collectors;
 
-import jakarta.persistence.Column;
-import jakarta.persistence.ElementCollection;
-import jakarta.persistence.Entity;
-import jakarta.persistence.Id;
+import jakarta.persistence.*;
 import lombok.*;
 
 @Entity
@@ -21,23 +18,29 @@ public class Member {
 	@Column(unique = true, nullable = false)
 	private String email;
 
-	@Column(unique = true, nullable = false)
-	private Long id;
-
 	private String pass_word;
 
-	@ElementCollection
-	@Singular("role")
+	@ElementCollection(fetch = FetchType.EAGER)
+	@Builder.Default
 	private List<MemberRole> memberRoleList = new ArrayList<>();
+
+	public void addRole(MemberRole memberRole) {
+		this.memberRoleList.add(memberRole);
+	}
 
 	public List<String> getRoleNames() {
 		return memberRoleList.stream()
 				.map(Enum::name)
 				.collect(Collectors.toList());
 	}
-	public void addRole(MemberRole memberRole) {
-		memberRoleList.add(memberRole);
-	}
+
+//	@ElementCollection
+//	@Singular("role")
+//	private List<MemberRole> memberRoleList = new ArrayList<>();
+//
+//	public void addRole(MemberRole memberRole) {
+//		memberRoleList.add(memberRole);
+//	}
 
 	public void clearRoles() {
 		memberRoleList.clear();

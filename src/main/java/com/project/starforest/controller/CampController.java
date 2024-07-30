@@ -1,6 +1,7 @@
 package com.project.starforest.controller;
 
 
+import lombok.Data;
 import lombok.RequiredArgsConstructor;
 
 import lombok.extern.log4j.Log4j2;
@@ -10,6 +11,9 @@ import java.util.List;
 import java.util.stream.Collectors;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Page;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -21,6 +25,7 @@ import org.springframework.web.bind.annotation.RestController;
 
 import com.project.starforest.domain.CampSite;
 import com.project.starforest.domain.ReservationDates;
+import com.project.starforest.dto.CampListDTO;
 import com.project.starforest.dto.CampReservationInfoDTO;
 import com.project.starforest.dto.CampSearchDTO;
 import com.project.starforest.dto.MapResponseDTO;
@@ -38,11 +43,36 @@ import com.project.starforest.service.impl.CoordinatesService;
 @Log4j2
 @RequestMapping("/camp")
 public class CampController {
+	//-----정희 작업------ //
+	@Autowired
+	private MapTestRepository mapTestRepository;
 	
+	@GetMapping("/list")
+	public ResponseEntity<List<CampListDTO>> getCamps(@RequestParam(name="page", defaultValue = "0") int page, 
+	                                               @RequestParam(name="size", defaultValue = "20") int size) {
+		
+		Pageable pageable = PageRequest.of(page, size);
+		
+	    Page<CampSite> campSites = mapTestRepository.findAll(pageable);
+	    List<CampListDTO> campList = campSites.stream().map(dto->CampListDTO.builder()
+	    		.id(dto.getId())
+	    		.name(dto.getName())
+	    		.is_glamp(dto.is_glamp())
+	    		.is_auto(dto.is_auto())
+	    		.is_carvan(dto.is_carvan())
+	    		.add1(dto.getAdd1())
+	    		.price(dto.getPrice())
+	    		.first_image_url(dto.getFirst_image_url())
+	    		.thema_envrn_cl(dto.getThema_envrn_cl())
+	    		.build())
+	    		.collect(Collectors.toList());
+	    		
+	    
+	    log.info("!!!!!!!!!!!!!!!!!!!!!"+campList.toString());
+	    return ResponseEntity.ok(campList);
+	}
 	//-----------吏��룄----------//
 
-		@Autowired
-		private MapTestRepository mapTestRepository;
 		
 		@PostMapping("/view/map/{id}")
 		public ResponseEntity<ViewMapResponseDTO> viewMap(

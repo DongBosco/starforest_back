@@ -14,4 +14,6 @@ public class CampSearchDTO {
     private Boolean is_auto;
     private Integer price;
     private String sigungu_nm;
+    private String thema_envrn_cl;
+    private String add1;
 }

@@ -22,7 +22,7 @@ public class CampImage {
 
     @ManyToOne(fetch = FetchType.LAZY, cascade = CascadeType.ALL)
     @JoinColumn(name = "camp_id", referencedColumnName = "id")
-    private CampSite camp_site_id;	
+    private CampSite camp_site_id;
 
     @Column(columnDefinition = "TEXT")
     private String image_url;

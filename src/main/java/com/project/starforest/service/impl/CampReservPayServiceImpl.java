@@ -1,9 +1,9 @@
 package com.project.starforest.service.impl;
 
 import java.time.LocalDateTime;
-import java.time.format.DateTimeFormatter;
 import java.util.List;
 
+import com.project.starforest.service.CampReservPayService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -12,7 +12,7 @@ import org.springframework.stereotype.Service;
 import com.project.starforest.domain.CampSite;
 import com.project.starforest.domain.Reservation;
 import com.project.starforest.domain.ReservationDates;
-import com.project.starforest.dto.ReservationDto;
+import com.project.starforest.dto.reservation.ReservationDto;
 import com.project.starforest.repository.MapTestRepository;
 import com.project.starforest.repository.ReservationRepository;
 import com.project.starforest.repository.ReservationedRepository;
@@ -21,7 +21,7 @@ import lombok.extern.log4j.Log4j2;
 
 @Service
 @Log4j2
-public class CampReservPayService {
+public class CampReservPayServiceImpl implements CampReservPayService {
 
 	@Autowired
 	private ReservationRepository reservationRepository;
@@ -41,14 +41,14 @@ public class CampReservPayService {
         	Reservation faleReservation = new Reservation();
         	faleReservation.setStart_date(startDate);
         	faleReservation.setEnd_date(endDate);
-        	faleReservation.setMessage("¾Ñ..´©±º°¡ ¹ú½á ¿¹¾àÇß³×¿ä¤Ð¤Ð");
-        	log.info("¿¹¾àÁßº¹¿¹¾àÁßº¹¿¹¾àÁßº¹¿¹¾àÁßº¹¿¹¾àÁßº¹¿¹¾àÁßº¹¿¹¾àÁßº¹");
+        	faleReservation.setMessage("ï¿½ï¿½..ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ß³×¿ï¿½Ð¤ï¿½");
+        	log.info("ï¿½ï¿½ï¿½ï¿½ï¿½ßºï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ßºï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ßºï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ßºï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ßºï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ßºï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ßºï¿½");
         	return ResponseEntity.ok().body(faleReservation);
         }
 		
 	    CampSite campResult = mapTestRepository.findById(id).orElseThrow();
 	    
-	    //¿¹¾à³Ñ¹ö
+	    //ï¿½ï¿½ï¿½ï¿½Ñ¹ï¿½
 //	    LocalDateTime now = LocalDateTime.now();
 //	    DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyyMMddHHmmss");
 //        String formattedDate = now.format(formatter);
@@ -57,29 +57,29 @@ public class CampReservPayService {
 //        String combined = formattedDate + randomInt;
 //        log.info(combined);
 	    
-        log.info("Ä·ÇÎÀå"+campResult);
+        log.info("Ä·ï¿½ï¿½ï¿½ï¿½"+campResult);
         if(campResult != null) {	
         	Reservation entity = Reservation.builder()
         			.start_date(startDate)
         			.end_date(endDate)
         			.created_at(LocalDateTime.now())
-        			.message("¿¹¾à °¡´ÉÇÕ´Ï´Ù!!")
+        			.message("ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½Õ´Ï´ï¿½!!")
         			.campsite_id(campResult)
 //        			.reservation_number(combined)
         			.build();
         	
-        	log.info("¿¹¾à¼º°ø¿¹¾à¼º°ø¿¹¾à¼º°ø¿¹¾à¼º°ø¿¹¾à¼º°ø"+entity);
+        	log.info("ï¿½ï¿½ï¿½à¼ºï¿½ï¿½ï¿½ï¿½ï¿½à¼ºï¿½ï¿½ï¿½ï¿½ï¿½à¼ºï¿½ï¿½ï¿½ï¿½ï¿½à¼ºï¿½ï¿½ï¿½ï¿½ï¿½à¼ºï¿½ï¿½"+entity);
 	    Reservation saveDate = reservation.save(entity);
         	
-        	log.info("¿¹¾à¼º°ø¿¹¾à¼º°ø¿¹¾à¼º°ø¿¹¾à¼º°ø¿¹¾à¼º°ø"+saveDate);
+        	log.info("ï¿½ï¿½ï¿½à¼ºï¿½ï¿½ï¿½ï¿½ï¿½à¼ºï¿½ï¿½ï¿½ï¿½ï¿½à¼ºï¿½ï¿½ï¿½ï¿½ï¿½à¼ºï¿½ï¿½ï¿½ï¿½ï¿½à¼ºï¿½ï¿½"+saveDate);
         	return ResponseEntity.ok(saveDate);
         }
 	    
-        log.info("Ä·ÇÎÀå¾øÀ½Ä·ÇÎÀå¾øÀ½Ä·ÇÎÀå¾øÀ½Ä·ÇÎÀå¾øÀ½Ä·ÇÎÀå¾øÀ½");
-        return ResponseEntity.status(HttpStatus.NOT_FOUND).build(); // Ä·ÇÎÀåÀ» Ã£Áö ¸øÇÑ °æ¿ì¸¦ ´ëºñÇÑ ÀÀ´ä
+        log.info("Ä·ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Ä·ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Ä·ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Ä·ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Ä·ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½");
+        return ResponseEntity.status(HttpStatus.NOT_FOUND).build(); // Ä·ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ Ã£ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ì¸¦ ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½
 	}
 	
-	private boolean isReservation(LocalDateTime start, LocalDateTime end, Long id) {
+	public boolean isReservation(LocalDateTime start, LocalDateTime end, Long id) {
         List<ReservationDates> overlappingReservations = reservationRepository.findOverlappingReservations(start, end,id);
         return !overlappingReservations.isEmpty();
     }

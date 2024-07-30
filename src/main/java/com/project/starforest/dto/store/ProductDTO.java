@@ -1,12 +1,7 @@
-package com.project.starforest.dto;
+package com.project.starforest.dto.store;
 
-import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
-
-import org.springframework.web.multipart.MultipartFile;
-
-import com.project.starforest.domain.ProductImage;
 
 import lombok.AllArgsConstructor;
 import lombok.Builder;

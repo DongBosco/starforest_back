@@ -2,29 +2,21 @@ package com.project.starforest.service.impl;
 
 import java.time.LocalDateTime;
 import java.util.List;
-import java.util.Optional;
 import java.util.stream.Collectors;
 
 import com.project.starforest.domain.Product;
-import com.project.starforest.domain.ProductImage;
 import com.project.starforest.domain.ProductReview;
 import com.project.starforest.domain.ShoppingCartItem;
-import com.project.starforest.dto.ProductDTO;
-import com.project.starforest.dto.ProductImagesDTO;
-import com.project.starforest.dto.ProductReviewDTO;
+import com.project.starforest.dto.store.ProductDTO;
+import com.project.starforest.dto.store.ProductImagesDTO;
+import com.project.starforest.dto.store.ProductReviewDTO;
 import com.project.starforest.repository.ProductRepository;
 import com.project.starforest.repository.ProductReviewRepository;
 import com.project.starforest.service.ProductService;
 
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.data.domain.Page;
-import org.springframework.data.domain.PageRequest;
-import org.springframework.data.domain.Pageable;
-import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import lombok.Builder;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.log4j.Log4j2;
 

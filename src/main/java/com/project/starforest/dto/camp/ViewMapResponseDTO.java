@@ -1,15 +1,9 @@
-package com.project.starforest.dto;
+package com.project.starforest.dto.camp;
 
 import java.util.List;
 
-import org.locationtech.jts.geom.Point;
-
 import com.project.starforest.domain.CampImage;
 
-import jakarta.persistence.Column;
-import jakarta.persistence.GeneratedValue;
-import jakarta.persistence.GenerationType;
-import jakarta.persistence.Id;
 import lombok.Builder;
 import lombok.Data;
 

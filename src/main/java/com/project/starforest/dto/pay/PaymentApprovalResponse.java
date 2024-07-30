@@ -1,6 +1,5 @@
-package com.project.starforest.dto;
+package com.project.starforest.dto.pay;
 
-import lombok.Data;
 import lombok.Getter;
 import lombok.Setter;
 import lombok.ToString;

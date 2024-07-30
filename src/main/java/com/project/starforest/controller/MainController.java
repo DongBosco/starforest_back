@@ -23,7 +23,6 @@ public class MainController {
 
 	@Autowired
 	private DiaryRepository diaryRepository;
-	//悼老 累己
 	@GetMapping("/diary/list")
 	public String getAllDiaryList() {
 		
@@ -31,6 +30,5 @@ public class MainController {
 		
 		return null;
 	}
-	//悼老 累己
 	
 }

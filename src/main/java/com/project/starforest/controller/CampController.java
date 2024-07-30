@@ -1,7 +1,15 @@
 package com.project.starforest.controller;
 
-
-import lombok.Data;
+import com.project.starforest.dto.camp.*;
+import com.project.starforest.dto.pay.KakaoPayReadyResponse;
+import com.project.starforest.dto.pay.PaymentApprovalResponse;
+import com.project.starforest.dto.reservation.ReservationDto;
+import com.project.starforest.dto.reservation.ReservationInfoDTO;
+import com.project.starforest.dto.reservation.ReservationInfoPayDTO;
+import com.project.starforest.service.CampReservPayService;
+import com.project.starforest.service.CampSearchService;
+import com.project.starforest.service.CoordinatesService;
+import com.project.starforest.service.KakaoPayService;
 import lombok.RequiredArgsConstructor;
 
 import lombok.extern.log4j.Log4j2;
@@ -12,44 +20,13 @@ import java.util.List;
 import java.util.stream.Collectors;
 
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.data.domain.Pageable;
-import org.springframework.data.domain.PageRequest;
-import org.springframework.data.domain.Page;
-import org.springframework.http.HttpStatus;
+import org.springframework.data.domain.*;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestParam;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
-import com.project.starforest.domain.CampImage;
-import com.project.starforest.domain.CampSite;
-import com.project.starforest.domain.ReservInfo;
-import com.project.starforest.domain.Reservation;
-import com.project.starforest.domain.ReservationDates;
-import com.project.starforest.dto.CampListDTO;
-import com.project.starforest.dto.CampReservationInfoDTO;
-import com.project.starforest.dto.CampSearchDTO;
-import com.project.starforest.dto.KakaoPayReadyResponse;
-import com.project.starforest.dto.MapResponseDTO;
-import com.project.starforest.dto.PaymentApprovalResponse;
-import com.project.starforest.dto.ReservationDto;
-import com.project.starforest.dto.ReservationInfoDTO;
-import com.project.starforest.dto.ReservationInfoPayDTO;
-import com.project.starforest.dto.ViewMapResponseDTO;
-import com.project.starforest.repository.CampImageRepository;
-import com.project.starforest.repository.MapTestRepository;
-import com.project.starforest.repository.PointRepository;
-import com.project.starforest.repository.ReservInfoRepository;
-import com.project.starforest.repository.ReservationRepository;
-import com.project.starforest.repository.ReservationedRepository;
-import com.project.starforest.service.impl.CampReservPayService;
-import com.project.starforest.service.impl.CampSearchService;
-import com.project.starforest.service.impl.CoordinatesService;
-import com.project.starforest.service.impl.KakaoPayService;
+import com.project.starforest.domain.*;
+import com.project.starforest.repository.*;
+import com.project.starforest.service.impl.*;
 
 
 @RestController
@@ -57,11 +34,27 @@ import com.project.starforest.service.impl.KakaoPayService;
 @Log4j2
 @RequestMapping("/camp")
 public class CampController {
-	//-----정희 작업------ //
+	//-----정희 작업------ //      CONTROLLER에 REPOSITORY가져오면 안됩니다.=bosco
 	@Autowired
-	private MapTestRepository mapTestRepository;
+	private final ReservationedRepository reservationedRepository;
 	@Autowired
-	private CampImageRepository campImageRepository;
+	private final ReservationRepository reservationRepository;
+	@Autowired
+	private final ReservInfoRepository reservInfoRepository;
+	@Autowired
+	private final MapTestRepository mapTestRepository;
+	@Autowired
+	private final CampImageRepository campImageRepository;
+	@Autowired
+	private final PointRepository pointRepository;
+	@Autowired
+	private final CampReservPayService campReservPayService;
+	@Autowired
+	private final CoordinatesService coordinatesService;
+	@Autowired
+	private final KakaoPayService kakaoPayService;
+	@Autowired
+	private final CampSearchService campSearchService;
 
 	@GetMapping("/list")
 	public ResponseEntity<List<CampListDTO>> getCamps(@RequestParam(name="page", defaultValue = "0") int page,
@@ -83,17 +76,13 @@ public class CampController {
 						.build())
 				.collect(Collectors.toList());
 
-
 		log.info("!!!!!!!!!!!!!!!!!!!!!"+campList.toString());
 		return ResponseEntity.ok(campList);
 	}
-
-
 		@PostMapping("/view/map/{id}")
 		public ResponseEntity<ViewMapResponseDTO> viewMap(
 				@PathVariable("id") Long id
 				) {
-			
 			CampSite entity = mapTestRepository.findById(id).orElseThrow();
 			List<CampImage> campImageEntity = campImageRepository.findByCampId(id);
 			
@@ -129,27 +118,15 @@ public class CampController {
 			log.info(result.toString());
 			return ResponseEntity.ok(result);
 		}	
-	
-
-		@Autowired
-		private CoordinatesService coordinatesService;
-		
-		@Autowired
-		private PointRepository pointRepository;
 
 		@PostMapping("/coordinates")
 	    public ResponseEntity<List<MapResponseDTO>> getNearbyPoints(@RequestBody CampSite mapEntity) {
 
 	        List<CampSite> result = coordinatesService.findNearbyPoints(mapEntity);
-	        
-//	        log.info("result"+result.toString());
-	        
-	        //寃곌낵媛� �뾾�쓣�븣
+
 	        if(result.isEmpty()) {
 	        	return ResponseEntity.ok(null);
 	        }
-	        
-	     // MapEntity 由ъ뒪�듃瑜� MapResponseDTO 由ъ뒪�듃濡� 蹂��솚�뀅�뀕
 	        List<MapResponseDTO> response = result.stream()
 	                .map(entity -> MapResponseDTO.builder()
 	                        .id(entity.getId())
@@ -165,13 +142,9 @@ public class CampController {
 	                        .mapY(entity.getMapy())
 	                        .build())
 	                .collect(Collectors.toList());
-	 
-	        
-	        
 	        return ResponseEntity.ok(response);
 	    }
 		
-
 //-------------------예약 정보------------------//
 		@GetMapping("/reservation/infos/{id}")
 		public ResponseEntity<ReservationInfoPayDTO> payReservationinfo(
@@ -195,15 +168,6 @@ public class CampController {
 			return ResponseEntity.ok(dto);
 		}
 //-------------------예약 정보------------------//
-
-
-
-	//--------------移댁뭅�삤 寃곗젣----------------//
-
-//		
-		  private final KakaoPayService kakaoPayService;
-//		  private final PaymentRepository paymentRepository;
-//
 		    @PostMapping("/kakaoPay/{reservId}")
 		    public KakaoPayReadyResponse kakaoPay(
 		    		@RequestBody ReservationInfoDTO dto,
@@ -213,15 +177,6 @@ public class CampController {
 		    	log.info(dto.toString());
 		        return kakaoPayService.kakaoPayReady(dto,reservId);
 		    }
-
-		    @Autowired
-		    private ReservationedRepository reservationedRepository;
-
-		    @Autowired
-		    private ReservationRepository reservationRepository;
-
-		    @Autowired
-		    private ReservInfoRepository reservInfoRepository;
 
 		    @GetMapping("/kakaoPaySuccess/{pg_token}/{reservNum}/{reservId}/{name}/{carNum}/{request}/{tel}")
 		    public ResponseEntity<PaymentApprovalResponse> kakaoPaySuccess(
@@ -234,11 +189,9 @@ public class CampController {
 		    		@PathVariable("tel") String tel
 		    		) {
 		    	log.info("reservId"+reservId);
-		        // 1. 移댁뭅�삤�럹�씠 API濡� 寃곗젣 �듅�씤 �슂泥�
 		        PaymentApprovalResponse approvalResponse = kakaoPayService.approvePayment(pgToken,reservNum);
 
 			        log.info("결제 성공");
-
 
 			        //reservation에 is_payment ture로 변경하기+예약번호 저장하기
 			        Reservation entity = reservationedRepository.findById(reservId).orElseThrow();
@@ -268,16 +221,9 @@ public class CampController {
 
 			        reservInfoRepository.save(InfoEntity);
 
-		        // 3. �겢�씪�씠�뼵�듃�뿉 �븘�슂�븳 �젙蹂� 諛섑솚
 		        return ResponseEntity.ok(approvalResponse);
 		    }
 
-
-	//----------------�삁�빟-----------------//
-
-
-
-		//�뜲�씠�꽣 由ъ뒪�듃 蹂닿린
 		@GetMapping("/reservations/{id}")
 		   public ResponseEntity<List<ReservationDto>> getAllReservations(
 				   @PathVariable("id") Long id
@@ -295,9 +241,6 @@ public class CampController {
 			}
 		    
 		//예약 날짜 확인후 reservation에 저장(is_payment는 false)
-		@Autowired
-		private CampReservPayService campReservPayService;
-
 		//예약하기 버튼 클릭시 실행하는곳
 		@PostMapping("/reservation/{id}")
 		public ResponseEntity<Reservation> createReservation(
@@ -308,33 +251,23 @@ public class CampController {
 		   	return campReservPayService.getIsCampReservation(dto,id);
 		}
 
-	
 	//-------------------캠핑장 검색---------------------//
 
-		@Autowired
-		private CampSearchService campSearchService;
-		
 		@GetMapping("/search")
 		public ResponseEntity<List<CampSearchDTO>> getfindcamp(
 				@RequestParam("query") String query
 				) {
 			
 			List<CampSearchDTO> result = campSearchService.searchCamp(query);
-			
-					
+
 			return ResponseEntity.ok(result);
 		}
-	
-	//------------------�삁�빟------------------------//
 
-		
 		@GetMapping("/reservation/{id}")
 		public ResponseEntity<CampReservationInfoDTO> getCampReservation(
 				@PathVariable("id") Long id
 				) {
-			
 			CampSite entity = mapTestRepository.findById(id).orElseThrow();
-			//s
 			CampReservationInfoDTO result = CampReservationInfoDTO.builder()
 					.id(entity.getId())
 					.is_glamp(entity.is_glamp())

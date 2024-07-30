@@ -30,7 +30,7 @@ public class Diary {
     @Column(length = 255)
     private String category;
 
-    private LocalDateTime created_at;
+    private Timestamp created_at;
 
     public void changeId(Long id) {
         this.id = id;
@@ -48,7 +48,7 @@ public class Diary {
         this.category = category;
     }
 
-    public void changeCreated_at(LocalDateTime created_at) {
+    public void changeCreated_at(Timestamp created_at) {
         this.created_at = created_at;
     }
 }

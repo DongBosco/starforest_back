@@ -1,4 +1,4 @@
-package com.project.starforest.dto;
+package com.project.starforest.dto.store;
 
 import lombok.AllArgsConstructor;
 import lombok.Builder;

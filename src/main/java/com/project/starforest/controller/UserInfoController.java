@@ -14,7 +14,4 @@ import org.springframework.web.bind.annotation.RestController;
 @Log4j2
 @RequestMapping("/user")
 public class UserInfoController {
-
-	
-	
 }

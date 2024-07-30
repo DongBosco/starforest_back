@@ -2,6 +2,7 @@ package com.project.starforest.service.impl;
 
 import java.util.List;
 
+import com.project.starforest.service.CoordinatesService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.geo.Point;
 import org.springframework.stereotype.Service;
@@ -11,7 +12,7 @@ import com.project.starforest.repository.PointRepository;
 
 
 @Service
-public class CoordinatesService {
+public class CoordinatesServiceImpl implements CoordinatesService {
 
 	@Autowired
 	private PointRepository pointRepository;

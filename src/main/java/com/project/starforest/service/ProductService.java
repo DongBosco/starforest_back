@@ -2,13 +2,11 @@ package com.project.starforest.service;
 import java.util.List;
 
 import com.project.starforest.domain.Product;
-import com.project.starforest.domain.ProductImage;
 import com.project.starforest.domain.ProductReview;
 import com.project.starforest.domain.ShoppingCartItem;
-import com.project.starforest.domain.UserInfo;
-import com.project.starforest.dto.ProductDTO;
-import com.project.starforest.dto.ProductImagesDTO;
-import com.project.starforest.dto.ProductReviewDTO;
+import com.project.starforest.dto.store.ProductDTO;
+import com.project.starforest.dto.store.ProductImagesDTO;
+import com.project.starforest.dto.store.ProductReviewDTO;
 
 import jakarta.transaction.Transactional;
 

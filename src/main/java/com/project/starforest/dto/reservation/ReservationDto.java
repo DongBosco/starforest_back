@@ -1,9 +1,6 @@
-package com.project.starforest.dto;
+package com.project.starforest.dto.reservation;
 
 import java.time.LocalDateTime;
-
-import com.project.starforest.domain.CampSite;
-import com.project.starforest.domain.ReservationDates;
 
 import lombok.AllArgsConstructor;
 import lombok.Builder;

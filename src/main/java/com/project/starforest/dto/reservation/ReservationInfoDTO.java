@@ -1,4 +1,4 @@
-package com.project.starforest.dto;
+package com.project.starforest.dto.reservation;
 
 import lombok.Data;
 

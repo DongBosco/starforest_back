@@ -21,17 +21,26 @@ public interface ProductRepository extends JpaRepository<Product, Long> {
 					//from product p left join p.imageList pi : product Entity와 imageList를 LEFT JOIN으로 연결
 															//where pi.image_index=0 and p.delFlag=false : 이미지인덱스=0, product Entitydml delflag=false인값만 선택
 	//직접 Query를 작성해서 특정 조건에 맞는 데이터를 가져오는 기능 (상품에 연결된 이미지 리스트 중 첫번째 이미지를 가져오고, 삭제되지 않은 상품만 가져오기)
-	@Query("select p,pi from Product p left join p.imageList pi where pi.image_index = 0 and p.delFlag = false")
+	@Query("SELECT p,pi " +
+			"FROM Product p " +
+			"LEFT JOIN p.imageList pi " +
+			"WHERE pi.image_index = 0 " +
+			"AND p.delFlag = false")
 	Page<Object[]> selectList(Pageable pageable);
 	//ㄴ> 메서드: 상품리스트와 첫번째 이미지를 페이지 단위로 가져옴->한꺼번에x 페이지처럼나누어서가져오기
 	
 	//데이터수정시 사용(데이터업데이트)
 	@Modifying
 	//특정상품의 delfalg값을 변경, pno:상품의 고유Id / falg:delflag
-	@Query("update Product p set p.delFlag = :flag where p.id = :pno")
+	@Query("UPDATE Product p " +
+			"SET p.delFlag = :flag " +
+			"WHERE p.id = :pno")
 	void updateToDelete(@Param("pno") Long pno,@Param("flag") boolean flag);
 	//pno로 주어진 상품의 delflag 값을 flag로 바꿈(delfalg의 삭제여부를 나타내는값)
 	
-	@Query("select p from Product p where p.type = :type and p.delFlag = false")
+	@Query("SELECT p " +
+			"FROM Product p " +
+			"WHERE p.type = :type " +
+			"AND p.delFlag = false")
 	List<Product> findByType(@Param("type") int type);
 }

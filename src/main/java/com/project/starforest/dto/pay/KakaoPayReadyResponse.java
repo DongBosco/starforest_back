@@ -1,7 +1,6 @@
-package com.project.starforest.dto;
+package com.project.starforest.dto.pay;
 
 import lombok.Data;
-import lombok.Getter;
 
 @Data
 public class KakaoPayReadyResponse {

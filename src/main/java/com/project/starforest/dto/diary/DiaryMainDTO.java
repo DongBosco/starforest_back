@@ -1,4 +1,4 @@
-package com.project.starforest.dto;
+package com.project.starforest.dto.diary;
 
 import java.time.LocalDateTime;
 import java.util.List;

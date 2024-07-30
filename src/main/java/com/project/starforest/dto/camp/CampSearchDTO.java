@@ -1,4 +1,4 @@
-package com.project.starforest.dto;
+package com.project.starforest.dto.camp;
 
 import lombok.Builder;
 import lombok.Data;

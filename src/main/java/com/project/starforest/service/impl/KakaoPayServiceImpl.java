@@ -1,17 +1,17 @@
 package com.project.starforest.service.impl;
 
+import com.project.starforest.service.KakaoPayService;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.HttpEntity;
 import org.springframework.http.HttpHeaders;
-import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 import org.springframework.util.LinkedMultiValueMap;
 import org.springframework.util.MultiValueMap;
 import org.springframework.web.client.RestTemplate;
 
-import com.project.starforest.dto.KakaoPayReadyResponse;
-import com.project.starforest.dto.PaymentApprovalResponse;
-import com.project.starforest.dto.ReservationInfoDTO;
+import com.project.starforest.dto.pay.KakaoPayReadyResponse;
+import com.project.starforest.dto.pay.PaymentApprovalResponse;
+import com.project.starforest.dto.reservation.ReservationInfoDTO;
 
 import lombok.NoArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -19,7 +19,7 @@ import lombok.extern.slf4j.Slf4j;
 @Service
 @Slf4j
 @NoArgsConstructor
-public class KakaoPayService {
+public class KakaoPayServiceImpl implements KakaoPayService {
 	@Value("${kakao.admin.key}")
     private String adminKey;
 	

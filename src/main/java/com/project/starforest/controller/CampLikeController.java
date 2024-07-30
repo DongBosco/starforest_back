@@ -17,15 +17,18 @@ import lombok.extern.log4j.Log4j2;
 @RequestMapping("/camps")
 @Log4j2
 public class CampLikeController {
-	@Autowired
-    private CampLikeService campLikeService;
- // 모든 캠핑장 리스트를 반환하는 엔드포인트
+
+    private final CampLikeService campLikeService;
+
+    public CampLikeController(CampLikeService campLikeService) {
+        this.campLikeService = campLikeService;
+    }
+    // 모든 캠핑장 리스트를 반환하는 엔드포인트
     @GetMapping("/list")
     public ResponseEntity<List<CampSite>> getAllCamps() {
         List<CampSite> allCamps = campLikeService.getAllCamps();
         return ResponseEntity.ok(allCamps);
     }
-    
  // 사용자가 좋아요를 누른 캠핑장 리스트를 반환하는 엔드포인트
     @GetMapping("/liked")
     public ResponseEntity<List<CampSite>> getLikedCamps(@RequestAttribute String userEmail) {

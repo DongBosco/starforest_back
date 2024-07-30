@@ -34,6 +34,8 @@ public class CampSearchService {
 				.is_glamp(entity.is_glamp())
 				.price(entity.getPrice())
 				.sigungu_nm(entity.getSigungu_nm())
+				.add1(entity.getAdd1())
+				.thema_envrn_cl(entity.getThema_envrn_cl())
 				.build())
 			.collect(Collectors.toList());
 		

@@ -1,6 +1,7 @@
 package com.project.starforest.controller;
 
 
+import lombok.Data;
 import lombok.RequiredArgsConstructor;
 
 import lombok.extern.log4j.Log4j2;
@@ -10,6 +11,9 @@ import java.util.List;
 import java.util.stream.Collectors;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Page;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -23,6 +27,7 @@ import org.springframework.web.bind.annotation.RestController;
 import com.project.starforest.domain.CampImage;
 import com.project.starforest.domain.CampSite;
 import com.project.starforest.domain.ReservationDates;
+import com.project.starforest.dto.CampListDTO;
 import com.project.starforest.dto.CampReservationInfoDTO;
 import com.project.starforest.dto.CampSearchDTO;
 import com.project.starforest.dto.MapResponseDTO;
@@ -41,23 +46,49 @@ import com.project.starforest.service.impl.CoordinatesService;
 @Log4j2
 @RequestMapping("/camp")
 public class CampController {
-	
-	//-----------吏��룄----------//
+	//-----정희 작업------ //
+	@Autowired
+	private MapTestRepository mapTestRepository;
 
-		@Autowired
-		private MapTestRepository mapTestRepository;
+	@GetMapping("/list")
+	public ResponseEntity<List<CampListDTO>> getCamps(@RequestParam(name="page", defaultValue = "0") int page,
+	                                               @RequestParam(name="size", defaultValue = "20") int size) {
 		
 		@Autowired
 		private CampImageRepository campImageRepository;
-		
+
 		@PostMapping("/view/{id}")
+		Pageable pageable = PageRequest.of(page, size);
+
+	    Page<CampSite> campSites = mapTestRepository.findAll(pageable);
+	    List<CampListDTO> campList = campSites.stream().map(dto->CampListDTO.builder()
+	    		.id(dto.getId())
+	    		.name(dto.getName())
+	    		.is_glamp(dto.is_glamp())
+	    		.is_auto(dto.is_auto())
+	    		.is_carvan(dto.is_carvan())
+	    		.add1(dto.getAdd1())
+	    		.price(dto.getPrice())
+	    		.first_image_url(dto.getFirst_image_url())
+	    		.thema_envrn_cl(dto.getThema_envrn_cl())
+	    		.build())
+	    		.collect(Collectors.toList());
+
+
+	    log.info("!!!!!!!!!!!!!!!!!!!!!"+campList.toString());
+	    return ResponseEntity.ok(campList);
+	}
+	//-----------吏��룄----------//
+
+
+		@PostMapping("/view/map/{id}")
 		public ResponseEntity<ViewMapResponseDTO> viewMap(
 				@PathVariable("id") Long id
 				) {
-			
+
 			CampSite entity = mapTestRepository.findById(id).orElseThrow();
 			List<CampImage> campImageEntity = campImageRepository.findByCampId(id);
-			
+
 			ViewMapResponseDTO result = ViewMapResponseDTO.builder()
 					.id(entity.getId())
 					.name(entity.getName())
@@ -132,7 +163,7 @@ public class CampController {
 	        return ResponseEntity.ok(response);
 	    }
 		
-		
+
 	//--------------移댁뭅�삤 寃곗젣----------------//
 //	public class PayController {
 //		
@@ -192,7 +223,7 @@ public class CampController {
 					.createdAt(entity.getCreated_at())
 					.build())
 					.collect(Collectors.toList());
-					
+
 		       return ResponseEntity.ok(result);
 			}
 		    
@@ -202,7 +233,7 @@ public class CampController {
 		 		@RequestBody ReservationDto dto,
 		 		@PathVariable("id") Long id
 		   		) {
-		   	
+
 		    
 		   	LocalDateTime startDate = dto.getStartDate();
 		   	LocalDateTime endDate = dto.getEndDate();
@@ -218,7 +249,7 @@ public class CampController {
 
 	        CampSite campResult = mapTestRepository.findById(id).orElseThrow();
 	        log.info("캠핑장"+campResult);
-	        if(campResult != null) {	
+	        if(campResult != null) {
 	        	ReservationDates entity = ReservationDates.builder()
 	        			.start_date(startDate)
 	        			.end_date(endDate)
@@ -226,10 +257,10 @@ public class CampController {
 	        			.message("예약성공!!")
 	        			.campSite(campResult)
 	        			.build();
-	        	
+
 	        	log.info("예약성공예약성공예약성공예약성공예약성공"+entity);
 		    ReservationDates saveDate = reservationRepository.save(entity);
-	        	
+
 	        	log.info("예약성공예약성공예약성공예약성공예약성공"+saveDate);
 	        	return ResponseEntity.ok(saveDate);
 	        }

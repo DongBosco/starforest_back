@@ -12,7 +12,6 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
-
 //TODO => EMAILAUTH -> 학원컴터에 구현해놔서 이식만하면 됨. CHANGE_PW => 로직구현 금방할수있음, UPDATE, PROFILE_IMG_UPDATE
 
 @RestController

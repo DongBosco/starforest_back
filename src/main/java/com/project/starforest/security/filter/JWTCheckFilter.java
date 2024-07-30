@@ -20,7 +20,6 @@ import jakarta.servlet.http.HttpServletResponse;
 import lombok.extern.log4j.Log4j2;
 
 import static com.project.starforest.domain.MemberRole.MEMBER;
-
 @Log4j2
 public class JWTCheckFilter extends OncePerRequestFilter{
 

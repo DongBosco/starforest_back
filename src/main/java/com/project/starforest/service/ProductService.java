@@ -1,6 +1,8 @@
 package com.project.starforest.service;
 import java.util.List;
 
+import org.springframework.beans.factory.annotation.Autowired;
+
 import com.project.starforest.domain.Product;
 import com.project.starforest.domain.ProductImage;
 import com.project.starforest.domain.ProductReview;
@@ -9,6 +11,7 @@ import com.project.starforest.domain.UserInfo;
 import com.project.starforest.dto.ProductDTO;
 import com.project.starforest.dto.ProductImagesDTO;
 import com.project.starforest.dto.ProductReviewDTO;
+import com.project.starforest.repository.ProductRepository;
 
 import jakarta.transaction.Transactional;
 
@@ -31,7 +34,10 @@ public interface ProductService {
 //	주어진 ID를 기반으로 제품을 삭제	
 	//*********************************안씀**************************************************************
 	
-	Product getProductById(Long productId);
+	
+	
+	
+	ProductDTO getProductById(Long productId);
 	//주어진 getProductById값에 맞는 정보값을 찾아 반환
 	 List<ProductDTO> getAllProducts();
 

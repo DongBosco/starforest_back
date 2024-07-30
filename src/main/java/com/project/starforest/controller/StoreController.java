@@ -84,7 +84,7 @@ public class StoreController {
 	
 	//제품ID로 제품 세부정보 조회
 	@GetMapping("/view/{productId}")		
-	public Product getProductById(@PathVariable("productId") Long productId) {	//prductId라는 이름의 경로 변수를 받아와서 해당 제품의 정보를 반환
+	public ProductDTO getProductById(@PathVariable("productId") Long productId) {	//prductId라는 이름의 경로 변수를 받아와서 해당 제품의 정보를 반환
 		log.info("상품 상세 정보 조회: 상품id = {}",productId);	//로그남김/ 상품id와 함께 조회 작업이 시작됨을 기록.
 		return productService.getProductById(productId);	//ID로 제품을 조회하여 반환
 	}

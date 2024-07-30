@@ -31,6 +31,8 @@ public class Product {
 	private int price;
 	private int type;  //0 =>텐트  1=>음식  2=>diy
 	private int sales_volume = 0;
+	
+	@Column(name="del_flag")
 	private boolean delFlag; //false->true
 	
 	//하나의 product의 여러개의 이미지와 연결됨.							//fetch=FetchType.LAZY : 이미지를 필요할 때만 불러옴
@@ -40,7 +42,9 @@ public class Product {
 	@ElementCollection
 //	@Builder.Default
 	private List<ProductImage> imageList = new ArrayList<>();
-	private List<String> imgUrls;
+	
+	@Column(name="img_urls")
+	private String imgUrls;
 
 //	public void addImage(ProductImage image) {
 //		int index = this.imageList.size();  //몇개의ㅣ 이미지가 잇는지 계산

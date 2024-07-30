@@ -12,6 +12,7 @@ import com.project.starforest.domain.ShoppingCartItem;
 import com.project.starforest.dto.ProductDTO;
 import com.project.starforest.dto.ProductImagesDTO;
 import com.project.starforest.dto.ProductReviewDTO;
+import com.project.starforest.repository.ProductImageRepository;
 import com.project.starforest.repository.ProductRepository;
 import com.project.starforest.repository.ProductReviewRepository;
 import com.project.starforest.service.ProductService;
@@ -34,9 +35,11 @@ import lombok.extern.log4j.Log4j2;
 @Transactional
 public class ProductServiceImpl implements ProductService {
 	
+	@Autowired
 	//ProductRepository인터페이스를 사용하여 db작업을 수행
 	private final ProductRepository productRepository;
 	private final ProductReviewRepository productReviewRepository;
+	private final ProductImageRepository productImageRepository;
 	
 //	//Autowired를 이용해서 자동으로 productRepository도구를 ProductServiceImpl클래스에 주입해줌
 //	@Autowired
@@ -48,10 +51,21 @@ public class ProductServiceImpl implements ProductService {
 	
 	//특정 제품의 ID를 이용해서 특정 제품을 찾아서 반환
 	@Override
-	public Product getProductById(Long productId) {
+	public ProductDTO getProductById(Long productId) {
 		//productRepository.findById(productId)를 호출해서 제품을 찾고 찾지못하면 메시지 던짐
-		return productRepository.findById(productId)
-				.orElseThrow();
+		Product productEntity = productRepository.findById(productId).orElseThrow();
+		List<ProductImage> productImageEntity = productImageRepository.findByProductId(productId);
+		
+		ProductDTO productDTO = ProductDTO.builder()
+				.productId(productEntity.getId())
+				.imageList(productImageEntity)
+				.productName(productEntity.getProduct_name())
+				.brandName(productEntity.getBrand_name())
+				.type(productEntity.getType())
+				.price(productEntity.getPrice())
+				.build();
+				
+		return productDTO;
 		
 	}
 		
@@ -69,8 +83,7 @@ public class ProductServiceImpl implements ProductService {
 		                .brandName(entity.getBrand_name())
 		                .type(entity.getType())
 		                .price(entity.getPrice())
-//		                .imageList(entity.getImageList()) 
-//		                .first_img_url(entity.get)
+		                .first_img_url(entity.getImgUrls())
 		                .build())
 		            //변환된 productDTO의객체들을 리스트로 수집
 		            .collect(Collectors.toList());
@@ -108,8 +121,6 @@ public class ProductServiceImpl implements ProductService {
 	                    .first_img_url(product.getFirst_img_url())
 	                    .imageList(product.getImageList())
 	                    .productReview(product.getProductReview())
-	                    .starsale(product.getStarsale())
-	                    .delivery(product.getDelivery())
 	                    .images(product.getImages())
 	                    .build()) // 빌더 패턴으로 DTO 변환
 	            .collect(Collectors.toList()); // 리스트로 수집
@@ -120,7 +131,7 @@ public class ProductServiceImpl implements ProductService {
     // 특정 제품에 대한 모든 리뷰를 가져옴
     @Override
     public List<ProductReview> getReviewsByProductId(Long productId) {  
-        Product product = getProductById(productId);
+        ProductDTO product = getProductById(productId);
         if (product != null) {
             return productReviewRepository.findByProductId(productId);
         }
@@ -129,10 +140,10 @@ public class ProductServiceImpl implements ProductService {
     
     //특정상품의 리뷰추가 ??????????????????????????????????
     public ProductReview addReview(ProductReviewDTO reviewDTO) {
-        Product product = getProductById(reviewDTO.getProductId());
+        ProductDTO product = getProductById(reviewDTO.getProductId());
         //프론트에서 member id를 찾고 member가 있으면 결과값을 builder에 넣기
         ProductReview review = ProductReview.builder()
-        		.product(product)
+//        		.product(product)
         		.content(reviewDTO.getContent())
         		.created_at(LocalDateTime.now())
         		.build();
@@ -144,7 +155,7 @@ public class ProductServiceImpl implements ProductService {
     //특정제품의 모든 이미지 가져오기
     @Override
     public List<ProductImagesDTO> getImagesByProductId(Long productId) {
-    		Product product =  getProductById(productId);
+    		ProductDTO product =  getProductById(productId);
     		return product.getImageList().stream()
     				.map(image -> ProductImagesDTO.builder()
     						.id(image.getId())
@@ -156,9 +167,30 @@ public class ProductServiceImpl implements ProductService {
 
 	@Override
 	public ShoppingCartItem addItemTocart(ShoppingCartItem item) {
-		// TODO Auto-generated method stub
+
 		return null;
 	}
+	
+	
+//	private ProductDTO convertToDTO(Product product) {
+//        return ProductDTO.builder()
+//                .productId(product.getId())
+//                .productName(product.getProduct_name())
+//                .brandName(product.getBrand_name())
+//                .type(product.getType())
+//                .price(product.getPrice())
+//                .firstImgUrl(product.get())
+//                .imageList(product.getImageList().stream()
+//                        .map(image -> new ProductImagesDTO(image.getId(), image.getImageIndex(), image.getImageUrl()))
+//                        .collect(Collectors.toList()))
+//                .productReview(product.getProductReviews().stream()
+//                        .map(review -> new ProductReviewDTO(review.getId(), review.getContent(), review.getCreatedAt()))
+//                        .collect(Collectors.toList()))
+//                .starsale(product.getStarsale())
+//                .delivery(product.getDelivery())
+//                .build();
+//    }
+}
 	 
 	
 //	//특정제품삭제
@@ -320,7 +352,7 @@ public class ProductServiceImpl implements ProductService {
 //	public void remove(Long pno) {
 //		// TODO Auto-generated method stub
 
-	}
+//	}
 
 
 

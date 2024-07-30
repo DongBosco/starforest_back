@@ -25,14 +25,15 @@ public class ProductDTO {
 	private int price;
 	private String sale;
 	private int slaesVolume; //누적판매량
+	private String del_flag;	//
 	
 	private String first_img_url;
 //	private List<ProductImage> imageList;
-	private List<ProductImagesDTO> imageList;
+	private List<ProductImage> imageList;
 	private List<ProductReviewDTO> productReview;
 	
-	private String starsale;
-	private String delivery;
+//	private String starsale;
+//	private String delivery;
 
 
 	@Builder.Default

@@ -5,6 +5,7 @@ import lombok.*;
 import lombok.extern.log4j.Log4j2;
 
 import java.sql.Timestamp;
+import java.time.LocalDateTime;
 
 @Getter
 @Setter
@@ -18,6 +19,7 @@ import java.sql.Timestamp;
 public class ProductReview {
 
     @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
     @ManyToOne(fetch = FetchType.LAZY, cascade = CascadeType.ALL)
@@ -32,7 +34,7 @@ public class ProductReview {
     private String content;
 
     @Column(name = "created_at", nullable = true)
-    private Timestamp created_at;
+    private LocalDateTime created_at;
 
     public void changeContent(String content) {
         if (content != null && !content.trim().isEmpty() && content.length() >= 10) {
@@ -42,7 +44,7 @@ public class ProductReview {
         }
     }
 
-    public void changeCreated_at(Timestamp created_at) {
+    public void changeCreated_at(LocalDateTime created_at) {
         this.created_at = created_at;
     }
 }

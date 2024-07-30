@@ -32,18 +32,23 @@ public class Product {
 	private int type;  //0 =>텐트  1=>음식  2=>diy
 	private int sales_volume = 0;
 	private boolean delFlag; //false->true
+	
+	//하나의 product의 여러개의 이미지와 연결됨.							//fetch=FetchType.LAZY : 이미지를 필요할 때만 불러옴
+	@OneToMany(mappedBy = "product", cascade = CascadeType.ALL, fetch = FetchType.LAZY)
+	@Builder.Default
 
 	@ElementCollection
-	@Builder.Default
+//	@Builder.Default
 	private List<ProductImage> imageList = new ArrayList<>();
+	private List<String> imgUrls;
 
-	public void addImage(ProductImage image) {
-		int index = this.imageList.size();
-		if(image.getImage_index() != index){
-			image.changeImage_index(index+1);
-		}
-		this.imageList.add(image);
-	}
+//	public void addImage(ProductImage image) {
+//		int index = this.imageList.size();  //몇개의ㅣ 이미지가 잇는지 계산
+//		if(image.getImage_index() != index){
+//			image.changeImage_index(index+1);
+//		}
+//		this.imageList.add(image);
+//	}
 
 	public void changeProduct_name(String product_name) {
 		this.product_name = product_name;

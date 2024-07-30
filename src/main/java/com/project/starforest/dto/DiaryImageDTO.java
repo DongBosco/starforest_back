@@ -1,6 +1,7 @@
 package com.project.starforest.dto;
 
-import java.sql.Timestamp;
+//import java.sql.Timestamp;
+import java.time.LocalDateTime;
 
 import lombok.AllArgsConstructor;
 import lombok.Builder;
@@ -16,6 +17,6 @@ public class DiaryImageDTO {
 	private Long id;
 	private Long diaryId;
 	private String image_url;
-	private Timestamp created_at;
+	private LocalDateTime created_at;
 }
 

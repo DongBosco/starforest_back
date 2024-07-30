@@ -20,7 +20,8 @@ import java.sql.Timestamp;
 public class ShoppingCartItem {
 	@Id
 	private Long id;
-
+	
+	//
 	@ManyToOne(fetch = FetchType.LAZY, cascade = CascadeType.ALL)
 	@JoinColumn(name = "product_id", referencedColumnName = "id", insertable = false, updatable = false)
 	private Product product;

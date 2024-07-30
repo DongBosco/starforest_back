@@ -4,8 +4,14 @@ package com.project.starforest.controller;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.log4j.Log4j2;
 
+import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -19,42 +25,83 @@ import com.project.starforest.domain.ProductReview;
 import com.project.starforest.domain.ShoppingCartItem;
 import com.project.starforest.domain.UserInfo;
 import com.project.starforest.dto.ProductDTO;
+import com.project.starforest.dto.ProductReviewDTO;
 import com.project.starforest.service.ProductService;
+import com.project.starforest.service.impl.ProductServiceImpl;
 
 
 @RestController
 @Log4j2
-@RequestMapping("/store")
-@Controller
+@RequestMapping("/store") //해당 컨트롤러의 모든 요청 경로가 /store로 시작됨을 정의
+//@Controller
 public class StoreController {
 	
+	@Autowired
 	private ProductService productService;
 	
 	//get*******************************************************************
-	//특정ID로 제품을 조회
-	@GetMapping("/{id}")
-	public ProductDTO getProduct(@PathVariable Long id) {
-		return productService.getProductById(id);
-	}
+
+//	@GetMapping("/list/{type}")
+//	public Map<String, Object> getAllProducts(
+//			@PathVariable("type") int type
+//			){
+//		log.info(")))))))))))))))))))"+type);
+//		//모든 제품을가져와서 products리스트에 저장
+//		List<ProductDTO> products = productService.getAllProducts();
+//		
+//		
+//		
+//		log.info("qqqqqqqqqqqqqqq"+products);
+//		Map<String, Object> response = new HashMap<>();
+//		//products 리스트를 stores 라는 맵에 추가 
+//		response.put("stores", products);
+//		response.put("hasMore", true); 
+//		return response;
+//	}
 	
-	//모든 제품조회
-	@GetMapping
-	public List<ProductDTO> getAllProducts() {
-		return productService.getAllProducts();
-	}
+	  // 특정 타입의 제품 조회
+    @GetMapping("/list/{type}")
+    public Map<String, Object> getProductsByType(@PathVariable("type") int type) {
+        log.info("Request for products of type: " + type);
+        
+        List<ProductDTO> products = new ArrayList<ProductDTO>();
+        // 특정 타입의 제품을 가져와서 products 리스트에 저장
+        if(type>2) {
+        	products = productService.getAllProducts();
+        }
+        else {        	
+        	products= productService.getProductsByType(type);
+        }
+
+        log.info("Products of type " + type + ": " + products);
+        Map<String, Object> response = new HashMap<>();
+        // products 리스트를 stores 라는 맵에 추가
+        response.put("stores", products);
+        response.put("hasMore", true);
+        return response;
+    }
+    
 	
 	//제품ID로 제품 세부정보 조회
 	@GetMapping("/view/{productId}")		
-	public Product getProductById(@PathVariable Long productId) {	//prductId라는 이름의 경로 변수를 받아와서 해당 제품의 정보를 반환
+	public Product getProductById(@PathVariable("productId") Long productId) {	//prductId라는 이름의 경로 변수를 받아와서 해당 제품의 정보를 반환
 		log.info("상품 상세 정보 조회: 상품id = {}",productId);	//로그남김/ 상품id와 함께 조회 작업이 시작됨을 기록.
-		return productService.getProductById(productId);
+		return productService.getProductById(productId);	//ID로 제품을 조회하여 반환
 	}
-	
-//	@GetMapping("/list")
-//	public List<ProductImageList> getProductList() {
-//		log.info("전체 상품 목록 조회");
-//		return productService.getAllProducts();
-//	}
+	// 제품 세부정보 조회
+//    @GetMapping("/view/{productId}")
+//    public ResponseEntity<Product> getProductById(@PathVariable Long productId) {
+//        log.info("Fetching product details: productId = {}", productId);
+//        Product product = productService.getProductById(productId);
+//        
+//        if (product != null) {
+//            return ResponseEntity.ok(product);
+//        } else {
+//            return ResponseEntity.status(HttpStatus.NOT_FOUND).build();
+//        }
+//    }
+//	
+
 	
 	//제품ID로 리뷰조회
 	@GetMapping("/review/{productId}")
@@ -79,16 +126,16 @@ public class StoreController {
 	//post******************************************************************
 	//새로운리뷰추가
 	@PostMapping("/review")
-	public ProductReview addReview(@RequestBody ProductReview review) {
+	public ProductReview addReview(@RequestBody ProductReviewDTO review) {
 		log.info("새리뷰추가:{}",review);
 		return productService.addReview(review);
 	}
 	
-//	@PostMapping("/cart/add")
-//	public ShoppingCartItem addToCart(@RequestBody ShoppingCartItem item) {
-//		log.info("Adding item to cart:{}",item);
-//		return productService.addItemToCart(item);
-//	}
-//	
+	@PostMapping("/cart/add")
+	public ShoppingCartItem addToCart(@RequestBody ShoppingCartItem item) {
+		log.info("Adding item to cart:{}",item);
+		return productService.addItemTocart(item);
+	}
+	
 
 }

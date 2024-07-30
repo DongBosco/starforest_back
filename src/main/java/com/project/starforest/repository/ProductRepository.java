@@ -1,6 +1,9 @@
 package com.project.starforest.repository;
 
 import com.project.starforest.domain.Product;
+
+import java.util.List;
+
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.repository.JpaRepository;
@@ -29,4 +32,6 @@ public interface ProductRepository extends JpaRepository<Product, Long> {
 	void updateToDelete(@Param("pno") Long pno,@Param("flag") boolean flag);
 	//pno로 주어진 상품의 delflag 값을 flag로 바꿈(delfalg의 삭제여부를 나타내는값)
 	
+	@Query("select p from Product p where p.type = :type and p.delFlag = false")
+	List<Product> findByType(@Param("type") int type);
 }

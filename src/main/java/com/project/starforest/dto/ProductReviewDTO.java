@@ -16,7 +16,7 @@ import lombok.NoArgsConstructor;
 public class ProductReviewDTO {
 	private Long id;
 	private Long userId;
-//	private Long productId;
+	private Long productId;
 	private String content;
 	private LocalDateTime createdAt;
 };

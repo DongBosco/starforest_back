@@ -2,9 +2,13 @@ package com.project.starforest.service;
 import java.util.List;
 
 import com.project.starforest.domain.Product;
+import com.project.starforest.domain.ProductImage;
 import com.project.starforest.domain.ProductReview;
 import com.project.starforest.domain.ShoppingCartItem;
 import com.project.starforest.domain.UserInfo;
+import com.project.starforest.dto.ProductDTO;
+import com.project.starforest.dto.ProductImagesDTO;
+import com.project.starforest.dto.ProductReviewDTO;
 
 import jakarta.transaction.Transactional;
 
@@ -29,15 +33,18 @@ public interface ProductService {
 	
 	Product getProductById(Long productId);
 	//주어진 getProductById값에 맞는 정보값을 찾아 반환
-	List<Product> getAllProducts();
+	 List<ProductDTO> getAllProducts();
+
 	//모든 제품 목록을 반환
 	List<ProductReview> getReviewsByProductId(Long productId);
 	//getReviewsByProductId를 기반으로 해당 제품에 대한 모든 리뷰를 반환
-	ProductReview addReview(ProductReview review);
+	ProductReview addReview(ProductReviewDTO review);
 	//새로운 리뷰를 추가하고 추가된 리뷰 객체를 반환.
+	List<ProductDTO> getProductsByType(int type);
 	
+	List<ProductImagesDTO> getImagesByProductId(Long productId);
 //	UserInfo getUserInfoById(Long userId);
 //	주어진 사용자ID에 대한 사용자 정보를 반환
-//	ShoppingCartItem addItemTocart(ShoppingCartItem item); 
+	ShoppingCartItem addItemTocart(ShoppingCartItem item); 
 //	쇼핑 카트에 항목을 추가하고 추가된 항목을 반환.
 }

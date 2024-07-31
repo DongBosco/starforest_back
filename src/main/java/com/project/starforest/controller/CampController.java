@@ -80,7 +80,7 @@ public class CampController {
 		log.info("!!!!!!!!!!!!!!!!!!!!!"+campList.toString());
 		return ResponseEntity.ok(campList);
 	}
-		@PostMapping("/view/map/{id}")
+		@PostMapping("/view/{id}")
 		public ResponseEntity<ViewMapResponseDTO> viewMap(
 				@PathVariable("id") Long id
 				) {
@@ -243,13 +243,14 @@ public class CampController {
 		    
 		//예약 날짜 확인후 reservation에 저장(is_payment는 false)
 		//예약하기 버튼 클릭시 실행하는곳
-		@PostMapping("/reservation/{id}")
+		@PostMapping("/reservation/{id}/{email}")
 		public ResponseEntity<Reservation> createReservation(
 		 		@RequestBody ReservationDto dto,
-		 		@PathVariable("id") Long id
+		 		@PathVariable("id") Long id,
+		 		@PathVariable("email") String email
 		   		) {
-
-		   	return campReservPayService.getIsCampReservation(dto,id);
+			log.info("QQQQQQQQQQQQQQQQQQ"+email);
+		   	return campReservPayService.getIsCampReservation(dto,id,email);
 		}
 
 	//-------------------캠핑장 검색---------------------//

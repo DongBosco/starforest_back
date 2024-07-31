@@ -2,6 +2,7 @@ package com.project.starforest.service.impl;
 
 import java.time.LocalDateTime;
 import java.util.List;
+import java.util.Optional;
 
 import com.project.starforest.service.CampReservPayService;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -10,10 +11,12 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 
 import com.project.starforest.domain.CampSite;
+import com.project.starforest.domain.Member;
 import com.project.starforest.domain.Reservation;
 import com.project.starforest.domain.ReservationDates;
 import com.project.starforest.dto.reservation.ReservationDto;
 import com.project.starforest.repository.MapTestRepository;
+import com.project.starforest.repository.MemberRepository;
 import com.project.starforest.repository.ReservationRepository;
 import com.project.starforest.repository.ReservationedRepository;
 
@@ -32,7 +35,10 @@ public class CampReservPayServiceImpl implements CampReservPayService {
 	@Autowired
 	private ReservationedRepository reservation;
 	
-	public ResponseEntity<Reservation> getIsCampReservation(ReservationDto dto, Long id) {
+	@Autowired
+	private MemberRepository memberRepository;
+	
+	public ResponseEntity<Reservation> getIsCampReservation(ReservationDto dto, Long id,String email) {
 
 		LocalDateTime startDate = dto.getStartDate();
 	   	LocalDateTime endDate = dto.getEndDate();
@@ -41,41 +47,31 @@ public class CampReservPayServiceImpl implements CampReservPayService {
         	Reservation faleReservation = new Reservation();
         	faleReservation.setStart_date(startDate);
         	faleReservation.setEnd_date(endDate);
-        	faleReservation.setMessage("��..������ ���� �����߳׿�Ф�");
-        	log.info("�����ߺ������ߺ������ߺ������ߺ������ߺ������ߺ������ߺ�");
+        	faleReservation.setMessage("앗...누군가 이미 예약했네요!!");
         	return ResponseEntity.ok().body(faleReservation);
         }
 		
 	    CampSite campResult = mapTestRepository.findById(id).orElseThrow();
 	    
-	    //����ѹ�
-//	    LocalDateTime now = LocalDateTime.now();
-//	    DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyyMMddHHmmss");
-//        String formattedDate = now.format(formatter);
-//        double random = Math.random()*100;
-//        int randomInt = (int)Math.floor(random);
-//        String combined = formattedDate + randomInt;
-//        log.info(combined);
-	    
-        log.info("ķ����"+campResult);
+	    Member memberEntity = memberRepository.findByEmail(email);
+	    log.info(memberEntity.getEmail());
+	    log.info("%%%%%%%%%%%%%%%%%%%%%%%%"+memberEntity.toString());
+        
         if(campResult != null) {	
         	Reservation entity = Reservation.builder()
         			.start_date(startDate)
         			.end_date(endDate)
         			.created_at(LocalDateTime.now())
-        			.message("���� �����մϴ�!!")
+        			.message("예약 가능합니다!!")
         			.campsite_id(campResult)
-//        			.reservation_number(combined)
+        			.member(memberEntity)//멤버 이메일 넣어야함
         			.build();
         	
-        	log.info("���༺�����༺�����༺�����༺�����༺��"+entity);
 	    Reservation saveDate = reservation.save(entity);
         	
-    		log.info("���༺�����༺�����༺�����༺�����༺��"+saveDate);
         	return ResponseEntity.ok(saveDate);
         }
 	    
-        log.info("ķ�������ķ�������ķ�������ķ�������ķ�������");
         return ResponseEntity.status(HttpStatus.NOT_FOUND).build(); // ķ������ ã�� ���� ��츦 ����� ����
 	}
 	

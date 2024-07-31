@@ -45,7 +45,7 @@ public class ProductImage {
 		}
 		this.image_index = image_index;
 		if (this.image_index < 0){
-			log.info("image index를 확인하세요! ");
+			log.info("image index error! ");
 		}
 	}
 

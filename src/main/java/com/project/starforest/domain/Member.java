@@ -11,12 +11,17 @@ import lombok.*;
 @AllArgsConstructor
 @NoArgsConstructor
 @Getter
+@Setter
 @Builder
 public class Member {
 
 	@Id
 	@Column(unique = true, nullable = false)
 	private String email;
+
+
+	@Column(unique = true, nullable = false)
+	private Long id;
 
 	private String pass_word;
 

@@ -40,13 +40,11 @@ public class JWTCheckFilter extends OncePerRequestFilter{
     protected void doFilterInternal(HttpServletRequest request, HttpServletResponse response, FilterChain filterChain)
             throws ServletException, IOException {
         log.info("---------------doFilterInternal-----------------");
-
         String authHeaderStr = request.getHeader("Authorization");
 
         try {
             String accessToken = authHeaderStr.substring(7);
             Map<String, Object> claims = JWTUtil.validateToken(accessToken);
-
             log.info("JWT claims: " + claims);
             String email = (String) claims.get("email");
             String pass_word = (String) claims.get("pass_word");
@@ -65,9 +63,7 @@ public class JWTCheckFilter extends OncePerRequestFilter{
             UsernamePasswordAuthenticationToken authenticationToken
                     = new UsernamePasswordAuthenticationToken(memberDTO, pass_word, Collections.singleton(new SimpleGrantedAuthority("ROLE_" + MEMBER)));
             SecurityContextHolder.getContext().setAuthentication(authenticationToken);
-
             filterChain.doFilter(request, response);
-
         }catch(Exception e){
             log.error("JWT Check Error..............");
             log.error(e.getMessage());

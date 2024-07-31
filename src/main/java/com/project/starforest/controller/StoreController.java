@@ -33,7 +33,6 @@ import com.project.starforest.service.impl.ProductServiceImpl;
 @RestController
 @Log4j2
 @RequestMapping("/store") //해당 컨트롤러의 모든 요청 경로가 /store로 시작됨을 정의
-//@Controller
 public class StoreController {
 	
 	@Autowired
@@ -132,9 +131,14 @@ public class StoreController {
 	}
 	
 	@PostMapping("/cart/add")
-	public ShoppingCartItem addToCart(@RequestBody requestCartDTO item) {
-		log.info("Adding item to cart:{}",item);
-		return null;
+	public ResponseEntity<String> addToCart(@RequestBody requestCartDTO item) throws Exception{
+		try{
+			log.info("Adding item to cart:{}",item);
+			return ResponseEntity.ok("카트등록 완료.");
+		}catch(Exception e) {
+			return ResponseEntity.badRequest().body("쇼핑카트 담는중 에러 발생");
+		
+	}
 	}
 	
 

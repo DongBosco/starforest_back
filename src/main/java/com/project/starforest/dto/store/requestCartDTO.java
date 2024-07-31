@@ -12,6 +12,7 @@ import lombok.NoArgsConstructor;
 @Builder
 public class requestCartDTO {
     private String user_email;
-    
+    private Long product_id;
+    private int quantity;
     private boolean result;
 }

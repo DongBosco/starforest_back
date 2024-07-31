@@ -79,7 +79,7 @@ public class CampController {
 		log.info("!!!!!!!!!!!!!!!!!!!!!"+campList.toString());
 		return ResponseEntity.ok(campList);
 	}
-		@PostMapping("/view/map/{id}")
+		@PostMapping("/view/{id}")
 		public ResponseEntity<ViewMapResponseDTO> viewMap(
 				@PathVariable("id") Long id
 				) {

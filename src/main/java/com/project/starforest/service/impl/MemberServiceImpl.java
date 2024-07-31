@@ -39,9 +39,11 @@ public class MemberServiceImpl implements MemberService {
             throw new Exception(ALREADY_REGISTERED_EMAIL);
         }
         try {
+
             Member member = Member.builder()
                     .email(registerDTO.getEmail())
                     .pass_word(passwordEncoder.encode(registerDTO.getPass_word()))
+                    .id(1516518486L)
                     .build();
             member.addRole(MemberRole.USER);
 

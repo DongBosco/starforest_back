@@ -28,7 +28,7 @@ public class CustomUserDetailsService implements UserDetailsService {
         log.info("------------------ #2 loadUserByUsername-------------------------- " + username);
 
         Member member = memberRepository.getWithRole(username);
-        UserInfo userInfo = userInfoRepository.getUserInfoByEmail(member.getEmail());
+        UserInfo userInfo = userInfoRepository.getUserInfoById(member.getId());
         if(member.getEmail() == null) {
             System.out.println("not found");
             throw new UsernameNotFoundException("not found");
@@ -49,7 +49,6 @@ public class CustomUserDetailsService implements UserDetailsService {
                 userInfo.getGrade(),
                 member.getMemberRoleList().stream().map(
                         Enum::name).collect(Collectors.toList()));
-
         log.info(memberDTO);
 
         return memberDTO;

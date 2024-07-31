@@ -84,7 +84,7 @@ public class CampController {
 					.first_image_url(entity.getFirst_image_url())
 					.add1(entity.getAdd1())
 					.add2(entity.getAdd2())
-					.brazierCl(entity.getBrazielr_cl())
+					.brazierCl(entity.getBrazier_cl())
 					.campImages(campImageEntity)
 					.build();
 			log.info(result.toString());

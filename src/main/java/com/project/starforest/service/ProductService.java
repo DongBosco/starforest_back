@@ -6,7 +6,6 @@ import org.springframework.beans.factory.annotation.Autowired;
 import com.project.starforest.domain.Product;
 import com.project.starforest.domain.ProductImage;
 import com.project.starforest.domain.ProductReview;
-import com.project.starforest.domain.ShoppingCartItem;
 import com.project.starforest.domain.UserInfo;
 import com.project.starforest.dto.store.ProductDTO;
 import com.project.starforest.dto.store.ProductImagesDTO;
@@ -52,6 +51,6 @@ public interface ProductService {
 //	List<ProductImagesDTO> getImagesByProductId(Long productId);
 //	UserInfo getUserInfoById(Long userId);
 //	주어진 사용자ID에 대한 사용자 정보를 반환
-	ShoppingCartItem addItemTocart(ShoppingCartItem item); 
+//	ShoppingCartItem addItemTocart(ShoppingCartItem item);
 //	쇼핑 카트에 항목을 추가하고 추가된 항목을 반환.
 }

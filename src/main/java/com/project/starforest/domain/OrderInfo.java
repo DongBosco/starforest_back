@@ -34,9 +34,8 @@ public class OrderInfo {
     @Column(name = "address2", length = 255, nullable = true)
     private String address2;
 
-//    @OneToOne(fetch = FetchType.LAZY, cascade = CascadeType.ALL)
-//    @Column(name = "order_id" , length = 20, nullable = true)
-//    private Order order_id;
+    @OneToOne(fetch = FetchType.LAZY, cascade = CascadeType.ALL)
+    private Order order;
 
     public void changeName(String name) {
         this.name = name;

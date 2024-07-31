@@ -21,7 +21,6 @@ import org.springframework.web.bind.annotation.RestController;
 
 import com.project.starforest.domain.Product;
 import com.project.starforest.domain.ProductReview;
-import com.project.starforest.domain.ShoppingCartItem;
 import com.project.starforest.domain.UserInfo;
 import com.project.starforest.dto.store.ProductDTO;
 import com.project.starforest.dto.store.ProductReviewDTO;
@@ -130,6 +129,7 @@ public class StoreController {
 		return productService.addReview(review);
 	}
 	
+
 	@PostMapping("/cart/add")
 	public ResponseEntity<String> addToCart(@RequestBody requestCartDTO item) throws Exception{
 		try{
@@ -137,9 +137,27 @@ public class StoreController {
 			return ResponseEntity.ok("카트등록 완료.");
 		}catch(Exception e) {
 			return ResponseEntity.badRequest().body("쇼핑카트 담는중 에러 발생");
-		
+		}
 	}
+//	@PostMapping("/cart/add")
+//	public ShoppingCartItem addToCart(@RequestBody requestCartDTO item) {
+//		log.info("Adding item to cart:{}",item);
+//		return null;
+//	}
+	
+	
+	
+	//동일 작업시작
+	//
+	
+	//스토어 구매전 데이터
+	@PostMapping("/buy/product")
+	public String storeBuy() {
+		return null;
+
 	}
 	
+	//
+	//동일 작업 끝
 
 }

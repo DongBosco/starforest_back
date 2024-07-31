@@ -30,7 +30,7 @@ public class Product {
 	private String brand_name;
 	private int price;
 	private int type;  //0 =>텐트  1=>음식  2=>diy
-	private int sales_volume = 0;
+	private int sales_volume;
 	
 	@Column(name="del_flag")
 	private boolean delFlag; //false->true
@@ -39,7 +39,6 @@ public class Product {
 	@OneToMany(mappedBy = "product", cascade = CascadeType.ALL, fetch = FetchType.LAZY)
 	@Builder.Default
 
-	@ElementCollection
 //	@Builder.Default
 	private List<ProductImage> imageList = new ArrayList<>();
 	

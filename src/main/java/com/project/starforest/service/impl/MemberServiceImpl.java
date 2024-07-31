@@ -39,9 +39,19 @@ public class MemberServiceImpl implements MemberService {
             throw new Exception(ALREADY_REGISTERED_EMAIL);
         }
         try {
-            Member member = createMember(registerDTO);
+
+            Member member = Member.builder()
+                    .email(registerDTO.getEmail())
+                    .pass_word(passwordEncoder.encode(registerDTO.getPass_word()))
+                    .id(1516518486L)
+                    .build();
+            member.addRole(MemberRole.USER);
+
             UserInfo userInfo = createUserInfo(registerDTO, member);
-            userInfoRepository.save(userInfo);
+            UserInfo temp = userInfoRepository.save(userInfo);
+            member.setId(temp.getId());
+
+            memberRepository.save(member);
             return true;
         } catch (Exception e) {
             log.error(REGISTRATION_ERROR, e);
@@ -107,14 +117,6 @@ public class MemberServiceImpl implements MemberService {
                 .grade(userInfo.getGrade())
                 .roleNames(member.getRoleNames())
                 .build();
-    }
-    private Member createMember(RegisterDTO registerDTO) {
-        Member member = Member.builder()
-                .email(registerDTO.getEmail())
-                .pass_word(passwordEncoder.encode(registerDTO.getPass_word()))
-                .build();
-        member.addRole(MemberRole.USER);
-        return memberRepository.save(member);
     }
 
     private UserInfo createUserInfo(RegisterDTO registerDTO, Member member) {

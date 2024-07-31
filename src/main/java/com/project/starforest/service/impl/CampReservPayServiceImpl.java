@@ -71,7 +71,7 @@ public class CampReservPayServiceImpl implements CampReservPayService {
         	log.info("���༺�����༺�����༺�����༺�����༺��"+entity);
 	    Reservation saveDate = reservation.save(entity);
         	
-        	log.info("���༺�����༺�����༺�����༺�����༺��"+saveDate);
+    		log.info("���༺�����༺�����༺�����༺�����༺��"+saveDate);
         	return ResponseEntity.ok(saveDate);
         }
 	    

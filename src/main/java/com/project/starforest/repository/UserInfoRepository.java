@@ -23,4 +23,7 @@ public interface UserInfoRepository extends JpaRepository<UserInfo, Long> {
             "FROM UserInfo u " +
             "WHERE u.nick_name = :nick_name")
     boolean existsByNickName(@Param("nick_name") String nick_name);
+
+        @Query("SELECT u FROM UserInfo u WHERE u.id = :id")
+        UserInfo getUserInfoById(@Param("id") Long id);
 }

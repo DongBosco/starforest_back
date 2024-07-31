@@ -23,6 +23,7 @@ import com.project.starforest.domain.Product;
 import com.project.starforest.domain.ProductReview;
 import com.project.starforest.domain.UserInfo;
 import com.project.starforest.dto.store.ProductDTO;
+import com.project.starforest.dto.store.ProductResponseDTO;
 import com.project.starforest.dto.store.ProductReviewDTO;
 import com.project.starforest.dto.store.requestCartDTO;
 import com.project.starforest.service.ProductService;
@@ -141,10 +142,15 @@ public class StoreController {
 	//동일 작업시작
 	//
 	
-	//스토어 구매전 데이터
-	@PostMapping("/buy/product")
-	public String storeBuy() {
-		return null;
+	//구매 페이지에서 상품 데이터 가져오기
+	@GetMapping("/get/product/{productId}")
+	public ResponseEntity<ProductResponseDTO> storeBuy(
+			@PathVariable("productId") Long productId
+			) {
+		
+		ProductResponseDTO result = productService.getProductByIdOfEntity(productId);
+		
+		return ResponseEntity.ok(result);
 	}
 	
 	//

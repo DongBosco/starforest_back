@@ -10,6 +10,7 @@ import com.project.starforest.domain.ProductImage;
 import com.project.starforest.domain.ProductReview;
 import com.project.starforest.dto.store.ProductDTO;
 import com.project.starforest.dto.store.ProductImagesDTO;
+import com.project.starforest.dto.store.ProductResponseDTO;
 import com.project.starforest.dto.store.ProductReviewDTO;
 import com.project.starforest.repository.ProductImageRepository;
 import com.project.starforest.repository.ProductRepository;
@@ -190,6 +191,26 @@ public class ProductServiceImpl implements ProductService {
 //                .delivery(product.getDelivery())
 //                .build();
 //    }
+    
+    
+    
+    //동일 작성
+    public ProductResponseDTO getProductByIdOfEntity(Long productId) {
+    	
+    	Product result = productRepository.findById(productId).orElseThrow();
+    	ProductResponseDTO resultDto = ProductResponseDTO.builder()
+    			.id(result.getId())
+    			.imgUrls(result.getImgUrls())
+    			.product_name(result.getProduct_name())
+    			.brand_name(result.getBrand_name())
+    			.price(result.getPrice())
+    			.type(result.getType())
+    			.build();
+    	
+    	return resultDto;
+    }
+    //동일 작성
+    
 }
 	 
 	

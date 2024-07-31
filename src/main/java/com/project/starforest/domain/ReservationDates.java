@@ -34,7 +34,7 @@ public class ReservationDates {
     private LocalDateTime created_at;
     
     @Transient
-	private String message;  // �삁�빟 �떎�뙣 �떆 硫붿떆吏�瑜� ���옣�븷 �븘�뱶
+	private String message;
 
     public void changeStart_date(LocalDateTime start_date) {
         if (start_date != null) {

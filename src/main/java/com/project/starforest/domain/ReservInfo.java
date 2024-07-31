@@ -15,6 +15,7 @@ import lombok.*;
 public class ReservInfo {
 
     @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
     @Column(name = "name", length = 50)
@@ -29,18 +30,22 @@ public class ReservInfo {
     @Column(name = "car_number", length = 20)
     private String car_number;
 
+    @ManyToOne(fetch = FetchType.LAZY, cascade = CascadeType.ALL)
+    @JoinColumn(name = "reserv_id")
+    private Reservation reservation;
+    
     public void changeName(String name) {
         if (name != null && !name.trim().isEmpty()) {
             this.name = name;
         } else {
-            throw new IllegalArgumentException( "이름을 입력해주세요.");
+            throw new IllegalArgumentException( "�씠由꾩쓣 �엯�젰�빐二쇱꽭�슂.");
         }
     }
     public void changeTel(String tel) {
         if (tel != null && !tel.trim().isEmpty()) {
             this.tel = tel;
         } else {
-            throw new IllegalArgumentException("전화번호를 입력해 주세요.");
+            throw new IllegalArgumentException("�쟾�솕踰덊샇瑜� �엯�젰�빐 二쇱꽭�슂.");
         }
     }
 
@@ -52,7 +57,3 @@ public class ReservInfo {
         this.car_number = car_number;
     }
 }
-
-//    @OneToOne(fetch = FetchType.LAZY, cascade = CascadeType.ALL)
-//    @Column(name = "reserv_id")
-//    private Reservation reservation;

@@ -5,7 +5,8 @@ import lombok.*;
 import lombok.extern.log4j.Log4j2;
 
 import java.sql.Timestamp;
-
+import java.time.LocalDateTime;
+@Data
 @Embeddable
 @Getter
 @Builder
@@ -13,22 +14,24 @@ import java.sql.Timestamp;
 @NoArgsConstructor
 @Log4j2
 @ToString
+@Entity
 public class ProductImage {
 	@Id
+	@GeneratedValue(strategy = GenerationType.IDENTITY)
 	private Long id;
 
 	@Column(name = "image_index")
 	private Integer image_index;
 
 	@ManyToOne(fetch = FetchType.LAZY, cascade = CascadeType.ALL)
-	@JoinColumn(name = "product_nm", referencedColumnName = "id")
+	@JoinColumn(referencedColumnName = "id",insertable = false, updatable = false)
 	private Product product;
 
 	@Column(columnDefinition = "TEXT")
 	private String image_url;
 
 	@Column(name = "created_at")
-	private Timestamp created_at;
+	private LocalDateTime created_at; 
 
 
 
@@ -42,7 +45,7 @@ public class ProductImage {
 		}
 		this.image_index = image_index;
 		if (this.image_index < 0){
-			log.info("image indexë¥¼ í™•ì¸í•˜ì„¸ìš”! ");
+			log.info("image index¸¦ È®ÀÎÇÏ¼¼¿ä! ");
 		}
 	}
 
@@ -54,7 +57,7 @@ public class ProductImage {
 		this.image_url = image_url;
 	}
 
-	public void changeCreated_at(Timestamp created_at) {
+	public void changeCreated_at(LocalDateTime created_at) {
 		this.created_at = created_at;
 	}
 }

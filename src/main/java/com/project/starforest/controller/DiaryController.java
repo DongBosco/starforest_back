@@ -22,6 +22,7 @@ import com.project.starforest.service.DiaryService;
 @RequiredArgsConstructor
 @Log4j2
 @RequestMapping("/diary")
+@CrossOrigin(origins = "http://localhost:3000")
 public class  DiaryController{
 
 	private final DiaryService diaryService;
@@ -38,13 +39,13 @@ public class  DiaryController{
 	public ResponseEntity<?> createDiary(
 			@RequestPart("content") String content,
 			@RequestPart("allTags") String allTags,
-			@RequestPart("images") List<MultipartFile> images
+			@RequestPart(value = "images", required = false) List<MultipartFile> images
             ) {
 		
 		log.info("diary create request");
 		log.info("Content: " + content);
 		log.info("All Tags: " + allTags);
-		log.info("Number of images: " + images.size());
+		log.info("Number of images: " + (images != null ? images.size() : 0));
 //		log.info("!!!!!!!!!!!!!"+dto);
 		
         try {

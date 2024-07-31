@@ -38,23 +38,41 @@ public class DiaryImageServiceImpl implements DiaryImageService {
 	@Override
 	@Transactional
 	public List<String> saveImages(Long diaryId, List<MultipartFile> images) {
-		List<String> savedImageUrls = new ArrayList<>();
-		
-		Diary diary = diaryRepository.findById(diaryId)
-				.orElseThrow(() -> new RuntimeException("diary not found with id: " + diaryId));
-		
-		for (MultipartFile image : images) {
-			String imageUrl = uploadImageToServer(image);
-			
-			DiaryImage diaryImage = DiaryImage.builder()
-					.diary(diary)
-					.image_url(imageUrl)
-					.build();
-			diaryImageRepository.save(diaryImage);
-			savedImageUrls.add(imageUrl);
-		}
-		return savedImageUrls;
+	    List<String> savedImageUrls = new ArrayList<>();
+	    
+	    Diary diary = diaryRepository.findById(diaryId)
+	            .orElseThrow(() -> new RuntimeException("diary not found with id: " + diaryId));
+	    
+	    for (MultipartFile image : images) {
+	        String imageUrl = uploadImageToServer(image);
+	        
+	        DiaryImage diaryImage = DiaryImage.builder()
+	                .diary(diary)
+	                .image_url(imageUrl)
+	                .build();
+	        diaryImageRepository.save(diaryImage);
+	        savedImageUrls.add(imageUrl);
+	    }
+	    return savedImageUrls;
 	}
+//	public List<String> saveImages(Long diaryId, List<MultipartFile> images) {
+//		List<String> savedImageUrls = new ArrayList<>();
+//		
+//		Diary diary = diaryRepository.findById(diaryId)
+//				.orElseThrow(() -> new RuntimeException("diary not found with id: " + diaryId));
+//		
+//		for (MultipartFile image : images) {
+//			String imageUrl = uploadImageToServer(image);
+//			
+//			DiaryImage diaryImage = DiaryImage.builder()
+//					.diary(diary)
+//					.image_url(imageUrl)
+//					.build();
+//			diaryImageRepository.save(diaryImage);
+//			savedImageUrls.add(imageUrl);
+//		}
+//		return savedImageUrls;
+//	}
 	
 
 	

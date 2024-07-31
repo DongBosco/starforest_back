@@ -1,9 +1,13 @@
 package com.project.starforest.service.impl;
 
 import java.time.LocalDateTime;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.stream.Collectors;
 
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Slice;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.multipart.MultipartFile;
@@ -32,7 +36,11 @@ public class DiaryServiceImpl implements DiaryService {
 		diary.changeCreated_at(LocalDateTime.now());
 		Diary savedDiary = diaryRepository.save(diary);
 		
-		List<String> savedImageUrls = diaryImageService.saveImages(savedDiary.getId(), images);
+		List<String> savedImageUrls = new ArrayList<>();
+	    if (images != null && !images.isEmpty()) {
+	        savedImageUrls = diaryImageService.saveImages(savedDiary.getId(), images);
+	    }
+		
 		DiaryDTO savedDiaryDTO = convertToDTO(savedDiary);
 		savedDiaryDTO.setImage_url(savedImageUrls);
 		
@@ -44,24 +52,19 @@ public class DiaryServiceImpl implements DiaryService {
 	@Override
 	@Transactional(readOnly = true)
 	public List<DiaryDTO> getAllDiaries(Long lastId, int size) {
-		List<Diary> diaries;
-		if (lastId == null) {
-			diaries = diaryRepository.findTopN(size);
-		}else {
-			diaries = diaryRepository.findNextN(lastId, size);
-		}
-		
-		return diaries.stream()
-				.map(this::convertToDTO)
-				.peek(this::setImage_url)
-				.collect(Collectors.toList());
-		
-		
+        Pageable pageable = PageRequest.of(0, size);
+        Slice<Diary> diarySlice = diaryRepository.findDiariesForInfiniteScroll(lastId, pageable);
+        
+        List<DiaryDTO> diaryDTOs = diarySlice.getContent().stream()
+                .map(this::convertToDTO)
+                .collect(Collectors.toList());
+        
+        return diaryDTOs;
+    }
 //        return diaryRepository.findAll().stream()
 //                .map(this::convertToDTO)
 //                .peek(this::setImage_url)
 //                .collect(Collectors.toList());
-	}
 	
 	// 별숲기록 아이디로 view 조회 서비스
 	@Override
@@ -103,34 +106,43 @@ public class DiaryServiceImpl implements DiaryService {
 	
 	
 	
-	private DiaryDTO convertToDTO(Diary diary) {
-        DiaryDTO dto = DiaryDTO.builder()
-                .id(diary.getId())
-                .reservationId(diary.getReservation().getId())
-                .userEmail(diary.getUser().getEmail())
-                .content(diary.getContent())
-                .allTags(diary.getCategory())
-                .created_at(diary.getCreated_at())
-                .build();
-        
-        List<String> imageUrls = diaryImageService.getImagesByDiaryId(diary.getId())
-                .stream()
-                .map(DiaryImageDTO::getImage_url)
-                .collect(Collectors.toList());
-        dto.setImage_url(imageUrls);
-        
-        return dto;
-    }
+//	private DiaryDTO convertToDTO(Diary diary) {
+//        DiaryDTO dto = DiaryDTO.builder()
+//                .id(diary.getId())
+//                .reservationId(diary.getReservation().getId())
+//                .userEmail(diary.getUser().getEmail())
+//                .content(diary.getContent())
+//                .allTags(diary.getCategory())
+//                .created_at(diary.getCreated_at())
+//                .build();
+//        
+//        List<String> imageUrls = diaryImageService.getImagesByDiaryId(diary.getId())
+//                .stream()
+//                .map(DiaryImageDTO::getImage_url)
+//                .collect(Collectors.toList());
+//        dto.setImage_url(imageUrls);
+//        
+//        return dto;
+//    }
 	
 	
 	private Diary convertToEntity(DiaryDTO diaryDTO) {
-        return Diary.builder()
-                .id(diaryDTO.getId())
-                .content(diaryDTO.getContent())
-                .category(diaryDTO.getAllTags())
-                .created_at(diaryDTO.getCreated_at())
-                .build();
+		return Diary.builder()
+				.content(diaryDTO.getContent())
+				.category(diaryDTO.getAllTags())
+				.build();
 	}
+	
+	
+	private DiaryDTO convertToDTO(Diary diary) {
+		return DiaryDTO.builder()
+				.id(diary.getId())
+				.content(diary.getContent())
+				.allTags(diary.getCategory())
+				.created_at(diary.getCreated_at())
+				.build();
+	}
+	
 	
 	
 	 private void setImage_url(DiaryDTO diaryDTO) {

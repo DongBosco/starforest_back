@@ -15,6 +15,7 @@ import java.sql.Timestamp;
 public class Order {
 
     @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
     @Column(name = "order_number", nullable = false, unique = true, length = 20)
@@ -38,6 +39,9 @@ public class Order {
     @JoinColumn(name = "info_nm", referencedColumnName = "id", insertable = false, updatable = false)
     private OrderInfo order_info;
 
+    @Column
+    private boolean is_payment;
+    
     public void changeOrder_number(String order_number) {
         this.order_number = order_number;
     }

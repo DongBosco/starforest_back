@@ -137,5 +137,18 @@ public class StoreController {
 		return null;
 	}
 	
+	
+	
+	//동일 작업시작
+	//
+	
+	//스토어 구매전 데이터
+	@PostMapping("/buy/product")
+	public String storeBuy() {
+		return null;
+	}
+	
+	//
+	//동일 작업 끝
 
 }

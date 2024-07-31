@@ -29,7 +29,7 @@ public class ProductDTO {
 	
 	private String first_img_url;
 //	private List<ProductImage> imageList;
-	private List<ProductImage> imageList;
+	private List<String> imageList;
 	private List<ProductReviewDTO> productReview;
 	
 //	private String starsale;

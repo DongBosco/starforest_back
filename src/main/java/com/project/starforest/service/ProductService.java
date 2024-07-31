@@ -37,8 +37,9 @@ public interface ProductService {
 	
 	
 	
-	ProductDTO getProductById(Long productId);
 	//주어진 getProductById값에 맞는 정보값을 찾아 반환
+	ProductDTO getProductById(Long productId);
+	
 	 List<ProductDTO> getAllProducts();
 
 	//모든 제품 목록을 반환
@@ -48,7 +49,7 @@ public interface ProductService {
 	//새로운 리뷰를 추가하고 추가된 리뷰 객체를 반환.
 	List<ProductDTO> getProductsByType(int type);
 	
-	List<ProductImagesDTO> getImagesByProductId(Long productId);
+//	List<ProductImagesDTO> getImagesByProductId(Long productId);
 //	UserInfo getUserInfoById(Long userId);
 //	주어진 사용자ID에 대한 사용자 정보를 반환
 	ShoppingCartItem addItemTocart(ShoppingCartItem item); 

@@ -40,7 +40,7 @@ public class ProductServiceImpl implements ProductService {
 	private final ProductRepository productRepository;
 	private final ProductReviewRepository productReviewRepository;
 	private final ProductImageRepository productImageRepository;
-	
+
 //	//Autowired를 이용해서 자동으로 productRepository도구를 ProductServiceImpl클래스에 주입해줌
 //	@Autowired
 //	public  ProductServiceImpl(ProductRepository productRepository, ProductReviewRepository productReviewRepository) {
@@ -54,8 +54,9 @@ public class ProductServiceImpl implements ProductService {
 	public ProductDTO getProductById(Long productId) {
 		//productRepository.findById(productId)를 호출해서 제품을 찾고 찾지못하면 메시지 던짐
 		Product productEntity = productRepository.findById(productId).orElseThrow();
-		List<ProductImage> productImageEntity = productImageRepository.findByProductId(productId);
-		
+		List<String> productImageEntity = productImageRepository.findByProductId(productId);
+		log.info("productEntityproductEntityproductEntityproductEntityproductEntity" + productEntity.toString());
+		log.info("productImageEntityproductImageEntityproductImageEntity" + productImageEntity.toString());
 		ProductDTO productDTO = ProductDTO.builder()
 				.productId(productEntity.getId())
 				.imageList(productImageEntity)
@@ -64,7 +65,7 @@ public class ProductServiceImpl implements ProductService {
 				.type(productEntity.getType())
 				.price(productEntity.getPrice())
 				.build();
-				
+				log.info("productDTOproductDTOproductDTO" + productDTO);
 		return productDTO;
 		
 	}
@@ -153,17 +154,17 @@ public class ProductServiceImpl implements ProductService {
     }
     
     //특정제품의 모든 이미지 가져오기
-    @Override
-    public List<ProductImagesDTO> getImagesByProductId(Long productId) {
-    		ProductDTO product =  getProductById(productId);
-    		return product.getImageList().stream()
-    				.map(image -> ProductImagesDTO.builder()
-    						.id(image.getId())
-    						.imageIndex(image.getImage_index())
-    						.imageUrl(image.getImage_url())
-    						.build())
-    				.collect(Collectors.toList());
-    }
+//    @Override
+//    public List<ProductImagesDTO> getImagesByProductId(Long productId) {
+//    		ProductDTO product =  getProductById(productId);
+//    		return product.getImageList().stream()
+//    				.map(image -> ProductImagesDTO.builder()
+//    						.id(image.getId())
+////    						.imageIndex(image.getImage_index())
+////    						.imageUrl(image.getImage_url())
+//    						.build())
+//    				.collect(Collectors.toList());
+//    }
 
 	@Override
 	public ShoppingCartItem addItemTocart(ShoppingCartItem item) {

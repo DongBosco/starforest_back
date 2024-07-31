@@ -12,7 +12,7 @@ import com.project.starforest.domain.ProductImage;
 
 public interface ProductImageRepository extends JpaRepository<ProductImage, Long> {
 
-	@Query("SELECT pi FROM ProductImage pi WHERE pi.product_id = :productId")
-	 List<ProductImage> findByProductId(@Param("productId") Long productId);
+	@Query("SELECT pi.image_url FROM ProductImage pi WHERE pi.product.id = :productId")
+	 List<String> findByProductId(@Param("productId") Long productId);
 
 }

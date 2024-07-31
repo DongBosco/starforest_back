@@ -25,6 +25,7 @@ import com.project.starforest.domain.ShoppingCartItem;
 import com.project.starforest.domain.UserInfo;
 import com.project.starforest.dto.store.ProductDTO;
 import com.project.starforest.dto.store.ProductReviewDTO;
+import com.project.starforest.dto.store.requestCartDTO;
 import com.project.starforest.service.ProductService;
 import com.project.starforest.service.impl.ProductServiceImpl;
 
@@ -131,9 +132,9 @@ public class StoreController {
 	}
 	
 	@PostMapping("/cart/add")
-	public ShoppingCartItem addToCart(@RequestBody ShoppingCartItem item) {
+	public ShoppingCartItem addToCart(@RequestBody requestCartDTO item) {
 		log.info("Adding item to cart:{}",item);
-		return productService.addItemTocart(item);
+		return null;
 	}
 	
 

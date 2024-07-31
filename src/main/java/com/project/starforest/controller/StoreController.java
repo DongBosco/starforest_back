@@ -21,7 +21,6 @@ import org.springframework.web.bind.annotation.RestController;
 
 import com.project.starforest.domain.Product;
 import com.project.starforest.domain.ProductReview;
-import com.project.starforest.domain.ShoppingCartItem;
 import com.project.starforest.domain.UserInfo;
 import com.project.starforest.dto.store.ProductDTO;
 import com.project.starforest.dto.store.ProductReviewDTO;
@@ -131,11 +130,11 @@ public class StoreController {
 		return productService.addReview(review);
 	}
 	
-	@PostMapping("/cart/add")
-	public ShoppingCartItem addToCart(@RequestBody requestCartDTO item) {
-		log.info("Adding item to cart:{}",item);
-		return null;
-	}
+//	@PostMapping("/cart/add")
+//	public ShoppingCartItem addToCart(@RequestBody requestCartDTO item) {
+//		log.info("Adding item to cart:{}",item);
+//		return null;
+//	}
 	
 	
 	

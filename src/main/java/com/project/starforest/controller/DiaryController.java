@@ -35,7 +35,7 @@ public class  DiaryController{
 	
 	// 별숲기록 생성
 	@PostMapping("/create")
-	public ResponseEntity<DiaryDTO> createDiary(
+	public ResponseEntity<?> createDiary(
 			@RequestPart("content") String content,
 			@RequestPart("allTags") String allTags,
 			@RequestPart("images") List<MultipartFile> images
@@ -56,7 +56,7 @@ public class  DiaryController{
             return ResponseEntity.ok(savedDiary);
         } catch (Exception e) {
             log.error("Error creating diary", e);
-            return ResponseEntity.badRequest().body(null);
+            return ResponseEntity.badRequest().body(e.getMessage());
         }
     }
 	

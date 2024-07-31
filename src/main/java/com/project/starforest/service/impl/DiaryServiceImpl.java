@@ -1,5 +1,6 @@
 package com.project.starforest.service.impl;
 
+import java.time.LocalDateTime;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -27,13 +28,17 @@ public class DiaryServiceImpl implements DiaryService {
 	@Override
 	@Transactional
 	public DiaryDTO createDiary(DiaryDTO diaryDTO, List<MultipartFile> images) {
-        Diary diary = convertToEntity(diaryDTO);
-        Diary savedDiary = diaryRepository.save(diary);
-        List<String> savedImageUrls = diaryImageService.saveImages(savedDiary.getId(), images);
-        DiaryDTO savedDiaryDTO = convertToDTO(savedDiary);
-        savedDiaryDTO.setImage_url(savedImageUrls);
-        return savedDiaryDTO;
-    }
+		Diary diary = convertToEntity(diaryDTO);
+		diary.changeCreated_at(LocalDateTime.now());
+		Diary savedDiary = diaryRepository.save(diary);
+		
+		List<String> savedImageUrls = diaryImageService.saveImages(savedDiary.getId(), images);
+		DiaryDTO savedDiaryDTO = convertToDTO(savedDiary);
+		savedDiaryDTO.setImage_url(savedImageUrls);
+		
+		return savedDiaryDTO;
+	}
+    
 	
 	// 모든 별숲기록 조회 서비스
 	@Override

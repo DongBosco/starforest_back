@@ -1,12 +1,16 @@
 package com.project.starforest.service;
 import java.util.List;
 
+import org.springframework.beans.factory.annotation.Autowired;
+
 import com.project.starforest.domain.Product;
+import com.project.starforest.domain.ProductImage;
 import com.project.starforest.domain.ProductReview;
-import com.project.starforest.domain.ShoppingCartItem;
+import com.project.starforest.domain.UserInfo;
 import com.project.starforest.dto.store.ProductDTO;
 import com.project.starforest.dto.store.ProductImagesDTO;
 import com.project.starforest.dto.store.ProductReviewDTO;
+import com.project.starforest.repository.ProductRepository;
 
 import jakarta.transaction.Transactional;
 
@@ -29,8 +33,12 @@ public interface ProductService {
 //	주어진 ID를 기반으로 제품을 삭제	
 	//*********************************안씀**************************************************************
 	
-	Product getProductById(Long productId);
+	
+	
+	
 	//주어진 getProductById값에 맞는 정보값을 찾아 반환
+	ProductDTO getProductById(Long productId);
+	
 	 List<ProductDTO> getAllProducts();
 
 	//모든 제품 목록을 반환
@@ -40,9 +48,9 @@ public interface ProductService {
 	//새로운 리뷰를 추가하고 추가된 리뷰 객체를 반환.
 	List<ProductDTO> getProductsByType(int type);
 	
-	List<ProductImagesDTO> getImagesByProductId(Long productId);
+//	List<ProductImagesDTO> getImagesByProductId(Long productId);
 //	UserInfo getUserInfoById(Long userId);
 //	주어진 사용자ID에 대한 사용자 정보를 반환
-	ShoppingCartItem addItemTocart(ShoppingCartItem item); 
+//	ShoppingCartItem addItemTocart(ShoppingCartItem item);
 //	쇼핑 카트에 항목을 추가하고 추가된 항목을 반환.
 }

@@ -30,13 +30,13 @@ public class Order {
     @JoinColumn(name = "user_email", referencedColumnName = "email", insertable = false, updatable = false)
     private Member member;
 
-    @ManyToOne(fetch = FetchType.LAZY, cascade = CascadeType.ALL)
-    @JoinColumn(name = "car_nm", referencedColumnName = "id", insertable = false, updatable = false)
-    private ShoppingCart shoppingCart;
+//    @ManyToOne(fetch = FetchType.LAZY, cascade = CascadeType.ALL)
+//    @JoinColumn(name = "car_nm", referencedColumnName = "id", insertable = false, updatable = false)
+//    private ShoppingCart shoppingCart;
 
-    @OneToOne(fetch = FetchType.LAZY, cascade = CascadeType.ALL)
-    @JoinColumn(name = "info_nm", referencedColumnName = "id", insertable = false, updatable = false)
-    private OrderInfo order_info;
+//    @OneToOne(fetch = FetchType.LAZY, cascade = CascadeType.ALL)
+//    @JoinColumn(name = "info_nm", referencedColumnName = "id", insertable = false, updatable = false)
+//    private OrderInfo order_info;
 
     public void changeOrder_number(String order_number) {
         this.order_number = order_number;

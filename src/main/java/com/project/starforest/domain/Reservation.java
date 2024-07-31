@@ -29,8 +29,9 @@ public class Reservation {
     @ManyToOne(fetch = FetchType.LAZY, cascade = CascadeType.ALL)
     private CampSite campsite_id;
 
+//    @JoinColumn(name = "user_email", referencedColumnName = "email", insertable = false, updatable = false)
+    @JoinColumn(name = "user_email", referencedColumnName = "email")
     @ManyToOne(fetch = FetchType.LAZY, cascade = CascadeType.ALL)
-    @JoinColumn(name = "user_email", referencedColumnName = "email", insertable = false, updatable = false)
     private Member member;
 
 //    @OneToOne(fetch = FetchType.LAZY, cascade = CascadeType.ALL)

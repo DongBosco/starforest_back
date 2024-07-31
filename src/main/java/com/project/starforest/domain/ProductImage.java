@@ -6,7 +6,7 @@ import lombok.extern.log4j.Log4j2;
 
 import java.sql.Timestamp;
 import java.time.LocalDateTime;
-@Data
+//@Data
 @Embeddable
 @Getter
 @Builder
@@ -15,6 +15,7 @@ import java.time.LocalDateTime;
 @Log4j2
 @ToString
 @Entity
+@Table(name="product_image_list")
 public class ProductImage {
 	@Id
 	@GeneratedValue(strategy = GenerationType.IDENTITY)

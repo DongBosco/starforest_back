@@ -16,6 +16,6 @@ import java.util.List;
 
 public interface CampReservPayService {
 
-    ResponseEntity<Reservation> getIsCampReservation(ReservationDto dto, Long id);
+    ResponseEntity<Reservation> getIsCampReservation(ReservationDto dto, Long id,String email);
     boolean isReservation(LocalDateTime start, LocalDateTime end, Long id);
 }

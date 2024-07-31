@@ -11,6 +11,7 @@ import lombok.NoArgsConstructor;
 @AllArgsConstructor
 @Builder
 public class requestCartDTO {
-    private String email,pass_word;
+    private String user_email;
+    
     private boolean result;
 }

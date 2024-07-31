@@ -1,5 +1,6 @@
 package com.project.starforest.controller;
 
+//import com.project.starforest.dto.MapResponseDTO;
 import com.project.starforest.dto.camp.*;
 import com.project.starforest.dto.pay.KakaoPayReadyResponse;
 import com.project.starforest.dto.pay.PaymentApprovalResponse;
@@ -242,13 +243,14 @@ public class CampController {
 		    
 		//예약 날짜 확인후 reservation에 저장(is_payment는 false)
 		//예약하기 버튼 클릭시 실행하는곳
-		@PostMapping("/reservation/{id}")
+		@PostMapping("/reservation/{id}/{email}")
 		public ResponseEntity<Reservation> createReservation(
 		 		@RequestBody ReservationDto dto,
-		 		@PathVariable("id") Long id
+		 		@PathVariable("id") Long id,
+		 		@PathVariable("email") String email
 		   		) {
-
-		   	return campReservPayService.getIsCampReservation(dto,id);
+			log.info("QQQQQQQQQQQQQQQQQQ"+email);
+		   	return campReservPayService.getIsCampReservation(dto,id,email);
 		}
 
 	//-------------------캠핑장 검색---------------------//

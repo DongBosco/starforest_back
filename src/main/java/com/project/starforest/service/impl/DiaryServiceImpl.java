@@ -5,6 +5,8 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.stream.Collectors;
 
+import org.springframework.beans.factory.annotation.Value;
+import org.springframework.core.env.Environment;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Slice;
@@ -27,6 +29,10 @@ public class DiaryServiceImpl implements DiaryService {
 	
 	private final DiaryRepository diaryRepository;
 	private final DiaryImageService diaryImageService;
+	private final Environment environment;
+	
+	@Value("${app.image.base-url}")
+	private String imageBaseUrl;
 	
 	// 별숲기록 생성 서비스
 	@Override
@@ -57,6 +63,7 @@ public class DiaryServiceImpl implements DiaryService {
         
         List<DiaryDTO> diaryDTOs = diarySlice.getContent().stream()
                 .map(this::convertToDTO)
+                .peek(this::setImage_url)
                 .collect(Collectors.toList());
         
         return diaryDTOs;
@@ -135,22 +142,53 @@ public class DiaryServiceImpl implements DiaryService {
 	
 	
 	private DiaryDTO convertToDTO(Diary diary) {
-		return DiaryDTO.builder()
+		DiaryDTO dto = DiaryDTO.builder()
 				.id(diary.getId())
 				.content(diary.getContent())
 				.allTags(diary.getCategory())
 				.created_at(diary.getCreated_at())
 				.build();
+		setImage_url(dto);
+		return dto;
+	}
+	
+	private void setImage_url(DiaryDTO diaryDTO) {
+	    List<String> imageUrls = diaryImageService.getImagesByDiaryId(diaryDTO.getId())
+	            .stream()
+	            .map(imageDTO -> imageBaseUrl.endsWith("/") 
+	                ? imageBaseUrl + imageDTO.getImage_url()
+	                : imageBaseUrl + "/" + imageDTO.getImage_url())
+	            .collect(Collectors.toList());
+	    diaryDTO.setImage_url(imageUrls);
 	}
 	
 	
+//	private void setImage_url(DiaryDTO diaryDTO) {
+//		List<String> imageUrls = diaryImageService.getImagesByDiaryId(diaryDTO.getId())
+//				.stream()
+//				.map(this::makeAbsoluteUrl)
+//				.collect(Collectors.toList());
+//		
+//		diaryDTO.setImage_url(imageUrls);
+//	}
 	
-	 private void setImage_url(DiaryDTO diaryDTO) {
-	        List<String> imageUrls = diaryImageService.getImagesByDiaryId(diaryDTO.getId())
-	                .stream()
-	                .map(DiaryImageDTO::getImage_url)
-	                .collect(Collectors.toList());
-	        diaryDTO.setImage_url(imageUrls);
-	    }
+	
+//	 private void setImage_url(DiaryDTO diaryDTO) {
+//	        List<String> imageUrls = diaryImageService.getImagesByDiaryId(diaryDTO.getId())
+//	                .stream()
+//	                .map(DiaryImageDTO::getImage_url)
+//	                .collect(Collectors.toList());
+//	        diaryDTO.setImage_url(imageUrls);
+//	    }
 
+	
+	private String makeAbsoluteUrl(DiaryImageDTO imageDTO) {
+		String relativeUrl = imageDTO.getImage_url();
+		if (relativeUrl.startsWith("http://") || relativeUrl.startsWith("https://")) {
+			return relativeUrl;
+		}
+		return imageBaseUrl + relativeUrl;
+	}
+	
+	
 }

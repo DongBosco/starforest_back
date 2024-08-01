@@ -64,14 +64,24 @@ public class  DiaryController{
 	// 모든 별숲기록 조회
 	@GetMapping("/list")
 	public ResponseEntity<Map<String, Object>> getDiaries(
-			@RequestParam(required = false) Long lastId,
-			@RequestParam(defaultValue = "10") int size) {
+			@RequestParam(value = "lastId", required = false) Long lastId,
+			@RequestParam(value = "size", defaultValue = "10") int size) {
+		log.info("lastId: {}, size: {}", lastId, size);
+		
 		List<DiaryDTO> diaries = diaryService.getAllDiaries(lastId, size);
+		log.info("Fetched diaries: {}", diaries);
+		
 		boolean hasMore = diaries.size() == size;
 		
-		Map<String, Object> response = new HashMap<>();
-		response.put("diaries", diaries);
-		response.put("hasMore", hasMore);
+		Map<String, Object> response = Map.of(
+				"diaries", diaries,
+				"hasMore", hasMore
+				);
+		
+		
+//		Map<String, Object> response = new HashMap<>();
+//		response.put("diaries", diaries);
+//		response.put("hasMore", hasMore);
 		
 		return ResponseEntity.ok(response);
 	}
@@ -79,7 +89,7 @@ public class  DiaryController{
 	
 	// 해당 별숲기록 자세히보기
 	@GetMapping("/view/{id}")
-	public ResponseEntity<DiaryDTO> getDiaryById(@PathVariable Long Id) {
+	public ResponseEntity<DiaryDTO> getDiaryById(@PathVariable("id") Long Id) {
 		try {
 			DiaryDTO diaryDTO = diaryService.getDiaryById(Id);
 			return ResponseEntity.ok(diaryDTO);

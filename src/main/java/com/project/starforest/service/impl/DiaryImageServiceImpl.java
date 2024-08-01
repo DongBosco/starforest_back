@@ -35,6 +35,9 @@ public class DiaryImageServiceImpl implements DiaryImageService {
 	@Value("${file.upload-dir}")
 	private String uploadDir;
 	
+	@Value("{app.image.base-url}")
+	private String imageBaseUrl;
+	
 	@Override
 	@Transactional
 	public List<String> saveImages(Long diaryId, List<MultipartFile> images) {
@@ -44,17 +47,37 @@ public class DiaryImageServiceImpl implements DiaryImageService {
 	            .orElseThrow(() -> new RuntimeException("diary not found with id: " + diaryId));
 	    
 	    for (MultipartFile image : images) {
-	        String imageUrl = uploadImageToServer(image);
+	        String fileName = uploadImageToServer(image);
 	        
 	        DiaryImage diaryImage = DiaryImage.builder()
 	                .diary(diary)
-	                .image_url(imageUrl)
+	                .image_url(fileName) // 파일 이름만 저장
 	                .build();
 	        diaryImageRepository.save(diaryImage);
-	        savedImageUrls.add(imageUrl);
+	        savedImageUrls.add(fileName); // 파일 이름만 반환
 	    }
 	    return savedImageUrls;
 	}
+	
+	
+//	public List<String> saveImages(Long diaryId, List<MultipartFile> images) {
+//	    List<String> savedImageUrls = new ArrayList<>();
+//	    
+//	    Diary diary = diaryRepository.findById(diaryId)
+//	            .orElseThrow(() -> new RuntimeException("diary not found with id: " + diaryId));
+//	    
+//	    for (MultipartFile image : images) {
+//	        String imageUrl = uploadImageToServer(image);
+//	        
+//	        DiaryImage diaryImage = DiaryImage.builder()
+//	                .diary(diary)
+//	                .image_url(imageUrl)
+//	                .build();
+//	        diaryImageRepository.save(diaryImage);
+//	        savedImageUrls.add(imageUrl);
+//	    }
+//	    return savedImageUrls;
+//	}
 //	public List<String> saveImages(Long diaryId, List<MultipartFile> images) {
 //		List<String> savedImageUrls = new ArrayList<>();
 //		
@@ -100,31 +123,59 @@ public class DiaryImageServiceImpl implements DiaryImageService {
 	
 	
 	private String uploadImageToServer(MultipartFile image) {
-		try {
-			Path uploadPath = Paths.get(uploadDir).toAbsolutePath().normalize();
-			Files.createDirectories(uploadPath);
-			
-			String fileName = StringUtils.cleanPath(image.getOriginalFilename());
-			String uniqueFileName = UUID.randomUUID().toString() + "_" + fileName;
-			
-			Path targetLocation = uploadPath.resolve(uniqueFileName);
-			Files.copy(image.getInputStream(), targetLocation, StandardCopyOption.REPLACE_EXISTING);
-			
-			return "/uploads/" + uniqueFileName;
-		}catch (IOException ex) {
-			throw new RuntimeException("이미지 저장중 오류가 발생했습니다.", ex);
-		}
+	    try {
+	        Path uploadPath = Paths.get(uploadDir).toAbsolutePath().normalize();
+	        Files.createDirectories(uploadPath);
+	        
+	        String fileName = StringUtils.cleanPath(image.getOriginalFilename());
+	        String uniqueFileName = UUID.randomUUID().toString() + "_" + fileName;
+	        
+	        Path targetLocation = uploadPath.resolve(uniqueFileName);
+	        Files.copy(image.getInputStream(), targetLocation, StandardCopyOption.REPLACE_EXISTING);
+	        
+	        return uniqueFileName; // 파일 이름만 반환
+	    } catch (IOException ex) {
+	        throw new RuntimeException("이미지 저장중 오류가 발생했습니다.", ex);
+	    }
 	}
 	
+	
+//	private String uploadImageToServer(MultipartFile image) {
+//		try {
+//			Path uploadPath = Paths.get(uploadDir).toAbsolutePath().normalize();
+//			Files.createDirectories(uploadPath);
+//			
+//			String fileName = StringUtils.cleanPath(image.getOriginalFilename());
+//			String uniqueFileName = UUID.randomUUID().toString() + "_" + fileName;
+//			
+//			Path targetLocation = uploadPath.resolve(uniqueFileName);
+//			Files.copy(image.getInputStream(), targetLocation, StandardCopyOption.REPLACE_EXISTING);
+//			
+//			return "/uploads/" + uniqueFileName;
+//		}catch (IOException ex) {
+//			throw new RuntimeException("이미지 저장중 오류가 발생했습니다.", ex);
+//		}
+//	}
 	
 	private DiaryImageDTO convertToDTO(DiaryImage diaryImage) {
-		return DiaryImageDTO.builder()
-				.id(diaryImage.getId())
-				.diaryId(diaryImage.getDiary().getId())
-				.image_url(diaryImage.getImage_url())
-				.created_at(diaryImage.getCreated_at())
-				.build();
+	    return DiaryImageDTO.builder()
+	            .id(diaryImage.getId())
+	            .diaryId(diaryImage.getDiary().getId())
+	            .image_url(diaryImage.getImage_url()) // 파일 이름만 반환
+	            .created_at(diaryImage.getCreated_at())
+	            .build();
 	}
+	
+	
+	
+//	private DiaryImageDTO convertToDTO(DiaryImage diaryImage) {
+//		return DiaryImageDTO.builder()
+//				.id(diaryImage.getId())
+//				.diaryId(diaryImage.getDiary().getId())
+//				.image_url(diaryImage.getImage_url())
+//				.created_at(diaryImage.getCreated_at())
+//				.build();
+//	}
 	
 	
 	

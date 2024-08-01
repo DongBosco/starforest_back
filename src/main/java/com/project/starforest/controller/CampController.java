@@ -7,10 +7,7 @@ import com.project.starforest.dto.pay.PaymentApprovalResponse;
 import com.project.starforest.dto.reservation.ReservationDto;
 import com.project.starforest.dto.reservation.ReservationInfoDTO;
 import com.project.starforest.dto.reservation.ReservationInfoPayDTO;
-import com.project.starforest.service.CampReservPayService;
-import com.project.starforest.service.CampSearchService;
-import com.project.starforest.service.CoordinatesService;
-import com.project.starforest.service.KakaoPayService;
+import com.project.starforest.service.*;
 import lombok.RequiredArgsConstructor;
 
 import lombok.extern.log4j.Log4j2;
@@ -57,29 +54,20 @@ public class CampController {
 	@Autowired
 	private final CampSearchService campSearchService;
 
+	private final UserService userService;
+
 	@GetMapping("/list")
 	public ResponseEntity<List<CampListDTO>> getCamps(@RequestParam(name="page", defaultValue = "0") int page,
 													  @RequestParam(name="size", defaultValue = "20") int size) {
-
 		Pageable pageable = PageRequest.of(page, size);
 
-		Page<CampSite> campSites = mapTestRepository.findAll(pageable);
-		List<CampListDTO> campList = campSites.stream().map(dto->CampListDTO.builder()
-						.id(dto.getId())
-						.name(dto.getName())
-						.is_glamp(dto.is_glamp())
-						.is_auto(dto.is_auto())
-						.is_carvan(dto.is_carvan())
-						.add1(dto.getAdd1())
-						.price(dto.getPrice())
-						.first_image_url(dto.getFirst_image_url())
-						.thema_envrn_cl(dto.getThema_envrn_cl())
-						.build())
-				.collect(Collectors.toList());
+		List<CampListDTO> campSites = userService.getSite(pageable);
 
-		log.info("!!!!!!!!!!!!!!!!!!!!!"+campList.toString());
-		return ResponseEntity.ok(campList);
+		log.info("!!!!!!!!!!!!!!!!!!!!!"+campSites.toString());
+		return ResponseEntity.ok(campSites);
 	}
+
+
 		@PostMapping("/view/{id}")
 		public ResponseEntity<ViewMapResponseDTO> viewMap(
 				@PathVariable("id") Long id

@@ -3,6 +3,7 @@ package com.project.starforest.domain;
 import jakarta.persistence.*;
 import lombok.*;
 import java.sql.Timestamp;
+import java.time.LocalDateTime;
 
 @Getter
 @Setter
@@ -15,6 +16,7 @@ import java.sql.Timestamp;
 public class Order {
 
     @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
     @Column(name = "order_number", nullable = false, unique = true, length = 20)
@@ -24,7 +26,7 @@ public class Order {
     private Integer order_type;
 
     @Column(name = "created_at", nullable = true)
-    private Timestamp created_at;
+    private LocalDateTime created_at;
 
     @ManyToOne(fetch = FetchType.LAZY, cascade = CascadeType.ALL)
     @JoinColumn(name = "user_email", referencedColumnName = "email", insertable = false, updatable = false)
@@ -38,6 +40,9 @@ public class Order {
 //    @JoinColumn(name = "info_nm", referencedColumnName = "id", insertable = false, updatable = false)
 //    private OrderInfo order_info;
 
+    @Column
+    private boolean is_payment;
+    
     public void changeOrder_number(String order_number) {
         this.order_number = order_number;
     }
@@ -46,7 +51,7 @@ public class Order {
         this.order_type = order_type;
     }
 
-    public void changeCreated_at(Timestamp created_at) {
+    public void changeCreated_at(LocalDateTime created_at) {
         this.created_at = created_at;
     }
 }

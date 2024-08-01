@@ -17,6 +17,7 @@ public class OrderInfo {
 
     @Id
     @Column(length = 20)
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
     @Column(name = "name", length = 50, nullable = true)

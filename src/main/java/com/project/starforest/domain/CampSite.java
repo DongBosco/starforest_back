@@ -7,6 +7,8 @@ import lombok.*;
 import org.hibernate.annotations.Type;
 import org.locationtech.jts.geom.Point;
 
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
+
 @Getter
 @Builder
 @AllArgsConstructor
@@ -15,6 +17,7 @@ import org.locationtech.jts.geom.Point;
 @Setter
 @Table(name = "camp_site")
 @Entity
+@JsonIgnoreProperties({"hibernateLazyInitializer", "handler"})
 public class CampSite {
 
     @Id

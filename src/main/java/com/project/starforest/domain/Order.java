@@ -29,7 +29,7 @@ public class Order {
     private LocalDateTime created_at;
 
     @ManyToOne(fetch = FetchType.LAZY, cascade = CascadeType.ALL)
-    @JoinColumn(name = "user_email", referencedColumnName = "email", insertable = false, updatable = false)
+    @JoinColumn(name = "user_email", referencedColumnName = "email")
     private Member member;
 
 //    @ManyToOne(fetch = FetchType.LAZY, cascade = CascadeType.ALL)

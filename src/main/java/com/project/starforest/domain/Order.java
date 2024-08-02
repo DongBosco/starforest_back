@@ -31,6 +31,10 @@ public class Order {
     @ManyToOne(fetch = FetchType.LAZY, cascade = CascadeType.ALL)
     @JoinColumn(name = "user_email", referencedColumnName = "email")
     private Member member;
+    
+    @ManyToOne(fetch = FetchType.LAZY, cascade = CascadeType.ALL)
+    @JoinColumn(name = "product_id", referencedColumnName = "id")
+    private Product product;
 
 //    @ManyToOne(fetch = FetchType.LAZY, cascade = CascadeType.ALL)
 //    @JoinColumn(name = "car_nm", referencedColumnName = "id", insertable = false, updatable = false)

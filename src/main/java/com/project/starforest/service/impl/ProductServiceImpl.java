@@ -1,8 +1,9 @@
 package com.project.starforest.service.impl;
 
 import java.time.LocalDateTime;
+import java.util.Collections;
 import java.util.List;
-import java.util.Optional;
+//import java.util.Optional;
 import java.util.stream.Collectors;
 
 import com.project.starforest.domain.Product;
@@ -12,10 +13,12 @@ import com.project.starforest.dto.store.ProductDTO;
 import com.project.starforest.dto.store.ProductImagesDTO;
 import com.project.starforest.dto.store.ProductResponseDTO;
 import com.project.starforest.dto.store.ProductReviewDTO;
+import com.project.starforest.repository.OrderRepository;
 import com.project.starforest.repository.ProductImageRepository;
 import com.project.starforest.repository.ProductRepository;
 import com.project.starforest.repository.ProductReviewRepository;
 import com.project.starforest.service.ProductService;
+
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
@@ -40,16 +43,18 @@ public class ProductServiceImpl implements ProductService {
 	private final ProductRepository productRepository;
 	private final ProductReviewRepository productReviewRepository;
 	private final ProductImageRepository productImageRepository;
+	private final OrderRepository orderRepository;
+	
 
-//	//Autowired를 이용해서 자동으로 productRepository도구를 ProductServiceImpl클래스에 주입해줌
-//	@Autowired
-//	public  ProductServiceImpl(ProductRepository productRepository, ProductReviewRepository productReviewRepository) {
-//		//받은 productRepository를 this(ProductServiceImpl안에 넣는 작업
-//		this.productRepository = productRepository;
-//		this.productReviewRepository = productReviewRepository;
-//	}
 	
 	//특정 제품의 ID를 이용해서 특정 제품을 찾아서 반환
+	@Override
+	public boolean checkReviewEligibility(Long productId, Long orderId, String userEmail) {
+        // 자격 검증 로직 구현
+        // 예: 해당 주문에 대해 리뷰를 작성할 수 있는지 확인
+        return true; // 예시로 true를 반환
+    }
+	
 	@Override
 	public ProductDTO getProductById(Long productId) {
 		//productRepository.findById(productId)를 호출해서 제품을 찾고 찾지못하면 메시지 던짐
@@ -57,7 +62,7 @@ public class ProductServiceImpl implements ProductService {
 		List<String> productImageEntity = productImageRepository.findByProductId(productId);
 		log.info("productEntityproductEntityproductEntityproductEntityproductEntity" + productEntity.toString());
 		log.info("productImageEntityproductImageEntityproductImageEntity" + productImageEntity.toString());
-		ProductDTO productDTO = ProductDTO.builder()
+		return ProductDTO.builder()
 				.productId(productEntity.getId())
 				.imageList(productImageEntity)
 				.productName(productEntity.getProduct_name())
@@ -65,9 +70,6 @@ public class ProductServiceImpl implements ProductService {
 				.type(productEntity.getType())
 				.price(productEntity.getPrice())
 				.build();
-				log.info("productDTOproductDTOproductDTO" + productDTO);
-		return productDTO;
-		
 	}
 		
 //	모든 제품의 목록을 반환
@@ -93,16 +95,7 @@ public class ProductServiceImpl implements ProductService {
 	}
 	
 	
-	
-	
-	
-//	public List<ProductDTO> getProductsByType(int type) {
-//		List<ProductDTO> allProducts = getAllProducts();
-//					//stream을 이용해서 전체목록에서 특정 타입의 제품만 필터링
-//					//int형일땐 equals대신 == 연산자로 비교 / string일땐 equals
-//		return allProducts.stream().filter(product -> product.getType() ==type).collect(Collectors.toList());	
-//	}
-//	//builder사용
+//	//type별 제품리스트 _ builder사용
 	@Override
 	public List<ProductDTO> getProductsByType(int type) {
 	    List<ProductDTO> allProducts = getAllProducts();
@@ -132,27 +125,35 @@ public class ProductServiceImpl implements ProductService {
     // 특정 제품에 대한 모든 리뷰를 가져옴
     @Override
     public List<ProductReview> getReviewsByProductId(Long productId) {  
+    	//제품이 존재하는지 확인
         ProductDTO product = getProductById(productId);
         if (product != null) {
             return productReviewRepository.findByProductId(productId);
+//            return null;
         }
-        return null;
+        //제품이 없으면 빈 리스트반환
+        return Collections.emptyList(); 
     }
     
-    //특정상품의 리뷰추가 ??????????????????????????????????
+    @Override
+    //특정상품의 리뷰추가
     public ProductReview addReview(ProductReviewDTO reviewDTO) {
-        ProductDTO product = getProductById(reviewDTO.getProductId());
-        //프론트에서 member id를 찾고 member가 있으면 결과값을 builder에 넣기
+    	//제품Id로 제품 조회
+        Product product = productRepository.findById(reviewDTO.getProductId())
+                .orElseThrow(() -> new IllegalArgumentException("유효하지 않은 제품 ID입니다: " + reviewDTO.getProductId()));
+
+        // 리뷰 정보를 저장할 엔티티 생성
         ProductReview review = ProductReview.builder()
-//        		.product(product)
-        		.content(reviewDTO.getContent())
-        		.created_at(LocalDateTime.now())
-        		.build();
+            .product(product) // 제품 엔티티 설정
+            .content(reviewDTO.getContent()) // 리뷰 내용 설정
+            .created_at(LocalDateTime.now()) // 생성 시간 설정
+            .build();
         
-        
+        // 리뷰 저장
         return productReviewRepository.save(review);
     }
-    
+
+
     //특정제품의 모든 이미지 가져오기
 //    @Override
 //    public List<ProductImagesDTO> getImagesByProductId(Long productId) {
@@ -212,6 +213,7 @@ public class ProductServiceImpl implements ProductService {
     //동일 작성
     
 }
+
 
 
 

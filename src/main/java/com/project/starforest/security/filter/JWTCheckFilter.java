@@ -31,10 +31,12 @@ public class JWTCheckFilter extends OncePerRequestFilter{
 
         log.info("check uri" + path);
 
+
         if(path.startsWith("/user/") || path.startsWith("/camp/") || path.startsWith("/camps/") || path.startsWith("/diary/") || path.startsWith("/main/")|| path.startsWith("/payment/")|| path.startsWith("/store/")) {
             return true;
         }
         return path.startsWith("/api/member/");
+
     }
     @Override
     protected void doFilterInternal(HttpServletRequest request, HttpServletResponse response, FilterChain filterChain)

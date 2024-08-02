@@ -35,20 +35,13 @@ import com.project.starforest.service.impl.ProductServiceImpl;
 public class StoreController {
 	
 	@Autowired
-	private ProductService productService;
+	private final ProductService productService;
 	
+	public StoreController(ProductService productService) {
+		this.productService = productService;
+	}
 	//get*******************************************************************
 
-//	@GetMapping("/list/{type}")
-//	public Map<String, Object> getAllProducts(
-//			@PathVariable("type") int type
-//			){
-//		log.info(")))))))))))))))))))"+type);
-//		//모든 제품을가져와서 products리스트에 저장
-//		List<ProductDTO> products = productService.getAllProducts();
-//		
-//		
-//		
 //		log.info("qqqqqqqqqqqqqqq"+products);
 //		Map<String, Object> response = new HashMap<>();
 //		//products 리스트를 stores 라는 맵에 추가 
@@ -57,12 +50,12 @@ public class StoreController {
 //		return response;
 //	}
 	
-	  // 특정 타입의 제품 조회
+  // 특정 타입의 제품 조회            ㄹㅈㅂ
     @GetMapping("/list/{type}")
-    public Map<String, Object> getProductsByType(@PathVariable("type") int type) {
+    public ResponseEntity<Map<String, Object>> getProductsByType(@PathVariable("type") int type) {
         log.info("Request for products of type: " + type);
         
-        List<ProductDTO> products = new ArrayList<ProductDTO>();
+        List<ProductDTO> products;
         // 특정 타입의 제품을 가져와서 products 리스트에 저장
         if(type>2) {
         	products = productService.getAllProducts();
@@ -76,7 +69,7 @@ public class StoreController {
         // products 리스트를 stores 라는 맵에 추가
         response.put("stores", products);
         response.put("hasMore", true);
-        return response;
+        return ResponseEntity.ok(response);  
     }
     
 	
@@ -86,34 +79,24 @@ public class StoreController {
 		log.info("상품 상세 정보 조회: 상품id = {}",productId);	//로그남김/ 상품id와 함께 조회 작업이 시작됨을 기록.
 		return productService.getProductById(productId);	//ID로 제품을 조회하여 반환
 	}
-	// 제품 세부정보 조회
-//    @GetMapping("/view/{productId}")
-//    public ResponseEntity<Product> getProductById(@PathVariable Long productId) {
-//        log.info("Fetching product details: productId = {}", productId);
-//        Product product = productService.getProductById(productId);
-//        
-//        if (product != null) {
-//            return ResponseEntity.ok(product);
-//        } else {
-//            return ResponseEntity.status(HttpStatus.NOT_FOUND).build();
-//        }
-//    }
-//	
+	
 
-	
 	//제품ID로 리뷰조회
-	@GetMapping("/review/{productId}")
-	public List<ProductReview> getProductReviews(@PathVariable Long productId) {
-		log.info("상품 리뷰 조회: 상품 ID ={}", productId);
-		return productService.getReviewsByProductId(productId);
-	}
-	
-//	@GetMapping("/review")
-//	public ProductReview addReview(@RequestBody ProductReview review) {
-//		log.info("새 리뷰추가: {}",review);
-//		return productService.addReview(review);
+//	@GetMapping("/review/{productId}")
+//	public List<ProductReview> getProductReviews(@PathVariable Long productId) {
+//		log.info("상품 리뷰 조회: 상품 ID ={}", productId);
+//		List<ProductReview> reviews = productService.getReviewsByProductId(productId);
+//		return productService.getReviewsByProductId(productId);
 //	}
 //	
+	//제품ID로 리뷰조회
+    @GetMapping("/review/{productId}")
+    public ResponseEntity<List<ProductReview>> getProductReviews(@PathVariable Long productId) {
+        log.info("Fetching reviews for productId = {}", productId);
+        List<ProductReview> reviews = productService.getReviewsByProductId(productId);
+        return ResponseEntity.ok(reviews);
+    }
+	
 //	@GetMapping("/user/{userId}")
 //	public UserInfo getUserInfo(@PathVariable Long userId) {
 //		log.info("사용자 정보 조회: 사용자 ID = {}", userId);
@@ -121,31 +104,31 @@ public class StoreController {
 //	}
 	
 	
-	//post******************************************************************
+	//userController로이동******************************************************************
 	//새로운리뷰추가
-	@PostMapping("/review")
-	public ProductReview addReview(@RequestBody ProductReviewDTO review) {
-		log.info("새리뷰추가:{}",review);
-		return productService.addReview(review);
-	}
-	
-
-	@PostMapping("/cart/add")
-	public ResponseEntity<String> addToCart(@RequestBody requestCartDTO item) throws Exception{
-		try{
-			log.info("Adding item to cart:{}",item);
-			return ResponseEntity.ok("카트등록 완료.");
-		}catch(Exception e) {
-			return ResponseEntity.badRequest().body("쇼핑카트 담는중 에러 발생");
-		}
-	}
-//	@PostMapping("/cart/add")
-//	public ShoppingCartItem addToCart(@RequestBody requestCartDTO item) {
-//		log.info("Adding item to cart:{}",item);
-//		return null;
+//    @PostMapping("/review")
+//    public ResponseEntity<ProductReview> addReview(@RequestBody ProductReviewDTO reviewDTO) {
+//    	log.info("새 리뷰 추가: {}", reviewDTO);
+//        try {
+//            //리뷰작성자격검증부분 
+//            boolean isEligible = productService.checkReviewEligibility(reviewDTO.getProductId(), reviewDTO.getOrderId(), reviewDTO.getUserEmail());
+//           //리뷰작성 자격이 없을때 클라이언트한테 Forbidden에러 코드 반환
+//            if (!isEligible) {
+//               log.warn("사용자가 이 제품에 리뷰를 작성할 자격이 없습니다. Product ID: {}, Order ID: {}, User ID: {}",
+//                reviewDTO.getProductId(), reviewDTO.getOrderId(), reviewDTO.getUserEmail());
+//            	return ResponseEntity.status(HttpStatus.FORBIDDEN).build();
 //	}
-	
-	
+//            
+//            ProductReview saveReview = productService.addReview(reviewDTO);
+//            return ResponseEntity.status(HttpStatus.CREATED).body(saveReview);
+//        } catch (Exception e) {
+//            log.error("리뷰 추가 중 오류 발생: {}", e.getMessage(), e);
+//            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).build();
+//        }
+//    }
+
+            
+
 	
 	//동일 작업시작
 	//

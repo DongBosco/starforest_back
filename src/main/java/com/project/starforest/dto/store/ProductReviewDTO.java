@@ -15,8 +15,9 @@ import lombok.NoArgsConstructor;
 //static: 내부클래스로 외부클래스의 종속되지않음.(독립적으로사용가능)
 public class ProductReviewDTO {
 	private Long id;
-	private Long userId;
+	private String userEmail;
 	private Long productId;
 	private String content;
 	private LocalDateTime createdAt;
+	private Long orderId;
 };

@@ -78,18 +78,10 @@ public class UserInfoController {
 	            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).build();
 	        }
 	    }
-	}
-	
-  
 	
 	@Autowired
 	private UserOrderLIstService userOrderLIstService;
-	
-	
-	
-	
-	
-	
+
 	//동일작업
 	
 	@GetMapping("/store/order/list/{email}")
@@ -103,4 +95,10 @@ public class UserInfoController {
 	}
 	
 	//동일 작업
-}
+	
+	}
+	
+  
+	
+	
+

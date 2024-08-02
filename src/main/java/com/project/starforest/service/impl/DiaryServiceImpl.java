@@ -29,7 +29,6 @@ public class DiaryServiceImpl implements DiaryService {
 	
 	private final DiaryRepository diaryRepository;
 	private final DiaryImageService diaryImageService;
-	private final Environment environment;
 	
 	@Value("${app.image.base-url}")
 	private String imageBaseUrl;

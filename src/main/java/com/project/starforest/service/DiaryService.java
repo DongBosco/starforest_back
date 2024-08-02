@@ -12,4 +12,6 @@ public interface DiaryService {
     DiaryDTO getDiaryById(Long id);
     List<DiaryDTO> getDiariesByUser(String userEmail);
     void deleteDiary(Long id);
+    List<String> saveImages(List<MultipartFile> images);
+    void deleteImages(List<String> imageUrls);
 }

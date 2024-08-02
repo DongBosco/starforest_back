@@ -14,6 +14,7 @@ import org.springframework.web.bind.annotation.RequestBody;
 import com.project.starforest.domain.ProductReview;
 import com.project.starforest.dto.store.OrderViewRequestDTO;
 import com.project.starforest.dto.store.ProductReviewDTO;
+import com.project.starforest.dto.store.UserOrderResponseDTO;
 import com.project.starforest.service.ProductService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
@@ -23,8 +24,10 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.project.starforest.domain.Order;
+import com.project.starforest.domain.Product;
 import com.project.starforest.dto.store.UserStoreOrderListDTO;
 import com.project.starforest.service.UserOrderLIstService;
+import com.project.starforest.service.UserReviewService;
 
 
 @RestController
@@ -35,11 +38,22 @@ public class UserInfoController {
 	
 	private final ProductService productService;
 	
+	@Autowired
+	private UserReviewService userReviewService;
 	
+	@GetMapping("/store/order/{productId}")
+		public ResponseEntity<UserOrderResponseDTO>  getUserProduct(
+				@PathVariable("productId") Long productId
+				) {
+		
+		UserOrderResponseDTO temp = userReviewService.getUserProduct(productId);
+		
+		return ResponseEntity.ok(temp);
+	}
 	
 	
 	//새로운리뷰추가???????????????????????????????????????????????????????
-    @PostMapping("/store/order/view/{orderId}")
+    @PostMapping("/store/order/view/{productId}")
     public ResponseEntity<ProductReview> addReview(@RequestBody ProductReviewDTO reviewDTO) {
     	log.info("새 리뷰 추가: {}", reviewDTO);
         try {

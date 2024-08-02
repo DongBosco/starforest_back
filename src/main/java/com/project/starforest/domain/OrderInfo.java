@@ -36,6 +36,7 @@ public class OrderInfo {
     private String address2;
 
     @OneToOne(fetch = FetchType.LAZY, cascade = CascadeType.ALL)
+    @JoinColumn(name = "order_id", referencedColumnName = "id")
     private Order order;
 
     public void changeName(String name) {

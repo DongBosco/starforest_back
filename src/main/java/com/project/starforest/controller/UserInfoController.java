@@ -14,6 +14,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.project.starforest.domain.Order;
+import com.project.starforest.dto.store.UserStoreOrderListDTO;
 import com.project.starforest.service.UserOrderLIstService;
 
 
@@ -33,12 +34,12 @@ public class UserInfoController {
 	//동일작업
 	
 	@GetMapping("/store/order/list/{email}")
-	public ResponseEntity<List<Order>>  getAllOrderList(
+	public ResponseEntity<List<UserStoreOrderListDTO>>  getAllOrderList(
 			@PathVariable("email") String email
 			) {
 		
-		List<Order> result = userOrderLIstService.getAllOrderList(email);
-		
+		List<UserStoreOrderListDTO> result = userOrderLIstService.getAllOrderList(email);
+		log.info("resultresultresultresult"+result.toString());
 		return ResponseEntity.ok(result);
 	}
 	

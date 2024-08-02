@@ -16,4 +16,9 @@ public interface ReservInfoRepository extends JpaRepository<ReservInfo, Long>{
             "FROM ReservInfo r " +
             "WHERE r.reservation =:reservation")
     ReservInfo getReferenceByReserv(Reservation reservation);
+
+    @Query("SELECT r " +
+            "FROM ReservInfo r " +
+            "WHERE r.reservation.id =:resrvationId")
+    ReservInfo getInfoByResrvationId(@Param("resrvationId") Long resrvationId);
 }

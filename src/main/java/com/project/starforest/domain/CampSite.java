@@ -1,5 +1,6 @@
 package com.project.starforest.domain;
 
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import jakarta.persistence.Entity;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.*;
@@ -15,6 +16,7 @@ import org.locationtech.jts.geom.Point;
 @Setter
 @Table(name = "camp_site")
 @Entity
+@JsonIgnoreProperties({"hibernateLazyInitializer", "handler"})
 public class CampSite {
 
     @Id

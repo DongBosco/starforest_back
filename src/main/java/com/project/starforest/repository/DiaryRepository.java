@@ -9,6 +9,7 @@ import org.springframework.data.domain.Slice;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
+import org.springframework.security.core.parameters.P;
 import org.springframework.stereotype.Repository;
 
 import com.project.starforest.domain.Diary;
@@ -16,6 +17,11 @@ import com.project.starforest.domain.Diary;
 @Repository
 public interface DiaryRepository extends JpaRepository<Diary, Long> {
 	List<Diary> findAllByUserEmail(String userEmail);
+
+	@Query("SELECT d " +
+			"FROM Diary d " +
+			"WHERE d.reservation.id = :reservationId")
+	Diary findDiaryByReservationId(@Param("reservationId") Long reservationId);
 	
 //	@Query(" SELECT d "
 //			+ " FROM Diary d "

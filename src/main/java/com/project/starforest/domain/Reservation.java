@@ -1,6 +1,7 @@
 package com.project.starforest.domain;
 
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import jakarta.persistence.*;
 import lombok.*;
 import java.sql.Date;
@@ -24,12 +25,12 @@ public class Reservation {
     @Column(name = "reservation_number", nullable = true, length = 20)
     private String reservation_number;
 
-//    @JoinColumn(name = "campsite_id", referencedColumnName = "id", insertable = false, updatable = false)
+    @JsonIgnore
     @JoinColumn(name = "campsite_id", referencedColumnName = "id")
     @ManyToOne(fetch = FetchType.LAZY, cascade = CascadeType.ALL)
     private CampSite campsite_id;
 
-//    @JoinColumn(name = "user_email", referencedColumnName = "email", insertable = false, updatable = false)
+    @JsonIgnore
     @JoinColumn(name = "user_email", referencedColumnName = "email")
     @ManyToOne(fetch = FetchType.LAZY, cascade = CascadeType.ALL)
     private Member member;

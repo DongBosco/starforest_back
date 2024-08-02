@@ -21,5 +21,5 @@ public class ResReservListDTO {
     private String reservation_number;
     private boolean isRecordWritten;
     private CampSite camp;
-    private ReservInfo info;
+    private Long info_id;
 }

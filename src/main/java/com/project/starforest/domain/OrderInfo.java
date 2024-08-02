@@ -16,6 +16,7 @@ import lombok.extern.log4j.Log4j2;
 public class OrderInfo {
 
     @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(length = 20)
     private Long id;
 
@@ -35,7 +36,8 @@ public class OrderInfo {
     private String address2;
 
     @OneToOne(fetch = FetchType.LAZY, cascade = CascadeType.ALL)
-    private Order order;
+    @JoinColumn(name = "order_id", referencedColumnName = "id")
+    private Order order_id;
 
     public void changeName(String name) {
         this.name = name;

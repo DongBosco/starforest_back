@@ -16,4 +16,9 @@ public interface ReservationedRepository extends JpaRepository<Reservation, Long
             "FROM Reservation r " +
             "WHERE r.member.email = :email")
     List<Reservation> findAllByEmail(@Param("email") String email);
+
+    @Query("SELECT r " +
+            "FROM Reservation r " +
+            "WHERE r.id = :ReservId")
+    Reservation findByReservId(@Param("ReservId") Long ReservId);
 }

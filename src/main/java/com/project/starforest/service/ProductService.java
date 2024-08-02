@@ -9,6 +9,7 @@ import com.project.starforest.domain.ProductReview;
 import com.project.starforest.domain.UserInfo;
 import com.project.starforest.dto.store.ProductDTO;
 import com.project.starforest.dto.store.ProductImagesDTO;
+import com.project.starforest.dto.store.ProductResponseDTO;
 import com.project.starforest.dto.store.ProductReviewDTO;
 import com.project.starforest.repository.ProductRepository;
 
@@ -53,4 +54,12 @@ public interface ProductService {
 //	주어진 사용자ID에 대한 사용자 정보를 반환
 //	ShoppingCartItem addItemTocart(ShoppingCartItem item);
 //	쇼핑 카트에 항목을 추가하고 추가된 항목을 반환.
+	
+	
+	
+	
+	//동일 작성
+	ProductResponseDTO getProductByIdOfEntity(Long productId);
+	//동일 작성
+	
 }

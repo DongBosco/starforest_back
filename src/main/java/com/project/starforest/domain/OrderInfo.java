@@ -17,6 +17,7 @@ public class OrderInfo {
 
     @Id
     @Column(length = 20)
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
     @Column(name = "name", length = 50, nullable = true)
@@ -35,6 +36,7 @@ public class OrderInfo {
     private String address2;
 
     @OneToOne(fetch = FetchType.LAZY, cascade = CascadeType.ALL)
+    @JoinColumn(name = "order_id", referencedColumnName = "id")
     private Order order;
 
     public void changeName(String name) {

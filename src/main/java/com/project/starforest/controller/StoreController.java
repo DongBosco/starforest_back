@@ -3,6 +3,8 @@ package com.project.starforest.controller;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.log4j.Log4j2;
 
+import java.time.LocalDateTime;
+import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -22,9 +24,15 @@ import org.springframework.web.bind.annotation.RestController;
 import com.project.starforest.domain.Product;
 import com.project.starforest.domain.ProductReview;
 import com.project.starforest.domain.UserInfo;
+import com.project.starforest.dto.pay.KakaoPayReadyResponse;
+import com.project.starforest.dto.store.KakaoStoreRequestDTO;
+import com.project.starforest.dto.store.KakaoSuccessRequestDTO;
 import com.project.starforest.dto.store.ProductDTO;
+import com.project.starforest.dto.store.ProductResponseDTO;
 import com.project.starforest.dto.store.ProductReviewDTO;
 import com.project.starforest.dto.store.requestCartDTO;
+import com.project.starforest.service.KakaoPayService;
+import com.project.starforest.service.OrderKakaoService;
 import com.project.starforest.service.ProductService;
 import com.project.starforest.service.impl.ProductServiceImpl;
 
@@ -37,6 +45,12 @@ public class StoreController {
 	
 	@Autowired
 	private ProductService productService;
+	
+	@Autowired
+	private KakaoPayService kakaoPayService;
+	
+	@Autowired
+	private OrderKakaoService orderKakaoService;
 	
 	//get*******************************************************************
 
@@ -136,5 +150,58 @@ public class StoreController {
 //		return null;
 //	}
 	
+	
+	
+	//동일 작업시작
+	//
+	
+	//구매 페이지에서 상품 데이터 가져오기
+	@GetMapping("/get/product/{productId}")
+	public ResponseEntity<ProductResponseDTO> storeBuy(
+			@PathVariable("productId") Long productId
+			) {
+		
+		ProductResponseDTO result = productService.getProductByIdOfEntity(productId);
+		
+		return ResponseEntity.ok(result);
+	}
+	
+	//스토어 카카오페이 결제 요청
+	@PostMapping("/kakaoPay")
+	public KakaoPayReadyResponse kakaoPay(@RequestBody KakaoStoreRequestDTO dto) {
+		
+		LocalDateTime now = LocalDateTime.now();
+	    DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyyMMddHHmmss");
+        String formattedDate = now.format(formatter);
+        double random = Math.random()*100;
+        int randomInt = (int)Math.floor(random);
+        String combined = formattedDate + randomInt;
+        log.info("123123123123"+combined);
+		log.info(dto.toString());
+        KakaoPayReadyResponse result = kakaoPayService.StorekakaoPayReady(dto,combined);
+		return result;
+	}
+	
+	//카카오 결제 승인
+	@PostMapping("/kakaoPaySuccess/{pg_token}")
+	public String kakaopaySuccess(
+			@PathVariable("pg_token") String pg_token,
+			@RequestBody KakaoSuccessRequestDTO dto
+			) {
+
+		log.info(dto.toString());
+		
+		kakaoPayService.approveStorePayment(pg_token, dto);
+		log.info("store 결제 완료!!");
+		
+		//order_Table에 저장
+		orderKakaoService.OrderKakaoSave(dto);
+		
+		//order_info에 저장
+		orderKakaoService.OrderInfoKakaoSave(dto);
+		return null;
+	}
+	//
+	//동일 작업 끝
 
 }

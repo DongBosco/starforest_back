@@ -12,8 +12,6 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
-//TODO => EMAILAUTH -> 학원컴터에 구현해놔서 이식만하면 됨. CHANGE_PW => 로직구현 금방할수있음, UPDATE, PROFILE_IMG_UPDATE
-
 @RestController
 @RequiredArgsConstructor
 @Log4j2
@@ -77,6 +75,16 @@ public class MemberController {
         }
     }
 
+    @PostMapping("/checkemail")          //완료_bosco
+    public boolean checkEmail(@RequestBody CheckEmailDTO checkEmailDTO) throws Exception {
+        try {
+            CheckEmailDTO res = memberService.checkEmail(checkEmailDTO);
+            return res.isResult();
+        }catch (Exception e){
+            log.info("이메일 체크 에러 발생");
+            return false;
+        }
+    }
 }
 
 

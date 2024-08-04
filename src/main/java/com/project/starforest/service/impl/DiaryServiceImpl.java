@@ -119,8 +119,23 @@ public class DiaryServiceImpl implements DiaryService {
 	@Override
 	@Transactional
 	public void deleteDiary(Long id) {
-        diaryImageService.deleteImage(id);
-        diaryRepository.deleteById(id);
+	    Diary diary = diaryRepository.findById(id)
+	            .orElseThrow(() -> new RuntimeException("존재하지않는 별숲기록입니다."));
+	    
+	    // 연관된 이미지 URL 가져오기
+	    List<String> imageUrls = diaryImageService.getImagesForStringByDiaryId(id);
+	    
+	    // S3에서 이미지 파일 삭제
+	    for (String imageUrl : imageUrls) {
+	        String fileName = imageUrl.substring(imageUrl.lastIndexOf("/") + 1);
+	        s3FileUploadService.deleteFile(fileName);
+	    }
+	    
+	    // DiaryImage 레코드 삭제
+	    diaryImageService.deleteImagesByDiaryId(id);
+	    
+	    // Diary 레코드 삭제
+	    diaryRepository.delete(diary);
 	}
 	
 	// 이미지 삭제 서비스

@@ -136,7 +136,7 @@ public class  DiaryController{
 	
 	// 별숲기록 삭제
 	@DeleteMapping("/{id}")
-	public ResponseEntity<?> deleteDiary(@PathVariable Long id) {
+	public ResponseEntity<?> deleteDiary(@PathVariable("id") Long id) {
         try {
             DiaryDTO diary = diaryService.getDiaryById(id);
             diaryService.deleteDiary(id);

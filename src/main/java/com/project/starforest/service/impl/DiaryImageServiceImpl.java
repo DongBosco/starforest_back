@@ -82,7 +82,7 @@ public class DiaryImageServiceImpl implements DiaryImageService {
 	@Override
 	@Transactional
 	public void deleteImagesByDiaryId(Long diaryId) {
-		diaryImageRepository.deleteByDiaryId(diaryId);
+	    diaryImageRepository.deleteByDiaryId(diaryId);
 	}
 	
 	@Override

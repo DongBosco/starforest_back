@@ -1,5 +1,6 @@
 package com.project.starforest.service.impl;
 
+import java.io.IOException;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
@@ -15,11 +16,13 @@ import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.multipart.MultipartFile;
 
 import com.project.starforest.domain.Diary;
+import com.project.starforest.domain.DiaryImage;
 import com.project.starforest.dto.DiaryDTO;
 import com.project.starforest.dto.DiaryImageDTO;
 import com.project.starforest.repository.DiaryRepository;
 import com.project.starforest.service.DiaryImageService;
 import com.project.starforest.service.DiaryService;
+import com.project.starforest.service.S3FileUploadService;
 
 import lombok.RequiredArgsConstructor;
 
@@ -28,11 +31,16 @@ import lombok.RequiredArgsConstructor;
 public class DiaryServiceImpl implements DiaryService {
 	
 	private final DiaryRepository diaryRepository;
+	
 	private final DiaryImageService diaryImageService;
-	private final Environment environment;
+	private final S3FileUploadService s3FileUploadService;
 	
 	@Value("${app.image.base-url}")
 	private String imageBaseUrl;
+	
+	@Value("${cloud.aws.s3.bucket}")
+	private String bucketName;
+	
 	
 	// 별숲기록 생성 서비스
 	@Override
@@ -42,16 +50,23 @@ public class DiaryServiceImpl implements DiaryService {
 		diary.changeCreated_at(LocalDateTime.now());
 		Diary savedDiary = diaryRepository.save(diary);
 		
-		List<String> savedImageUrls = new ArrayList<>();
-	    if (images != null && !images.isEmpty()) {
-	        savedImageUrls = diaryImageService.saveImages(savedDiary.getId(), images);
-	    }
+		List<String> savedImageNames = new ArrayList<>();
+		if (images != null && !images.isEmpty()) {
+		    savedImageNames = diaryImageService.saveImages(savedDiary.getId(), images);
+		}
 		
 		DiaryDTO savedDiaryDTO = convertToDTO(savedDiary);
-		savedDiaryDTO.setImage_url(savedImageUrls);
+		savedDiaryDTO.setImage_url(savedImageNames);
+		
 		
 		return savedDiaryDTO;
 	}
+	
+	
+	
+	
+	
+
     
 	
 	// 모든 별숲기록 조회 서비스
@@ -68,10 +83,7 @@ public class DiaryServiceImpl implements DiaryService {
         
         return diaryDTOs;
     }
-//        return diaryRepository.findAll().stream()
-//                .map(this::convertToDTO)
-//                .peek(this::setImage_url)
-//                .collect(Collectors.toList());
+
 	
 	// 별숲기록 아이디로 view 조회 서비스
 	@Override
@@ -107,30 +119,71 @@ public class DiaryServiceImpl implements DiaryService {
 	@Override
 	@Transactional
 	public void deleteDiary(Long id) {
-        diaryImageService.deleteImage(id);
-        diaryRepository.deleteById(id);
+	    Diary diary = diaryRepository.findById(id)
+	            .orElseThrow(() -> new RuntimeException("존재하지않는 별숲기록입니다."));
+	    
+	    // 연관된 이미지 URL 가져오기
+	    List<String> imageUrls = diaryImageService.getImagesForStringByDiaryId(id);
+	    
+	    // S3에서 이미지 파일 삭제
+	    for (String imageUrl : imageUrls) {
+	        String fileName = imageUrl.substring(imageUrl.lastIndexOf("/") + 1);
+	        s3FileUploadService.deleteFile(fileName);
+	    }
+	    
+	    // DiaryImage 레코드 삭제
+	    diaryImageService.deleteImagesByDiaryId(id);
+	    
+	    // Diary 레코드 삭제
+	    diaryRepository.delete(diary);
+	}
+	
+	// 이미지 삭제 서비스
+	@Override
+	@Transactional
+	public void deleteImages(List<String> imageUrls) {
+        for (String imageUrl : imageUrls) {
+            String fileName = imageUrl.substring(imageUrl.lastIndexOf("/") + 1);
+            s3FileUploadService.deleteFile(fileName);
+            diaryImageService.deleteImageByUrl(imageUrl);
+        }
+    }
+	
+	
+	@Override
+	@Transactional
+	public void deleteImagesByUrl(String imageUrl) {
+	    String fileName = imageUrl.substring(imageUrl.lastIndexOf("/") + 1);
+	    s3FileUploadService.deleteFile(fileName);
+	    diaryImageService.deleteImageByUrl(imageUrl);
 	}
 	
 	
 	
-//	private DiaryDTO convertToDTO(Diary diary) {
-//        DiaryDTO dto = DiaryDTO.builder()
-//                .id(diary.getId())
-//                .reservationId(diary.getReservation().getId())
-//                .userEmail(diary.getUser().getEmail())
-//                .content(diary.getContent())
-//                .allTags(diary.getCategory())
-//                .created_at(diary.getCreated_at())
-//                .build();
-//        
-//        List<String> imageUrls = diaryImageService.getImagesByDiaryId(diary.getId())
-//                .stream()
-//                .map(DiaryImageDTO::getImage_url)
-//                .collect(Collectors.toList());
-//        dto.setImage_url(imageUrls);
-//        
-//        return dto;
-//    }
+	
+
+	
+	
+	// 이미지 저장 서비스
+	@Override
+	@Transactional
+	public List<String> saveImages(List<MultipartFile> images) {
+	    List<String> savedImageUrls = new ArrayList<>();
+	    for (MultipartFile image : images) {
+	        try {
+	            String imageUrl = s3FileUploadService.uploadFile(image);
+	            savedImageUrls.add(imageUrl);
+	        } catch (IOException e) {
+	            throw new RuntimeException("Failed to upload image", e);
+	        }
+	    }
+	    return savedImageUrls;
+	}
+	
+	 
+	
+	
+
 	
 	
 	private Diary convertToEntity(DiaryDTO diaryDTO) {
@@ -140,55 +193,37 @@ public class DiaryServiceImpl implements DiaryService {
 				.build();
 	}
 	
-	
 	private DiaryDTO convertToDTO(Diary diary) {
-		DiaryDTO dto = DiaryDTO.builder()
-				.id(diary.getId())
-				.content(diary.getContent())
-				.allTags(diary.getCategory())
-				.created_at(diary.getCreated_at())
-				.build();
-		setImage_url(dto);
-		return dto;
-	}
-	
-	private void setImage_url(DiaryDTO diaryDTO) {
-	    List<String> imageUrls = diaryImageService.getImagesByDiaryId(diaryDTO.getId())
-	            .stream()
-	            .map(imageDTO -> imageBaseUrl.endsWith("/") 
-	                ? imageBaseUrl + imageDTO.getImage_url()
-	                : imageBaseUrl + "/" + imageDTO.getImage_url())
-	            .collect(Collectors.toList());
-	    diaryDTO.setImage_url(imageUrls);
+	    DiaryDTO dto = DiaryDTO.builder()
+	        .id(diary.getId())
+	        .content(diary.getContent())
+	        .allTags(diary.getCategory())
+	        .created_at(diary.getCreated_at())
+	        .build();
+
+	    // Diary 엔티티에서 이미지 URL 리스트를 가져옵니다.
+	    List<String> imageUrls = diaryImageService.getImagesForStringByDiaryId(diary.getId());
+
+	    
+
+	    return dto;
 	}
 	
 	
-//	private void setImage_url(DiaryDTO diaryDTO) {
-//		List<String> imageUrls = diaryImageService.getImagesByDiaryId(diaryDTO.getId())
-//				.stream()
-//				.map(this::makeAbsoluteUrl)
-//				.collect(Collectors.toList());
-//		
-//		diaryDTO.setImage_url(imageUrls);
-//	}
-	
-	
-//	 private void setImage_url(DiaryDTO diaryDTO) {
-//	        List<String> imageUrls = diaryImageService.getImagesByDiaryId(diaryDTO.getId())
-//	                .stream()
-//	                .map(DiaryImageDTO::getImage_url)
-//	                .collect(Collectors.toList());
-//	        diaryDTO.setImage_url(imageUrls);
-//	    }
 
 	
-	private String makeAbsoluteUrl(DiaryImageDTO imageDTO) {
-		String relativeUrl = imageDTO.getImage_url();
-		if (relativeUrl.startsWith("http://") || relativeUrl.startsWith("https://")) {
-			return relativeUrl;
-		}
-		return imageBaseUrl + relativeUrl;
-	}
+	private void setImage_url(DiaryDTO diaryDTO) {
+        List<String> imageNames = diaryImageService.getImagesByDiaryId(diaryDTO.getId())
+                .stream()
+                .map(DiaryImageDTO::getImage_url)
+                .collect(Collectors.toList());
+        diaryDTO.setImage_url(imageNames);
+    }
+	
+	
+	
+	
+
 	
 	
 }

@@ -1,6 +1,11 @@
 package com.project.starforest.controller;
 
 
+import com.project.starforest.domain.Reservation;
+import com.project.starforest.dto.camp.CampListDTO;
+import com.project.starforest.dto.userInfo.ResReservListDTO;
+import com.project.starforest.dto.userInfo.ResReservViewDTO;
+import com.project.starforest.service.UserService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.log4j.Log4j2;
 
@@ -17,10 +22,17 @@ import com.project.starforest.dto.store.ProductReviewDTO;
 import com.project.starforest.service.ProductService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
+
+import java.util.List;
 
 import com.project.starforest.domain.Order;
 import com.project.starforest.dto.store.UserStoreOrderListDTO;
@@ -32,18 +44,45 @@ import com.project.starforest.service.UserOrderLIstService;
 @Log4j2
 @RequestMapping("/user")
 public class UserInfoController {
-	
+
+    private final UserService userService;
+
+    // -> user/camp/reservation/list => 해야할일? => 유저의 아이디로 예약을 조회해서, 뿌려줘야함. 이때, 캠핑장에 대한 정보도 같이 가져와야한다.
+    @GetMapping("/camp/list")
+    public List<ResReservListDTO> getMyReservList(@RequestParam(name="email") String email) throws Exception {
+        try {
+            List<ResReservListDTO> res = userService.getMyReservList(email);
+            System.out.println(res);
+            return res;
+        }catch (Exception e){
+            log.info("예약 조회중 오류 발생했습니다.");
+            return null;
+        }
+    }
+
+    @GetMapping("/camp/view")
+    public ResponseEntity<?> getReservData(@RequestParam(name="reservationid") Long reservationid, @RequestParam(name="email") String email) {
+        try {
+            System.out.println("입력");
+            ResReservViewDTO res = userService.getDetail(reservationid, email);
+            return ResponseEntity.ok(res);
+        } catch (Exception e) {
+            log.info("예약 조회 중 오류 발생: " + e.getMessage());
+            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body("예약 조회 중 오류가 발생했습니다: " + e.getMessage());
+        }
+    }
+
 	private final ProductService productService;
-	
-	
-	
-	
+
+
+
+
 	//새로운리뷰추가???????????????????????????????????????????????????????
     @PostMapping("/store/order/view/{orderId}")
     public ResponseEntity<ProductReview> addReview(@RequestBody ProductReviewDTO reviewDTO) {
     	log.info("새 리뷰 추가: {}", reviewDTO);
         try {
-            //리뷰작성자격검증부분 
+            //리뷰작성자격검증부분
             boolean isEligible = productService.checkReviewEligibility(reviewDTO.getProductId(), reviewDTO.getOrderId(), reviewDTO.getUserEmail());
            //리뷰작성 자격이 없을때 클라이언트한테 Forbidden에러 코드 반환
             if (!isEligible) {
@@ -51,7 +90,7 @@ public class UserInfoController {
                 reviewDTO.getProductId(), reviewDTO.getOrderId(), reviewDTO.getUserEmail());
             	return ResponseEntity.status(HttpStatus.FORBIDDEN).build();
 	}
-            
+
             ProductReview saveReview = productService.addReview(reviewDTO);
             return ResponseEntity.status(HttpStatus.CREATED).body(saveReview);
         } catch (Exception e) {
@@ -60,12 +99,12 @@ public class UserInfoController {
         }
     }
 
-	//내가 작성한 리뷰 리스트조회 
+	//내가 작성한 리뷰 리스트조회
 	@GetMapping("/review")
 	public ResponseEntity<List<ProductReview>> getUserReview(@RequestBody OrderViewRequestDTO orderViewDTO){
-		
+
 		log.info("orderViewDTOorderViewDTO"+orderViewDTO.toString());
-		
+
 		 try {
 	            List<ProductReview> reviews = ProductService.getReviewsByUserEmail(orderViewDTO.getUserEmail());
 	            if (reviews.isEmpty()) {
@@ -79,28 +118,28 @@ public class UserInfoController {
 	        }
 	    }
 	}
-	
-  
-	
+
+
+
 	@Autowired
 	private UserOrderLIstService userOrderLIstService;
-	
-	
-	
-	
-	
-	
+
+
+
+
+
+
 	//동일작업
-	
+
 	@GetMapping("/store/order/list/{email}")
 	public ResponseEntity<List<UserStoreOrderListDTO>>  getAllOrderList(
 			@PathVariable("email") String email
 			) {
-		
+
 		List<UserStoreOrderListDTO> result = userOrderLIstService.getAllOrderList(email);
 		log.info("resultresultresultresult"+result.toString());
 		return ResponseEntity.ok(result);
 	}
-	
+
 	//동일 작업
 }

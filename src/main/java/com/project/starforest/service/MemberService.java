@@ -14,4 +14,6 @@ public interface MemberService {
     ResultChekPassWordDTO checkPassword(CheckPassWordDTO checkPassWordDTO) throws Exception;
 
     CheckNicknameDTO checkNickName(CheckNicknameDTO checkNicknameDTO) throws Exception;
+
+    boolean checkEmail(String email) throws Exception;
 }

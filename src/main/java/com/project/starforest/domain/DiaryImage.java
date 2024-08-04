@@ -16,6 +16,7 @@ import java.time.LocalDateTime;
 public class DiaryImage {
 
     @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
     @ManyToOne(fetch = FetchType.LAZY, cascade = CascadeType.ALL)

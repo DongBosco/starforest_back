@@ -28,10 +28,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
-import com.project.starforest.domain.Order;
-import com.project.starforest.domain.Product;
 import com.project.starforest.dto.store.UserStoreOrderListDTO;
-import com.project.starforest.service.UserOrderLIstService;
 import com.project.starforest.service.UserReviewService;
 
 
@@ -40,10 +37,11 @@ import com.project.starforest.service.UserReviewService;
 @Log4j2
 @RequestMapping("/user")
 public class UserInfoController {
-
     private final UserService userService;
     private final ProductService productService;
     private final UserOrderLIstService userOrderLIstService;
+    private UserReviewService userReviewService;
+
     @GetMapping("/camp/list")
     public List<ResReservListDTO> getMyReservList(@RequestParam(name="email") String email) throws Exception {
         try {
@@ -68,11 +66,6 @@ public class UserInfoController {
         }
     }
 
-	private final ProductService productService;
-
-	@Autowired
-	private UserReviewService userReviewService;
-
 	@GetMapping("/store/order/{productId}")
 		public ResponseEntity<UserOrderResponseDTO>  getUserProduct(
 				@PathVariable("productId") Long productId
@@ -82,8 +75,6 @@ public class UserInfoController {
 
 		return ResponseEntity.ok(temp);
 	}
-
-
 	//새로운리뷰추가???????????????????????????????????????????????????????
     @PostMapping("/store/order/view/{productId}")
     public ResponseEntity<ProductReview> addReview(@RequestBody ProductReviewDTO reviewDTO) {
@@ -105,7 +96,6 @@ public class UserInfoController {
             return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).build();
         }
     }
-
 	//내가 작성한 리뷰 리스트조회
 	@GetMapping("/review")
 	public ResponseEntity<List<ProductReview>> getUserReview(@RequestBody OrderViewRequestDTO orderViewDTO){
@@ -133,47 +123,24 @@ public class UserInfoController {
         log.info("resultresultresultresult"+result.toString());
         return ResponseEntity.ok(result);
     }
+    //동일 작업
+    @PostMapping("/store/order/review")
+    public ResponseEntity<String> resUserReview(@RequestBody UserOrderReviewRequestDTO userOrderDTO){
+
+        log.info("userOrderDTO" + userOrderDTO.toString());
+        userReviewService.userReviewSave(userOrderDTO);
+
+        return null;
+    }
+
+    @GetMapping("/store/review/list/{email}")
+    public ResponseEntity<List<UserReviewListResponseDTO>> userReviewList(
+            @PathVariable("email") String email ){
+
+        List<UserReviewListResponseDTO> userReviewList = userReviewService.userReviewList(email);
+        return ResponseEntity.ok(userReviewList) ;
+    }
 }
-
-	@Autowired
-	private UserOrderLIstService userOrderLIstService;
-
-	//동일작업
-
-	@GetMapping("/store/order/list/{email}")
-	public ResponseEntity<List<UserStoreOrderListDTO>>  getAllOrderList(
-			@PathVariable("email") String email
-			) {
-
-		List<UserStoreOrderListDTO> result = userOrderLIstService.getAllOrderList(email);
-		log.info("resultresultresultresult"+result.toString());
-		return ResponseEntity.ok(result);
-	}
-
-	//동일 작업
-
-
-	@PostMapping("/store/order/review")
-	public ResponseEntity<String> resUserReview(@RequestBody UserOrderReviewRequestDTO userOrderDTO){
-
-
-		log.info("userOrderDTO" + userOrderDTO.toString());
-		userReviewService.userReviewSave(userOrderDTO);
-
-		return null;
-	}
-
-	@GetMapping("/store/review/list/{email}")
-	public ResponseEntity<List<UserReviewListResponseDTO>> userReviewList(
-			@PathVariable("email") String email ){
-
-		List<UserReviewListResponseDTO> userReviewList = userReviewService.userReviewList(email);
-		return ResponseEntity.ok(userReviewList) ;
-	}
-
-	}//UserInfoController
-
-
 
 
 

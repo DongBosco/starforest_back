@@ -23,17 +23,17 @@ public class UserReviewServiceImpl implements UserReviewService{
 
 	@Autowired
 	private ProductRepository productRepository;
-	
+
 	@Autowired
 	private ProductReviewRepository productReviewRepository;
-	
+
 	@Autowired
 	private MemberRepository memberRepository;
-	
+
 	public UserOrderResponseDTO getUserProduct(Long productId) {
 
 		Product productEntity = productRepository.findById(productId).orElseThrow();
-		
+
 		UserOrderResponseDTO userOrderDTO = UserOrderResponseDTO.builder()
 				.brandName(productEntity.getBrand_name())
 				.productName(productEntity.getProduct_name())
@@ -41,16 +41,16 @@ public class UserReviewServiceImpl implements UserReviewService{
 				.build();
 		return userOrderDTO;
 	}
-	
-	
+
+
 	public String userReviewSave(UserOrderReviewRequestDTO userOrderDTO) {
-		
+
 		Long productId =userOrderDTO.getProductId();
 		String memberEmail = userOrderDTO.getUserEmail();
-		
+
 		Product product = productRepository.findById(productId).orElseThrow();
 		Member member = memberRepository.findByEmail(memberEmail);
-		
+
 		ProductReview reviewEntity = ProductReview.builder()
 				.content(userOrderDTO.getContent())
 				.product(product)
@@ -60,20 +60,20 @@ public class UserReviewServiceImpl implements UserReviewService{
 		productReviewRepository.save(reviewEntity);
 		return null;
 	}
-	
+
 	public List<UserReviewListResponseDTO> userReviewList(String email) {
-		
+
 		List<ProductReview> userReviewList = productReviewRepository.findByEmail(email);
-		
+
 		List<UserReviewListResponseDTO> userReviewResponseDTO = userReviewList.stream()
-			    .map(entity -> UserReviewListResponseDTO.builder()
-			    		.content(entity.getContent())
-			    		.productName(entity.getProduct().getProduct_name())
-			    		.brandName(entity.getProduct().getBrand_name())
-			    		.imgUrl(entity.getProduct().getImgUrls())
-			    	.build())
-			    .collect(Collectors.toList());
-		
+				.map(entity -> UserReviewListResponseDTO.builder()
+						.content(entity.getContent())
+						.productName(entity.getProduct().getProduct_name())
+						.brandName(entity.getProduct().getBrand_name())
+						.imgUrl(entity.getProduct().getImgUrls())
+						.build())
+				.collect(Collectors.toList());
+
 		return userReviewResponseDTO;
 	}
 }

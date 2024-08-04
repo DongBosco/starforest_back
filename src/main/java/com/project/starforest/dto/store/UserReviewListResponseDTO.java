@@ -9,8 +9,9 @@ import lombok.NoArgsConstructor;
 @Builder
 @AllArgsConstructor
 @NoArgsConstructor
-public class UserOrderResponseDTO {
+public class UserReviewListResponseDTO {
 	private String productName;
 	private String brandName;
 	private String imgUrl;
+	private String content;
 }

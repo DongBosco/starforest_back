@@ -15,6 +15,8 @@ import com.project.starforest.domain.ProductReview;
 import com.project.starforest.dto.store.OrderViewRequestDTO;
 import com.project.starforest.dto.store.ProductReviewDTO;
 import com.project.starforest.dto.store.UserOrderResponseDTO;
+import com.project.starforest.dto.store.UserOrderReviewRequestDTO;
+import com.project.starforest.dto.store.UserReviewListResponseDTO;
 import com.project.starforest.service.ProductService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
@@ -110,7 +112,26 @@ public class UserInfoController {
 	
 	//동일 작업
 	
+	
+	@PostMapping("/store/order/review")
+	public ResponseEntity<String> resUserReview(@RequestBody UserOrderReviewRequestDTO userOrderDTO){
+		
+		
+		log.info("userOrderDTO" + userOrderDTO.toString());
+		userReviewService.userReviewSave(userOrderDTO);
+		
+		return null;
 	}
+	
+	@GetMapping("/store/review/list/{email}")
+	public ResponseEntity<List<UserReviewListResponseDTO>> userReviewList(
+			@PathVariable("email") String email ){
+		
+		List<UserReviewListResponseDTO> userReviewList = userReviewService.userReviewList(email);
+		return ResponseEntity.ok(userReviewList) ;
+	}
+	
+	}//UserInfoController
 	
   
 	

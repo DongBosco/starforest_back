@@ -40,7 +40,7 @@ public class UserInfoController {
     private final UserService userService;
     private final ProductService productService;
     private final UserOrderLIstService userOrderLIstService;
-    private UserReviewService userReviewService;
+    private final UserReviewService userReviewService;
 
     @GetMapping("/camp/list")
     public List<ResReservListDTO> getMyReservList(@RequestParam(name="email") String email) throws Exception {

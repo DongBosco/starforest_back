@@ -7,7 +7,9 @@ import com.project.starforest.domain.ProductReview;
 import com.project.starforest.dto.store.UserOrderResponseDTO;
 import com.project.starforest.dto.store.UserOrderReviewRequestDTO;
 import com.project.starforest.dto.store.UserReviewListResponseDTO;
+import jakarta.transaction.Transactional;
 
+@Transactional
 public interface UserReviewService {
 
 	public UserOrderResponseDTO getUserProduct(Long productId);

@@ -53,6 +53,11 @@ dependencies {
   	implementation 'jakarta.servlet.jsp.jstl:jakarta.servlet.jsp.jstl-api'
   	implementation 'org.glassfish.web:jakarta.servlet.jsp.jstl'
   	implementation 'org.apache.tomcat.embed:tomcat-embed-jasper'
+
+    //EMAIL
+    implementation group: 'org.springframework.boot', name: 'spring-boot-starter-mail', version: '3.0.5'
+    implementation 'org.springframework.boot:spring-boot-starter-mail'
+
   	
   	//JACKSON POINT
   	implementation 'com.fasterxml.jackson.datatype:jackson-datatype-jsr310:2.17.0'

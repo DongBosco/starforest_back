@@ -95,18 +95,10 @@ public class MemberServiceImpl implements MemberService {
     }
 
     @Override
-    public CheckEmailDTO checkEmail(CheckEmailDTO checkEmailDTO) throws Exception {
+    public boolean checkEmail(String email) throws Exception {
         try {
-            Member member = memberRepository.findByEmail(checkEmailDTO.getEmail());
-            if (member!=null) {
-                return CheckEmailDTO.builder()
-                        .email(member.getEmail())
-                        .result(true).build();       //존재함
-            } else {
-                return CheckEmailDTO.builder()
-                        .email(checkEmailDTO.getEmail())
-                        .result(false).build();
-            }
+            Member member = memberRepository.findByEmail(email);
+            return member != null;
         }catch (Exception e){
             log.error(ALREADY_REGISTERED_EMAIL,e);
             throw e;

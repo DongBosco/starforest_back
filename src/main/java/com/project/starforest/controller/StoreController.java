@@ -30,6 +30,7 @@ import com.project.starforest.dto.store.KakaoSuccessRequestDTO;
 import com.project.starforest.dto.store.ProductDTO;
 import com.project.starforest.dto.store.ProductResponseDTO;
 import com.project.starforest.dto.store.ProductReviewDTO;
+import com.project.starforest.dto.store.ProductReviewListResponseDTO;
 import com.project.starforest.dto.store.requestCartDTO;
 import com.project.starforest.service.KakaoPayService;
 import com.project.starforest.service.OrderKakaoService;
@@ -96,22 +97,22 @@ public class StoreController {
 	}
 	
 
-	//제품ID로 리뷰조회
-//	@GetMapping("/review/{productId}")
-//	public List<ProductReview> getProductReviews(@PathVariable Long productId) {
-//		log.info("상품 리뷰 조회: 상품 ID ={}", productId);
-//		List<ProductReview> reviews = productService.getReviewsByProductId(productId);
-//		return productService.getReviewsByProductId(productId);
-//	}
+//	제품ID로 리뷰조회
+	@GetMapping("/view/review/{productId}")
+	public ResponseEntity<List<ProductReviewListResponseDTO>> getProductlAllReviews(@PathVariable("productId") Long productId) {
+		log.info("상품의 모든 리뷰 조회: 상품 ID ={}" + productId);
+		List<ProductReviewListResponseDTO> reviews = productService.getReviewsByProductId(productId);
+		return ResponseEntity.ok(reviews);
+	}
 //	
-	//제품ID로 리뷰조회
-    @GetMapping("/review/{productId}")
-    public ResponseEntity<List<ProductReview>> getProductReviews(@PathVariable Long productId) {
-        log.info("Fetching reviews for productId = {}", productId);
-        List<ProductReview> reviews = productService.getReviewsByProductId(productId);
-        return ResponseEntity.ok(reviews);
-    }
-	
+//	//제품ID로 리뷰조회
+//    @GetMapping("/review/{productId}")
+//    public ResponseEntity<List<ProductReview>> getProductReviews(@PathVariable Long productId) {
+//        log.info("Fetching reviews for productId = {}", productId);
+//        List<ProductReview> reviews = productService.getReviewsByProductId(productId);
+//        return ResponseEntity.ok(reviews);
+//    }
+//	
 //	@GetMapping("/user/{userId}")
 //	public UserInfo getUserInfo(@PathVariable Long userId) {
 //		log.info("사용자 정보 조회: 사용자 ID = {}", userId);

@@ -11,6 +11,7 @@ import com.project.starforest.dto.store.ProductDTO;
 import com.project.starforest.dto.store.ProductImagesDTO;
 import com.project.starforest.dto.store.ProductResponseDTO;
 import com.project.starforest.dto.store.ProductReviewDTO;
+import com.project.starforest.dto.store.ProductReviewListResponseDTO;
 import com.project.starforest.repository.ProductRepository;
 
 import jakarta.transaction.Transactional;
@@ -32,7 +33,7 @@ public interface ProductService {
 	 List<ProductDTO> getAllProducts();
 
 	//해당제품에 모든리뷰반환
-	List<ProductReview> getReviewsByProductId(Long productId);
+	 List<ProductReviewListResponseDTO> getReviewsByProductId(Long productId);
 	
 	//getReviewsByProductId를 기반으로 해당 제품에 대한 모든 리뷰를 반환
 	ProductReview addReview(ProductReviewDTO reviewDTO);

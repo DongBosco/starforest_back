@@ -23,11 +23,11 @@ public class ProductReview {
     private Long id;
 
     @ManyToOne(fetch = FetchType.LAZY, cascade = CascadeType.ALL)
-    @JoinColumn(name = "product_id", referencedColumnName = "id", insertable = false, updatable = false)
+    @JoinColumn(name = "product_id", referencedColumnName = "id")
     private Product product;
 
     @ManyToOne(fetch = FetchType.LAZY, cascade = CascadeType.ALL)
-    @JoinColumn(name = "user_email", referencedColumnName = "email", insertable = false, updatable = false)
+    @JoinColumn(name = "user_email", referencedColumnName = "email")
     private Member member;
 
     @Column(nullable = false)

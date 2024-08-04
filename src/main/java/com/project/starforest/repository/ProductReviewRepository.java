@@ -10,7 +10,7 @@ import com.project.starforest.domain.ProductReview;
 
 public interface ProductReviewRepository extends JpaRepository<ProductReview, Long>{
 
-//	@Query("SELECT pr FROM ProductReview pr WHERE pr.product.id = productId")
+	@Query("SELECT pr FROM ProductReview pr WHERE pr.product.id = :productId")
 	 List<ProductReview> findByProductId(@Param("productId") Long productId);
 
 	 

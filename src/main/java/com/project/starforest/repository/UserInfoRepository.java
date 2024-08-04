@@ -15,6 +15,11 @@ public interface UserInfoRepository extends JpaRepository<UserInfo, Long> {
             "FROM UserInfo u " +
             "WHERE u.user_email = :email")
     UserInfo getUserInfoByEmail(@Param("email") String email);
+    
+    @Query("SELECT u " +
+            "FROM UserInfo u " +
+            "WHERE u.user_email.email = :email")
+    UserInfo getUserInfoByEmail2(@Param("email") String email);
 
     @Query("SELECT CASE WHEN COUNT(u) > 0 " +
             "THEN true " +

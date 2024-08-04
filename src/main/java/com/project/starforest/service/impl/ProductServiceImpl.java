@@ -9,14 +9,18 @@ import java.util.stream.Collectors;
 import com.project.starforest.domain.Product;
 import com.project.starforest.domain.ProductImage;
 import com.project.starforest.domain.ProductReview;
+import com.project.starforest.domain.UserInfo;
 import com.project.starforest.dto.store.ProductDTO;
 import com.project.starforest.dto.store.ProductImagesDTO;
 import com.project.starforest.dto.store.ProductResponseDTO;
 import com.project.starforest.dto.store.ProductReviewDTO;
+import com.project.starforest.dto.store.ProductReviewListResponseDTO;
+import com.project.starforest.dto.store.UserReviewListResponseDTO;
 import com.project.starforest.repository.OrderRepository;
 import com.project.starforest.repository.ProductImageRepository;
 import com.project.starforest.repository.ProductRepository;
 import com.project.starforest.repository.ProductReviewRepository;
+import com.project.starforest.repository.UserInfoRepository;
 import com.project.starforest.service.ProductService;
 
 
@@ -44,7 +48,7 @@ public class ProductServiceImpl implements ProductService {
 	private final ProductReviewRepository productReviewRepository;
 	private final ProductImageRepository productImageRepository;
 	private final OrderRepository orderRepository;
-	
+	private final UserInfoRepository userInfoRepository;
 
 	
 	//특정 제품의 ID를 이용해서 특정 제품을 찾아서 반환
@@ -124,12 +128,23 @@ public class ProductServiceImpl implements ProductService {
 	
     // 특정 제품에 대한 모든 리뷰를 가져옴
     @Override
-    public List<ProductReview> getReviewsByProductId(Long productId) {  
+    public List<ProductReviewListResponseDTO> getReviewsByProductId(Long productId) {  
     	//제품이 존재하는지 확인
         ProductDTO product = getProductById(productId);
         if (product != null) {
-            return productReviewRepository.findByProductId(productId);
-//            return null;
+        	List<ProductReview> productReviews = productReviewRepository.findByProductId(productId);
+        	
+            List<ProductReviewListResponseDTO> productReviewListDTO = productReviews.stream()
+                    .map(entity -> {
+
+                    	UserInfo userInfo = userInfoRepository.getUserInfoByEmail2(entity.getMember().getEmail()  );
+                        return ProductReviewListResponseDTO.builder()
+                                .content(entity.getContent())
+                                .userNickName(userInfo.getNick_name())
+                                .build();
+                    })
+                    .collect(Collectors.toList());
+            return productReviewListDTO;
         }
         //제품이 없으면 빈 리스트반환
         return Collections.emptyList(); 

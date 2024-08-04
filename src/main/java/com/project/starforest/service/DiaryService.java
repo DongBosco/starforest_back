@@ -14,4 +14,5 @@ public interface DiaryService {
     void deleteDiary(Long id);
     List<String> saveImages(List<MultipartFile> images);
     void deleteImages(List<String> imageUrls);
+	void deleteImagesByUrl(String imageUrl);
 }

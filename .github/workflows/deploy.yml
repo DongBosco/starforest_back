@@ -19,15 +19,11 @@ jobs:
           distribution: temurin
           java-version: 17
 
-      - name: 디렉토리 이동
-        run: |
-          cd ~/../home/starforest_back/
-
       - name: 현재 디렉토리 출력
         run: pwd
 
       - name: 현재 디렉토리 파일 목록 확인
-        run: ls -la
+        run: ls -al
 
       - name: application.yml 파일 만들기
         run: |

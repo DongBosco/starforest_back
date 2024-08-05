@@ -21,14 +21,13 @@ import com.project.starforest.service.UserReviewService;
 @Service
 public class UserReviewServiceImpl implements UserReviewService{
 
-	@Autowired
 	private ProductRepository productRepository;
 
-	@Autowired
 	private ProductReviewRepository productReviewRepository;
 
-	@Autowired
 	private MemberRepository memberRepository;
+
+
 
 	public UserOrderResponseDTO getUserProduct(Long productId) {
 

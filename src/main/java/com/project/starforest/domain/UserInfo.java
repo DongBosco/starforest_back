@@ -21,7 +21,7 @@ public class UserInfo {
         private Long id;
 
         @OneToOne(fetch = FetchType.LAZY, cascade = CascadeType.ALL)
-        @JoinColumn(name = "user_email", referencedColumnName = "email", insertable = false, updatable = false)
+        @JoinColumn(name = "user_email", referencedColumnName = "email")
         private Member user_email;
 
         @Column(name = "name", length = 20, nullable = false)
